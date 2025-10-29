@@ -6,4 +6,4 @@
 0.0.8: sensors (hydrobreeze, biofresh and autodoor) added, more notification types supported
 0.0.9: code cleanup and more features supported
 0.1.0: official HomeAPI
-0.2.0: Migrated to coordinated data pulls to avoid 429 responses from API, fully support the currently offered API (Ice Maker, Hydro Breeze, Bio Fresh Plus, Presentation Light, etc) and for translations.
+2025.10.1: Migrated to coordinated data pulls to avoid 429 responses from API, fully support the currently offered API (Ice Maker, Hydro Breeze, Bio Fresh Plus, Presentation Light, etc) and for translations.
