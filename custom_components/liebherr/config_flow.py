@@ -1,32 +1,50 @@
 """Config flow for Liebherr Integration."""
 
+from typing import Any
+
 import voluptuous as vol
 
-from homeassistant import config_entries
+from homeassistant.config_entries import (
+    ConfigEntry,
+    ConfigFlow,
+    ConfigFlowResult,
+    OptionsFlowWithReload,
+)
+from homeassistant.const import CONF_API_KEY
 from homeassistant.core import callback
-from homeassistant.helpers import config_validation as cv
-import homeassistant.helpers.device_registry as dr
+from homeassistant.helpers.selector import (
+    NumberSelector,
+    NumberSelectorConfig,
+    NumberSelectorMode,
+    TextSelector,
+)
 
-from .const import DOMAIN
+from .const import CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL, DOMAIN
 
 
-class LiebherrConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Liebherr Integration."""
 
     VERSION = 1
 
-    async def async_step_user(self, user_input=None):
+    async def async_step_user(
+        self, user_input: dict[str, str] | None = None
+    ) -> ConfigFlowResult:
         """Handle the initial step."""
         errors = {}
 
         if user_input is not None:
             return self.async_create_entry(
-                title="Liebherr SmartDevice", data=user_input
+                title="Liebherr SmartDevice",
+                data={
+                    CONF_API_KEY: user_input[CONF_API_KEY],
+                },
+                options={CONF_UPDATE_INTERVAL: DEFAULT_UPDATE_INTERVAL},
             )
 
-        data_schema = vol.Schema(
+        data_schema: vol.Schema = vol.Schema(
             {
-                vol.Required("api-key"): str,
+                vol.Required(CONF_API_KEY): TextSelector(),
             }
         )
         return self.async_show_form(
@@ -35,49 +53,38 @@ class LiebherrConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry):
+    def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlowWithReload:
         """Return the options flow handler."""
-        return LiebherrOptionsFlow(config_entry)
+        return LiebherrOptionsFlow()
 
 
-class LiebherrOptionsFlow(config_entries.OptionsFlow):
+class LiebherrOptionsFlow(OptionsFlowWithReload):
     """Handle options flow for Liebherr Integration."""
 
-    def __init__(self, config_entry) -> None:
-        """Initialize the options flow."""
-        self.config_entry = config_entry
-
-    async def async_step_init(self, user_input=None):
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Manage the options."""
         if user_input is not None:
             # Save the options
-            return self.async_create_entry(title="", data=user_input)
-
-        # Dynamically create the multi-select options schema based on devices
-        device_registry = dr.async_get(self.hass)
-        devices = [
-            device
-            for device in device_registry.devices.values()
-            if DOMAIN in {id_tuple[0] for id_tuple in device.identifiers}
-        ]
-
-        # Map device IDs to nicknames for the multi-select
-        devices_for_notify = {
-            next(iter(device.identifiers))[
-                1
-            ]: f"{device.name or 'Unknown'} ({device.id})"
-            for device in devices
-        }
+            return self.async_create_entry(data=user_input)
 
         # Create the schema with a multi-select field
-        options_schema = vol.Schema(
+        options_schema: vol.Schema = vol.Schema(
             {
-                vol.Optional(
-                    "devices_to_notify",
-                    default=list(
-                        devices_for_notify.keys()
-                    ),  # Default: all devices selected
-                ): cv.multi_select(devices_for_notify)
+                vol.Required(
+                    CONF_UPDATE_INTERVAL,
+                    default=self.config_entry.options.get(
+                        CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL
+                    ),
+                ): NumberSelector(
+                    NumberSelectorConfig(
+                        min=5,
+                        step=1,
+                        mode=NumberSelectorMode.BOX,
+                        unit_of_measurement="s",
+                    )
+                )
             }
         )
 
@@ -85,4 +92,8 @@ class LiebherrOptionsFlow(config_entries.OptionsFlow):
         return self.async_show_form(
             step_id="init",
             data_schema=options_schema,
+            description_placeholders={
+                "default_interval": str(DEFAULT_UPDATE_INTERVAL),
+                "min_interval": "5",
+            },
         )

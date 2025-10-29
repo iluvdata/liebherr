@@ -3,10 +3,13 @@
   "options": {
     "step": {
       "init": {
-        "title": "Notificaciones",
-        "description": "Si deseas recibir alertas y notificaciones de tus dispositivos Liebherr, selecciona los dispositivos para los que deseas recibir notificaciones.",
+        "title": "Intervalo de Encuesta",
+        "description": "Intervalo a que la integración pide datos del Liebherr SmartHome API.",
         "data": {
-          "devices_to_notify": "Dispositivos para los que deseas recibir notificaciones:"
+          "update_interval": "Intervalo de equesta al Liebherr API para actualición de los controles."
+        },
+        "data_description": {
+          "update_interval": "Recomendado (opción predetermindada) { default_interval }s.  Minimo { min_interval}s."
         }
       }
     }
@@ -14,17 +17,23 @@
   "config": {
     "step": {
       "user": {
-        "description": "Conecta tu electrodoméstico a la red WiFi de tu hogar mediante la aplicación **SmartDevice**.\n\n**1. [Descarga](https://smartdevice.onelink.me/OrY5/8neax8lp) la aplicación**\n**2. Sigue las [instrucciones](https://go.liebherr.com/cb2ct1) para conectar tu dispositivo**\n**3. Obtén tu clave API a través de la aplicación SmartDevice**\n\nVe a *Ajustes* en la aplicación SmartDevice y selecciona **“Funciones beta”**, luego activa HomeAPI.\n\nCopia la clave API y pégala abajo. La clave solo se puede copiar **una sola vez**.\n\nUna vez que abandones la pantalla, el código **no podrá** ser copiado de nuevo.\n\nSi has olvidado la clave, deberás generar una nueva desde la aplicación."
+        "description": "Conecta tu electrodoméstico a la red WiFi de tu hogar mediante la aplicación **SmartDevice**.\n\n**1. [Descarga](https://smartdevice.onelink.me/OrY5/8neax8lp) la aplicación**\n**2. Sigue las [instrucciones](https://go.liebherr.com/cb2ct1) para conectar tu dispositivo**\n**3. Obtén tu clave API a través de la aplicación SmartDevice**\n\nVe a *Ajustes* en la aplicación SmartDevice y selecciona **“Funciones beta”**, luego activa HomeAPI.\n\nCopia la clave API y pégala abajo. La clave solo se puede copiar **una sola vez**.\n\nUna vez que abandones la pantalla, el código **no podrá** ser copiado de nuevo.\n\nSi has olvidado la clave, deberás generar una nueva desde la aplicación.",
+        "data": {
+          "api_key": "Clavo API a través de la aplicación SmartDevice."
+        }
       }
     }
   },
-  "notificationType": {
-    "door_alarm": "Alarma de puerta",
-    "auto_door_obstacle_alarm": "AutoDoor ha detectado un obstáculo",
-    "auto_door_overheat_alarm": "Motor de AutoDoor sobrecalentado",
-    "upper_power_failure_alarm": "Fallo de corriente",
-    "lower_power_failure_alarm": "Fallo de corriente",
-    "upper_temperature_alarm": "Alarma de temperatura",
-    "lower_temperature_alarm": "Alarma de temperatura"
+  "entity": {
+    "select": {
+      "icemaker": {
+        "name": "Máquina de Hielo{zone}",
+        "state": {
+          "ON": "Encendida",
+          "OFF": "Apagado",
+          "MAX_ICE": "HieloMax"
+        }
+      }
+    }
   }
 }

@@ -1,195 +1,123 @@
 """Support for Liebherr mode switches."""
 
-import asyncio
+from asyncio import sleep
 import logging
+from typing import Any, Final
+
+from pyliebherr import LiebherrControl, LiebherrDevice
+from pyliebherr.const import CONTROL_TYPE
+from pyliebherr.models import BaseToggleControlRequest, ZoneToggleControlRequest
 
 from homeassistant.components.switch import SwitchEntity
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import ATTR_ICON
 from homeassistant.core import HomeAssistant
 
-from .const import DOMAIN
-from .models import BaseToggleControlRequest, ZoneToggleControlRequest, IceMakerControlRequest
+from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
+from .entity import LiebherrEntity
 
 _LOGGER = logging.getLogger(__name__)
 
+CONFIG: Final[dict[str, dict[str, Any]]] = {
+    "supercool": {ATTR_ICON: "mdi:snowflake", "zone": True},
+    "superfrost": {
+        ATTR_ICON: "mdi:snowflake-variant",
+        "zone": True,
+    },
+    "partymode": {
+        ATTR_ICON: "mdi:party-popper",
+    },
+    "nightmode": {
+        ATTR_ICON: "mdi:weather-night",
+    },
+}
+
 
 async def async_setup_entry(
-    hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities
+    hass: HomeAssistant, config_entry: LiebherrConfigEntry, async_add_entities
 ):
     """Set up Liebherr switches from a config entry."""
-    api = hass.data[DOMAIN][config_entry.entry_id]["api"]
-    coordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
-    appliances = await api.get_appliances()
 
     entities = []
-    for appliance in appliances:
-        controls = await api.get_controls(appliance["deviceId"])
+    for device in config_entry.runtime_data.data:
+        controls: list[LiebherrControl] = device.controls
         if not controls:
-            _LOGGER.warning("No controls found for appliance %s",
-                            appliance["deviceId"])
+            _LOGGER.warning("No controls found for appliance %s", device.device_id)
             continue
 
         for control in controls:
-            zone_id = control.get("zoneId") or 0
-            if control["type"] in ("ToggleControl"):
+            if control.type == CONTROL_TYPE.TOGGLE:
                 entities.extend(
                     [
-                        LiebherrSwitch(api, coordinator, appliance, control, zone_id),
+                        LiebherrSwitch(config_entry.runtime_data, device, control),
                     ]
                 )
 
     if not entities:
         _LOGGER.error("No switch entities created")
 
-    async_add_entities(entities)
+    async_add_entities(entities, update_before_add=True)
 
 
-class LiebherrSwitch(SwitchEntity):
+class LiebherrSwitch(LiebherrEntity, SwitchEntity):
     """Representation of a Liebherr switch entity."""
 
-    def __init__(self, api, coordinator, appliance, control, zoneId) -> None:
+    def __init__(
+        self,
+        coordinator: LiebherrCoordinator,
+        device: LiebherrDevice,
+        control: LiebherrControl,
+    ) -> None:
         """Initialize the switch entity."""
-        self._api = api
-        self._coordinator = coordinator
-        self._appliance = appliance
-        self._control = control
-        self._zoneId = zoneId
-        self._identifier = (
-            appliance.get("nickname") + "_" +
-            control.get("name", control.get("type"))
-        )
-        if "zonePosition" in control:
-            self._identifier += f"_{control['zonePosition']}"
-        elif "zoneId" in control:
-            self._identifier += f"_{control['zoneId']}"
-        self._control_name = control.get("name")
-        self._attr_name = appliance.get("nickname") + " " + control.get("name")
-        if "zonePosition" in control:
-            self._attr_name += f" {control['zonePosition']}"
-        elif "zoneId" in control:
-            self._attr_name += f" {control['zoneId']}"
-        self._attr_unique_id = "liebherr_" + self._identifier
-        self._attr_icon = self._get_icon(self._control_name.lower())
-
-    def _get_icon(self, name: str) -> str | None:
-        return {
-            "supercool": "mdi:snowflake",
-            "superfrost": "mdi:snowflake-variant",
-            "partymode": "mdi:party-popper",
-            "holidaymode": "mdi:beach",
-            "nightmode": "mdi:weather-night",
-            "bottletimer": "mdi:timer-sand",
-        }.get(name)
-
-    @property
-    def device_info(self):
-        """Return device information for the switch."""
-        return {
-            "identifiers": {(DOMAIN, self._appliance["deviceId"])},
-            "name": self._appliance.get(
-                "nickname", f"Liebherr HomeAPI Appliance {self._appliance['deviceId']}"
-            ),
-            "manufacturer": "Liebherr",
-            "model": self._appliance.get("model", self._appliance["model"]),
-            "sw_version": self._appliance.get("softwareVersion", ""),
-        }
-
-    @property
-    def is_on(self):
-        """Return true if the switch is on."""
-        if not self._coordinator.data:
-            _LOGGER.error("Coordinator data is empty")
-            return False
-
-        controls = []
-        appliances = self._coordinator.data.get("appliances", [])
-        for device in appliances:
-            if device.get("deviceId") == self._appliance["deviceId"]:
-                controls = device.get("controls", [])
-                for control in controls:
-                    if self._control_name == control.get("name"):
-                        if self._zoneId == control.get("zoneId"):
-                            _LOGGER.debug(control)
-                            control_type = control.get("type")
-                            # Handle control types individually
-                            if control_type == "ToggleControl":
-                                return control.get("value") is True
-                            else:
-                                _LOGGER.warning(
-                                    "Unsupported control type '%s' for control '%s'",
-                                    control_type, self._control_name
-                                )
-                                return False
-        return False
-
-    def setControlValue(self, value):
-        """Change controls value."""
-        appliances = self._coordinator.data.get("appliances", [])
-        device = next(
-            (d for d in appliances if d.get("deviceId")
-             == self._appliance["deviceId"]),
-            None,
+        super().__init__(coordinator, device, control)
+        self._attr_icon = CONFIG.get(self._control.control_name.lower(), {}).get(
+            ATTR_ICON, "mdi:toggle-switch-variant"
         )
 
-        if device:
-            control = next(
-                (
-                    c
-                    for c in device.get("controls", [])
-                    if self._control_name == c.get("name")
-                    and self._zoneId == c.get("zoneId")
-                ),
-                None,
-            )
-            if control:
-                control["value"] = value
-
     @property
-    def available(self):
-        """Return True if the switch is available."""
-        return True
+    def available(self) -> bool:  # pyright: ignore[reportIncompatibleVariableOverride, reportIncompatibleMethodOverride]
+        """Available."""
+        return super().available
 
-    async def async_turn_on(self, **kwargs):
-        """Turn the switch on."""
-        if self._control["type"] == "BottleTimer":
-            await self._api.set_value(
-                self._appliance["deviceId"] + "/" + self._control["name"],
-                {"bottleTimer": "ON"},
-            )
-        if self._control["type"] == "AutoDoor":
-            await self._api.set_value(
-                self._appliance["deviceId"] + "/" + self._control["name"],
-                {"bottleTimer": "ON"},
-            )
-        if self._control["type"] == "ToggleControl":
-            if self._control.get("zoneId", None) is None:
-                data = BaseToggleControlRequest(value=True)
-            else:
-                data = ZoneToggleControlRequest(
-                    zoneId=self._control.get("zoneId"), value=True
+    def _handle_coordinator_update(self) -> None:
+        for control in self._device.controls:
+            if (
+                control.control_name == self._control.control_name
+                and control.zone_id == self._control.zone_id
+            ):
+                self._attr_is_on = (
+                    control.value
+                    if isinstance(control.value, bool)
+                    else bool(control.value)
                 )
+        self.async_write_ha_state()
 
-            await self._api.set_value(
-                self._appliance["deviceId"], self._control["name"], data
+    async def _async_set_toggle(self, turn_on: bool) -> None:
+        control_name = self._control.control_name.lower()
+        if not (config := CONFIG.get(control_name, {})):
+            _LOGGER.error(
+                "Could not map set request for %s using control_name %s",
+                self._device.device_id,
+                control_name,
             )
-            self.setControlValue(True)
+            return
+
+        controlrequest: BaseToggleControlRequest | ZoneToggleControlRequest = (
+            BaseToggleControlRequest(value=turn_on)
+            if "zone" not in config
+            else ZoneToggleControlRequest(value=turn_on, zoneId=self._control.zone_id)
+        )
+        controlrequest.control_name = self._control.control_name
+        await self.coordinator.api.async_set_value(
+            device_id=self._device.device_id,
+            control=controlrequest,
+        )
+        await sleep(5)
+        await self.coordinator.async_request_refresh()
+
+    async def async_turn_on(self, **kwargs) -> None:
+        """Turn the switch on."""
+        await self._async_set_toggle(True)
 
     async def async_turn_off(self, **kwargs):
         """Turn the switch off."""
-        if self._control["type"] == "bottletimer":
-            await self._api.set_value(
-                self._appliance["deviceId"] + "/" + self._control["name"],
-                {"bottleTimer": "OFF"},
-            )
-        if self._control["type"] == "ToggleControl":
-            if self._control.get("zoneId", None) is None:
-                data = BaseToggleControlRequest(value=False)
-            else:
-                data = ZoneToggleControlRequest(
-                    zoneId=self._control.get("zoneId"), value=False
-                )
-
-            await self._api.set_value(
-                self._appliance["deviceId"], self._control["name"], data
-            )
-            self.setControlValue(False)
+        await self._async_set_toggle(False)

@@ -1,30 +1,77 @@
 {
-    "title": "Liebherr",
-    "options": {
-        "step": {
-            "init": {
-                "title": "Notifications",
-                "description": "If you want to receive alerts and notifications for your Liebherr devices, please select the devices you want to receive notifications for.",
-                "data": {
-                    "devices_to_notify": "Devices for which you would like to receive notifications:"
-                }
-            }
+  "title": "Liebherr",
+  "options": {
+    "step": {
+      "init": {
+        "title": "Poll Interval",
+        "description": "The interval at which the integration polls the Liebherr Smart Home API. ",
+        "data": {
+          "update_interval": "Interval to poll the Liebherr API for control updates."
+        },
+        "data_description": {
+          "update_interval": "Recommend (default) { default_interval }s.  Min { min_interval}s."
         }
-    },
-    "config": {
-        "step": {
-            "user": {
-                "description": "Connect your appliance via the **SmartDevice app** to your home WiFi network.\n\n**1. [Download](https://smartdevice.onelink.me/OrY5/8neax8lp) the app**\n**2. Follow the [instructions](https://go.liebherr.com/cb2ct1) to connect your appliance**\n**3. Get your API Key via the SmartDevice app**\n\nGo to *Settings* in the SmartDevice app and select **“Beta features”**, then activate the HomeAPI.\n\nCopy the API Key and paste it below. The API Key can only be copied **once**.\n\nAs soon as you leave the screen, the code **cannot** be copied again.\n\nIf you forgot your key, you need to create a new one via the app."
-            }
-        }
-    },
-    "notificationType": {
-        "door_alarm": "Door Alarm",
-        "auto_door_obstacle_alarm": "AutoDoor obstacle detected",
-        "auto_door_overheat_alarm": "AutoDoor engine overheated",
-        "upper_power_failure_alarm": "Power failure",
-        "lower_power_failure_alarm": "Power failure",
-        "upper_temperature_alarm": "Temperature alarm",
-        "lower_temperature_alarm": "Temperature alarm"
+      }
     }
+  },
+  "config": {
+    "step": {
+      "user": {
+        "description": "Connect your appliance via the **SmartDevice app** to your home WiFi network.\n\n**1. [Download](https://smartdevice.onelink.me/OrY5/8neax8lp) the app**\n**2. Follow the [instructions](https://go.liebherr.com/cb2ct1) to connect your appliance**\n**3. Get your API Key via the SmartDevice app**\n\nGo to *Settings* in the SmartDevice app and select **“Beta features”**, then activate the HomeAPI.\n\nCopy the API Key and paste it below. The API Key can only be copied **once**.\n\nAs soon as you leave the screen, the code **cannot** be copied again.\n\nIf you forgot your key, you need to create a new one via the app.",
+        "data": {
+          "api_key": "API Key from the SmartDevice App"
+        }
+      }
+    }
+  },
+  "entity": {
+    "select": {
+      "icemaker": {
+        "name": "Ice Maker{zone}",
+        "state": {
+          "ON": "On",
+          "OFF": "Off",
+          "MAX_ICE": "Max Ice"
+        }
+      },
+      "biofreshplus": {
+        "name": "BioFreshPlus{zone}",
+        "state": {
+          "ZERO_ZERO": "0/0",
+          "ZERO_MINUS_TWO": "0/-2",
+          "MINUS_TWO_MINUS_TWO": "-2/-2",
+          "MINUS_TWO_ZERO": "-2/0"
+        }
+      }
+    },
+    "switch": {
+      "supercool": {
+        "name": "SuperCool{zone}"
+      },
+      "superfrost": {
+        "name": "SuperFrost{zone}"
+      },
+      "partymode": {
+        "name": "Party Mode"
+      },
+      "nightmode": {
+        "name": "Night Mode"
+      }
+    },
+    "light": {
+      "presentationlight": {
+        "name": "Presentation Light"
+      }
+    },
+    "fan": {
+      "hydrobreeze": {
+        "name": "HydroBreeze{zone}"
+      }
+    },
+    "cover": {
+      "autodoor": {
+        "name": "AutoDoor{zone}"
+      }
+    }
+  }
 }
