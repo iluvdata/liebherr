@@ -4,7 +4,7 @@
     "step": {
       "init": {
         "title": "Poll Interval",
-        "description": "The interval at which the integration polls the Liebherr Smart Home API. ",
+        "description": "The interval at which the integration polls the Liebherr Smart Home API.",
         "data": {
           "update_interval": "Interval to poll the Liebherr API for control updates."
         },

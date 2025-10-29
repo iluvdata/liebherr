@@ -1,16 +1,16 @@
 {
   "domain": "liebherr",
   "name": "Liebherr",
-  "version": "2025.10.1",
-  "dependencies": [],
   "after_dependencies": ["hassio"],
-  "config_flow": true,
-  "single_config_entry": true,
-  "integration_type": "service",
-  "documentation": "https://github.com/iluvdata/liebherr",
-  "issue_tracker": "https://github.com/iluvdata/liebherr/issues",
-  "iot_class": "cloud_polling",
   "codeowners": ["@bhuebschen", "@iluvdata", "@skatsavos"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/iluvdata/liebherr",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/iluvdata/liebherr/issues",
+  "loggers": ["pyliebherr"],
   "requirements": ["pyliebherr==2025.10.1"],
-  "loggers": ["pyliebherr"]
+  "single_config_entry": true,
+  "version": "2025.10.1"
 }
