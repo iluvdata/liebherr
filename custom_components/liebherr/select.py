@@ -57,11 +57,11 @@ class LiebherrSelect(LiebherrEntity, SelectEntity):
         if control.type == CONTROL_TYPE.ICE_MAKER:
             self._attr_icon = "mdi:cube-outline"
             self._attr_options = (
-                ["ON", "OFF", "MAX_ICE"] if control.hasMaxIce else ["ON", "OFF"]
+                ["on", "off", "max_ice"] if control.hasMaxIce else ["on", "off"]
             )
         elif control.supportedModes is not None:
             self._attr_icon = "mdi: leaf"
-            self._attr_options = [mode.upper() for mode in control.supportedModes]
+            self._attr_options = [mode.lower() for mode in control.supportedModes]
         else:
             _LOGGER.error(
                 "Cannot setup %s for device %s", control.type, device.device_id
@@ -79,10 +79,13 @@ class LiebherrSelect(LiebherrEntity, SelectEntity):
                 self._control.control_name == control.control_name
                 and self._zone_id == control.zone_id
             ):
-                if self._control.type == CONTROL_TYPE.ICE_MAKER:
-                    self._attr_current_option = control.iceMakerMode
-                else:
-                    self._attr_current_option = control.current_mode
+                if (
+                    self._control.type == CONTROL_TYPE.ICE_MAKER
+                    and control.iceMakerMode
+                ):
+                    self._attr_current_option = control.iceMakerMode.lower()
+                elif control.current_mode:
+                    self._attr_current_option = control.current_mode.lower()
         self._async_write_ha_state()
 
     async def async_select_option(self, option: str):
@@ -96,13 +99,13 @@ class LiebherrSelect(LiebherrEntity, SelectEntity):
             if self._control.type == CONTROL_TYPE.ICE_MAKER:
                 data = IceMakerControlRequest(
                     zoneId=self._control.zone_id,
-                    iceMakerMode=IceMakerControlRequest.IceMakerMode(option),
+                    iceMakerMode=IceMakerControlRequest.IceMakerMode(option.upper()),
                 )
             else:
                 data = BioFreshPlusControlRequest(
                     zoneId=self._control.zone_id,
                     bioFreshPlusMode=BioFreshPlusControlRequest.BioFreshPlusMode(
-                        option
+                        option.upper()
                     ),
                 )
 

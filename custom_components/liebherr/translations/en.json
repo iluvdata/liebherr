@@ -29,18 +29,18 @@
       "icemaker": {
         "name": "Ice Maker{zone}",
         "state": {
-          "ON": "On",
-          "OFF": "Off",
-          "MAX_ICE": "Max Ice"
+          "on": "On",
+          "off": "Off",
+          "max_ice": "Max Ice"
         }
       },
       "biofreshplus": {
         "name": "BioFreshPlus{zone}",
         "state": {
-          "ZERO_ZERO": "0/0",
-          "ZERO_MINUS_TWO": "0/-2",
-          "MINUS_TWO_MINUS_TWO": "-2/-2",
-          "MINUS_TWO_ZERO": "-2/0"
+          "zero_zero": "0/0",
+          "zero_minus_two": "0/-2",
+          "minus_two_minus_two": "-2/-2",
+          "minus_two_zero": "-2/0"
         }
       }
     },

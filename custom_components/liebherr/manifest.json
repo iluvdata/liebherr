@@ -3,6 +3,7 @@
   "name": "Liebherr",
   "version": "2025.10.1",
   "dependencies": [],
+  "after_dependencies": ["hassio"],
   "config_flow": true,
   "single_config_entry": true,
   "integration_type": "service",
