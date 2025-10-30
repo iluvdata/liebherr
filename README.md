@@ -87,6 +87,7 @@ Controls will map to the following domains:
 | SuperCool, SuperFreeze, PartyMode, NightMode | Switch|
 | HydroBreeze | Fan |
 | Temperature | Climate |
+| `image_url` (Device) | Image |
 | Bottle Timer | Not available |
 
 ## Troubleshooting
