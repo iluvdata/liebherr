@@ -1,5 +1,10 @@
 {
   "title": "Liebherr",
+  "common": {
+    "top": "Upper",
+    "middle": "Middle",
+    "bottom": "Lower"
+  },
   "options": {
     "step": {
       "init": {
@@ -92,10 +97,5 @@
         }
       }
     }
-  },
-  "common": {
-    "top": "Upper",
-    "middle": "Middle",
-    "bottom": "Lower"
   }
 }

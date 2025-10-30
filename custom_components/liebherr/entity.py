@@ -51,5 +51,5 @@ class LiebherrEntity(CoordinatorEntity[LiebherrCoordinator]):
         self._attr_translation_key = control.control_name
         if control.zone_position:
             self._attr_translation_placeholders = {
-                "zone": f" {coordinator.zone_translations[f'component.{DOMAIN}.zone.{control.zone_position}']}",
+                "zone": f" {coordinator.zone_translations[f'component.{DOMAIN}.common.{control.zone_position}']}",
             }

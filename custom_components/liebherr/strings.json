@@ -1,5 +1,10 @@
 {
   "title": "Liebherr",
+  "common": {
+    "top": "Top",
+    "middle": "Middle",
+    "bottom": "Lower"
+  },
   "options": {
     "step": {
       "init": {
@@ -87,10 +92,5 @@
         "name": "AutoDoor{zone}"
       }
     }
-  },
-  "common": {
-    "top": "Top",
-    "middle": "Middle",
-    "bottom": "Lower"
   }
 }

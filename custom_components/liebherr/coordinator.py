@@ -45,7 +45,7 @@ class LiebherrCoordinator(DataUpdateCoordinator[list[LiebherrDevice]]):
         self.data = await self.api.async_get_appliances()
         # get the zone translations here
         self.zone_translations = await async_get_translations(
-            self.hass, self.hass.config.language, "zone", [DOMAIN]
+            self.hass, self.hass.config.language, "common", [DOMAIN]
         )
 
     async def _async_update_data(self) -> list[LiebherrDevice]:
