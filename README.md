@@ -18,7 +18,7 @@ This is a rewrite of the great [custom intergration](https://github.com/bhuebsch
 > - BioFreshPlus
 > - HydroBreeze
 >
-> If you encounter an issue with these features please submit an issue here.
+> If you encounter an issue with these features please submit an issue [here](https://github.com/iluvdata/liebherr/issues).
 
 ## Features
 - Monitor current and target temperatures of your Liebherr fridges and freezers.
