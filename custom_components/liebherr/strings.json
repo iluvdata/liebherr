@@ -59,10 +59,16 @@
       }
     },
     "climate": {
-      "temperature": {
-        "name": "{zonename}{zone}",
+      "fridge": {
+        "name": "Refridgerator{zone}",
         "state": {
-          "cool": "Cool"
+          "cool": "Chill"
+        }
+      },
+      "freezer": {
+        "name": "Freezer{zone}",
+        "state": {
+          "cool": "Freeze"
         }
       }
     },
@@ -81,5 +87,10 @@
         "name": "AutoDoor{zone}"
       }
     }
+  },
+  "zone": {
+    "top": "Top",
+    "middle": "Middle",
+    "bottom": "Lower"
   }
 }

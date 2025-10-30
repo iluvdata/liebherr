@@ -10,6 +10,7 @@ PLATFORMS = {
     Platform.CLIMATE,
     Platform.COVER,
     Platform.FAN,
+    Platform.IMAGE,
     Platform.LIGHT,
     Platform.SELECT,
     Platform.SWITCH,

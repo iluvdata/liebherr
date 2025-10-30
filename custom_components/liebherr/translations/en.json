@@ -72,6 +72,30 @@
       "autodoor": {
         "name": "AutoDoor{zone}"
       }
+    },
+    "image": {
+      "device_image": {
+        "name": "Device Image"
+      }
+    },
+    "climate": {
+      "fridge": {
+        "name": "Refridgerator{zone}",
+        "state": {
+          "cool": "Chill"
+        }
+      },
+      "freezer": {
+        "name": "Freezer{zone}",
+        "state": {
+          "cool": "Freeze"
+        }
+      }
     }
+  },
+  "zone": {
+    "top": "Upper",
+    "middle": "Middle",
+    "bottom": "Lower"
   }
 }

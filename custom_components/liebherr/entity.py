@@ -2,10 +2,28 @@
 
 from pyliebherr import LiebherrControl, LiebherrDevice
 
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import LiebherrCoordinator
+
+
+def async_get_unique_id(device_id: str, control_name: str, zone_id: int = 0) -> str:
+    """Helper to form unique_id."""
+    return f"{DOMAIN}_{device_id}_{control_name}_{zone_id}"
+
+
+def async_get_device_info(device: LiebherrDevice) -> DeviceInfo:
+    """Device Info Helper."""
+    return {
+        "identifiers": {(DOMAIN, device.device_id)},
+        "name": device.name
+        if device.name
+        else f"Liebherr HomeAPI Appliance {device.device_id}",
+        "manufacturer": "Liebherr",
+        "model": device.model if device.model else "Unknown Model",
+    }
 
 
 class LiebherrEntity(CoordinatorEntity[LiebherrCoordinator]):
@@ -26,22 +44,12 @@ class LiebherrEntity(CoordinatorEntity[LiebherrCoordinator]):
         # self._attr_name = f"{control.control_name.capitalize()}"
         # if control.zone_position:
         #    self._attr_name = f"{self._attr_name} {control.zone_position.capitalize()}"
-        self._attr_unique_id = (
-            f"liebherr_{device.device_id}_{control.control_name}_{self._zone_id}"
+        self._attr_unique_id = async_get_unique_id(
+            device.device_id, control.control_name, control.zone_id
         )
-        self._attr_device_info = {
-            "identifiers": {(DOMAIN, device.device_id)},
-            "name": device.name
-            if device.name
-            else f"Liebherr HomeAPI Appliance {device.device_id}",
-            "manufacturer": "Liebherr",
-            "model": device.model if device.model else "Unknown Model",
-        }
-        self.translation_key = control.control_name
-        self.translation_placeholders = {
-            "zone": (
-                f" {control.zone_position.capitalize()}"
-                if control.zone_position
-                else "Test"
-            ),
-        }
+        self._attr_device_info = async_get_device_info(device)
+        self._attr_translation_key = control.control_name
+        if control.zone_position:
+            self._attr_translation_placeholders = {
+                "zone": f" {coordinator.zone_translations[f'component.{DOMAIN}.zone.{control.zone_position}']}",
+            }

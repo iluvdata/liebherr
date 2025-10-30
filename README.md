@@ -4,10 +4,10 @@
 ![GitHub Release](https://img.shields.io/github/v/release/iluvdata/liebherr)
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Filuvdata%2Fliebherr%2Frefs%2Fheads%2Fmain%2Fcustom_components%2Fliebherr%2Fmanifest.json&query=%24.version&prefix=v&label=dev-version&labelColor=orange)
 
-This is a *unofficial* custom integration for Home Assistant that allows you to connect and control Liebherr smart devices via the Liebherr HomeAPI.  
+This is an *unofficial* custom integration for Home Assistant that allows you to connect and control Liebherr smart devices via the Liebherr SmartHomeAPI.  
 
 ## Acknowledgement
-This is a rewrite of the great [custom intergration](https://github.com/bhuebschen/liebherr) orginally maintained by @bhuebschen from a fork created by @skatsavos.  The original intergration stopped work in Oct 2025 and the orginal maintainer did not appear to be maintaining the project.
+This is a rewrite of the great [custom intergration](https://github.com/bhuebschen/liebherr) orginally maintained by @bhuebschen from a fork created by @skatsavos.  The original intergration stopped working in Oct 2025 and the orginal maintainer did not appear to be maintaining the project.
 
 > [!Warning]
 > This is nearly a complete rewrite to the orginal integration.  As such there is not a suitable upgrade path. I'd suggest starting deleting the prior liebherr entry and HACS respository from your Homeassistant **before** proceeding with installation below.
@@ -38,7 +38,7 @@ This is a rewrite of the great [custom intergration](https://github.com/bhuebsch
 > [!Warning]
 > Consider manually removing the prior version to avoid orphaned devices/entities.
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?category=custom_respository&owner=iluvdata&repository=liebherr)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?category=integration&owner=iluvdata&repository=liebherr)
 
 ### OR
 
@@ -61,7 +61,7 @@ This is a rewrite of the great [custom intergration](https://github.com/bhuebsch
 
 ## Configuration
 
-[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=pdf_scrape)
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=liebherr)
 
 ### Or
 1. In Home Assistant, navigate to **Settings** > **Devices & Services**.
@@ -87,6 +87,7 @@ Controls will map to the following domains:
 | SuperCool, SuperFreeze, PartyMode, NightMode | Switch|
 | HydroBreeze | Fan |
 | Temperature | Climate |
+| Bottle Timer | Not available |
 
 ## Troubleshooting
 - Ensure your Liebherr api key is correct.
@@ -100,4 +101,4 @@ If you encounter any issues or have feature requests, please open an issue on th
 Contributions are welcome! Feel free to submit pull requests to improve this integration.
 
 ## License
-This project is licensed under the MIT License. See the [LICENSE](https://github.com/bhuebschen/liebherr/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/iluvdata/liebherr/blob/main/LICENSE) file for details.

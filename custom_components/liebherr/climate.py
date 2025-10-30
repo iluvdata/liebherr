@@ -4,7 +4,7 @@ from asyncio import sleep
 import logging
 
 from pyliebherr import LiebherrControl, LiebherrDevice
-from pyliebherr.const import CONTROL_TYPE
+from pyliebherr.const import CONTROL_TYPE, ZONE_POSITION
 from pyliebherr.models import TemperatureControlRequest
 
 from homeassistant.components.climate import (
@@ -71,7 +71,28 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
         self._attr_hvac_modes = [HVACMode.COOL]
         self._attr_hvac_mode = HVACMode.COOL
-        self._attr_icon = "mdi:fridge"
+        if control.zone_position == ZONE_POSITION.TOP:
+            self._attr_icon = "mdi:fridge-top"
+        elif control.zone_position == ZONE_POSITION.BOTTOM:
+            self._attr_icon = "mdi:fridge-bottom"
+        else:
+            self._attr_icon = "mdi:fridge"
+        if (
+            control.min
+            and control.max
+            and control.unit_of_measurement
+            and (
+                (control.unit_of_measurement == "°F" and control.min < 0 < control.max)
+                or (
+                    control.unit_of_measurement == "°C"
+                    and control.min < -17 < control.max
+                )
+            )
+        ):
+            # we have a freezer
+            self._attr_translation_key = "freezer"
+        else:
+            self._attr_translation_key = "fridge"
 
     @property
     def available(self) -> bool:  # pyright: ignore[reportIncompatibleVariableOverride, reportIncompatibleMethodOverride]

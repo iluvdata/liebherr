@@ -33,6 +33,20 @@
           "OFF": "Apagado",
           "MAX_ICE": "HieloMax"
         }
+      },
+      "climate": {
+        "fridge": {
+          "name": "Nevera{zone}",
+          "state": {
+            "cool": "Enfriar"
+          }
+        },
+        "freezer": {
+          "name": "Congelador{zone}",
+          "state": {
+            "cool": "Congelar"
+          }
+        }
       }
     }
   }

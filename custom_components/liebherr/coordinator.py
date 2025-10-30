@@ -9,9 +9,10 @@ from pyliebherr import LiebherrAPI, LiebherrDevice
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.translation import async_get_translations
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-from .const import CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL
+from .const import CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -20,6 +21,8 @@ type LiebherrConfigEntry = ConfigEntry["LiebherrCoordinator"]
 
 class LiebherrCoordinator(DataUpdateCoordinator[list[LiebherrDevice]]):
     """Liebherr Data Update Coordinator."""
+
+    zone_translations: dict[str, str] = {}
 
     def __init__(
         self,
@@ -40,6 +43,10 @@ class LiebherrCoordinator(DataUpdateCoordinator[list[LiebherrDevice]]):
     async def _async_setup(self) -> None:
         """Set up the coordinator by getting devices."""
         self.data = await self.api.async_get_appliances()
+        # get the zone translations here
+        self.zone_translations = await async_get_translations(
+            self.hass, self.hass.config.language, "zone", [DOMAIN]
+        )
 
     async def _async_update_data(self) -> list[LiebherrDevice]:
         """Fetch data from Liebherr API."""
