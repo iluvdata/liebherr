@@ -29,6 +29,7 @@ This is a rewrite of the great [custom intergration](https://github.com/bhuebsch
 - Added support for all the support features in the API such as IceMaker Control, BioFreshPlus, AutoDoor, Presentation Light (wine fridges) and HydroBreeze (see Caution above).
 - Translation support has been greatly expanded but please note I was not able to update the many translations (please feel free to contribute)!
 - Device/appliance list will only be queried upon setup.  If you add a new device to your Liebherr account you with have to "Reload" the integration in Homeassitant (or restart Homeassistant).
+- The integration was modernized to align better with Homeassistant's development standards https://developers.home-assistant.io/docs/development_index and remove the use of deprecated functions.
 
 ## Installation
 
