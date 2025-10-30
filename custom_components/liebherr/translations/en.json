@@ -93,7 +93,7 @@
       }
     }
   },
-  "zone": {
+  "common": {
     "top": "Upper",
     "middle": "Middle",
     "bottom": "Lower"

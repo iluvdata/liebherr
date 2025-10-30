@@ -49,5 +49,10 @@
         }
       }
     }
+  },
+  "common": {
+    "top": "Arriba",
+    "middle": "Medio",
+    "bottom": "Abajo"
   }
 }
