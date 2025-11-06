@@ -1,30 +1,101 @@
 {
-    "title": "Liebherr SmartDevice",
-    "options": {
-        "step": {
-            "init": {
-                "title": "Benachrichtigungen",
-                "description": "Wenn Sie Alarme und Benachrichtigungen für Ihre Liebherr-Geräte erhalten möchten, wählen Sie bitte die Geräte aus, für die Sie Benachrichtigungen erhalten möchten.",
-                "data": {
-                    "devices_to_notify": "Geräte, für die Sie Benachrichtigungen erhalten möchten:"
-                }
-            }
+  "title": "Liebherr SmartDevice",
+  "common": {
+    "top": "oben",
+    "middle": "Mitte",
+    "bottom": "unten"
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Aktualisierungintervall",
+        "description": "Das Intervall, in dem die Integration die Liebherr Smart Home API abfragt.",
+        "data": {
+          "update_interval": "Abfrageintervall für Geräteeinstellungen bei der Smart Home API."
+        },
+        "data_description": {
+          "update_interval": "Empfohlen (Standard) { default_interval }s.  Min { min_interval}s."
         }
-    },
-    "config": {
-        "step": {
-            "user": {
-                "description": "Verbinde dein Gerät über die **SmartDevice-App** mit deinem WLAN-Netzwerk.\n\n**1. Lade die [SmartDevice](https://smartdevice.onelink.me/OrY5/8neax8lp)-App**\n**2. Folge den [Anweisungen](https://go.liebherr.com/cb2ct1), um dein Gerät zu verbinden**\n**3. Erzeuge einen API-Schlüssel in der SmartDevice-App**\n\nGehe zu *Einstellungen* in der SmartDevice-App und wähle **“Werden Sie Betatester”** und aktiviere **“Betatest HomeAPI”**.\nKopiere den API-Schlüssel und setze ihn hier ein. Der API-Schlüssel kann nur **ein mal** kopiert werden.\nSobald du den Bildschirm verlässt, kann der Code **nicht** mehr kopiert werden.\nFalls du deinen Schlüssel vergessen hast, musst du über die App einen neuen erstellen."
-            }
-        }
-    },
-    "notificationType": {
-        "door_alarm": "Türalarm",
-        "auto_door_obstacle_alarm": "AutoDoor Hindernis erkannt",
-        "auto_door_overheat_alarm": "AutoDoor Motor überhitzt",
-        "upper_power_failure_alarm": "Stromausfall",
-        "lower_power_failure_alarm": "Stromausfall",
-        "upper_temperature_alarm": "Temperaturalarm",
-        "lower_temperature_alarm": "Temperaturalarm"
+      }
     }
+  },
+  "config": {
+    "step": {
+      "user": {
+        "description": "Verbinden Sie Ihr Gerät mit Hilfe der **SmartDevice App** mit dem WLAN in Ihrem Heimnetzwerk.\n\n**1. App [herunterladen](https://smartdevice.onelink.me/OrY5/8neax8lp)**\n**2. Folgen Sie den [Anweisungen](https://go.liebherr.com/cb2ct1) und verbinden Sie Ihr Gerät**\n**3. Erzeugen Sie den HomeAPI-Schlüssel in der SmartDevice App**\n\nÖffnen Sie die *Einstellungen* der SmartDevice App und wählen Sie **“Werden Sie Betatester”**, dann aktivieren Sie die HomeAPI.\n\nKopieren Sie den HomeAPI-Schlüssel und fügen Sie ihn unten ein.\n\nDer HomeAPI-Schlüssel kann nur **einmal** kopiert werden. Er kann nicht erneut angezeigt werden, wenn Sie die Ansicht verlassen haben.\n\nFalls Sie den HomeAPI-Schlüssel vergessen haben sollten, können Sie in der App einen neuen Schlüssel erzeugen.",
+        "data": {
+          "api_key": "HomeAPI-Schlüssel aus der SmartDevice App"
+        }
+      }
+    }
+  },
+  "entity": {
+    "select": {
+      "icemaker": {
+        "name": "IceMaker{zone}",
+        "state": {
+          "on": "Ein",
+          "off": "Aus",
+          "max_ice": "MaxIce"
+        }
+      },
+      "biofreshplus": {
+        "name": "BioFreshPlus{zone}",
+        "state": {
+          "zero_zero": "0/0",
+          "zero_minus_two": "0/-2",
+          "minus_two_minus_two": "-2/-2",
+          "minus_two_zero": "-2/0"
+        }
+      }
+    },
+    "switch": {
+      "supercool": {
+        "name": "SuperCool{zone}"
+      },
+      "superfrost": {
+        "name": "SuperFrost{zone}"
+      },
+      "partymode": {
+        "name": "PartyMode"
+      },
+      "nightmode": {
+        "name": "NightMode"
+      }
+    },
+    "light": {
+      "presentationlight": {
+        "name": "Präsentationslicht"
+      }
+    },
+    "fan": {
+      "hydrobreeze": {
+        "name": "HydroBreeze{zone}"
+      }
+    },
+    "cover": {
+      "autodoor": {
+        "name": "AutoDoor{zone}"
+      }
+    },
+    "image": {
+      "device_image": {
+        "name": "Geräteabbildung"
+      }
+    },
+    "climate": {
+      "fridge": {
+        "name": "Kühlteil{zone}",
+        "state": {
+          "cool": "Kühlen"
+        }
+      },
+      "freezer": {
+        "name": "Gefrierteil{zone}",
+        "state": {
+          "cool": "Gefrieren"
+        }
+      }
+    }
+  }
 }
