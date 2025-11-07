@@ -98,6 +98,7 @@ Currently appliances added to your Liebherr account will not be automatically di
 
 and click on "Reload" on the configuration menu:
 
+![Menu Image](https://raw.githubusercontent.com/iluvdata/liebherr/refs/heads/main/assets/menu.png)
 
 ## Troubleshooting
 - Ensure your Liebherr api key is correct.
