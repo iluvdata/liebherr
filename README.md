@@ -90,6 +90,16 @@ Controls will map to the following domains:
 | `image_url` (Device) | Image |
 | Bottle Timer | Not available |
 
+### Discover New Appliances
+
+Currently appliances added to your Liebherr account will not be automatically discovered. Once an appliance is connected to your Liebherr account (and accessible in the SmartHome app) manually reload the integration from the integration screen:
+
+[![Open your Home Assistant instance and show an integration.](https://my.home-assistant.io/badges/integration.svg)](https://my.home-assistant.io/redirect/integration/?domain=liebherr)
+
+and click on "Reload" on the configuration menu:
+
+![Menu Image](https://raw.githubusercontent.com/iluvdata/liebherr/refs/heads/main/assets/menu.png)
+
 ## Troubleshooting
 - Ensure your Liebherr api key is correct.
 - Check the Home Assistant logs for any errors related to the integration.
