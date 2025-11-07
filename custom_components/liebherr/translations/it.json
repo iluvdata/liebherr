@@ -17,14 +17,5 @@
         "description": "Collega il tuo elettrodomestico alla rete WiFi domestica tramite l'app **SmartDevice**.\n\n**1. [Scarica](https://smartdevice.onelink.me/OrY5/8neax8lp) l'app**\n**2. Segui le [istruzioni](https://go.liebherr.com/cb2ct1) per collegare il tuo elettrodomestico**\n**3. Ottieni la tua chiave API tramite l'app SmartDevice**\n\nVai su *Impostazioni* nell'app SmartDevice e seleziona **“Funzionalità beta”**, poi attiva HomeAPI.\n\nCopia la chiave API e incollala qui sotto. La chiave API può essere copiata **solo una volta**.\n\nNon appena lasci la schermata, il codice **non potrà più** essere copiato.\n\nSe hai dimenticato la tua chiave, devi crearne una nuova tramite l'app."
       }
     }
-  },
-  "notificationType": {
-    "door_alarm": "Allarme porta",
-    "auto_door_obstacle_alarm": "Ostacolo rilevato da AutoDoor",
-    "auto_door_overheat_alarm": "Motore AutoDoor surriscaldato",
-    "upper_power_failure_alarm": "Interruzione di corrente",
-    "lower_power_failure_alarm": "Interruzione di corrente",
-    "upper_temperature_alarm": "Allarme temperatura",
-    "lower_temperature_alarm": "Allarme temperatura"
   }
 }
