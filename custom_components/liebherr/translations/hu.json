@@ -1,0 +1,87 @@
+{
+  "title": "Liebherr",
+  "common": {
+    "top": "Felső",
+    "middle": "Középső",
+    "bottom": "Alsó"
+  },
+  "config": {
+    "step": {
+      "user": {
+        "description": "Csatlakoztassa a berendezését a **SmartDevice app** használatával az otthoni WiFi hálózatra.\n\n**1. Töltse le az [applikációt](https://smartdevice.onelink.me/OrY5/8neax8lp)**\n**2. Kövesse az [utasításokat](https://go.liebherr.com/cb2ct1) a berendezés csatlakoztatásához**\n**3. Szerezze meg az API Key-t a SmartDevice app-ban**\n\nMenjen a *Beállítások*-ba a SmartDevice app-ban és válassza ki a **“Beta features”**-t, ahol aktiválja a HomeAPI-t.\n\nMásolja le az API Key-t és illessze be lejjebb. Az API Key-t csak **egyszer** lehet kimásolni.\n\nAhogy elagyja a képernyőt, a Key-hez **nem lehet** még egyszer hozzáférni.\n\nHa elfelejtette a Key-t, újat kell létrehozni az app-ban.",
+        "data": {
+          "api_key": "API Key a SmartDevice App-ból"
+        }
+      }
+    }
+  },
+  "entity": {
+    "select": {
+      "icemaker": {
+        "name": "Jég Készítő{zone}",
+        "state": {
+          "on": "Be",
+          "off": "Ki",
+          "max_ice": "Max Jég"
+        }
+      },
+      "biofreshplus": {
+        "name": "BioFrissPlussz{zone}",
+        "state": {
+          "zero_zero": "0/0",
+          "zero_minus_two": "0/-2",
+          "minus_two_minus_two": "-2/-2",
+          "minus_two_zero": "-2/0"
+        }
+      }
+    },
+    "switch": {
+      "supercool": {
+        "name": "SzuperHűtés{zone}"
+      },
+      "superfrost": {
+        "name": "SzuperFagyasztás{zone}"
+      },
+      "partymode": {
+        "name": "Parti Mód"
+      },
+      "nightmode": {
+        "name": "Éjszakai Mód"
+      }
+    },
+    "light": {
+      "presentationlight": {
+        "name": "Presentation Light"
+      }
+    },
+    "fan": {
+      "hydrobreeze": {
+        "name": "HydroBreeze{zone}"
+      }
+    },
+    "cover": {
+      "autodoor": {
+        "name": "AutoDoor{zone}"
+      }
+    },
+    "image": {
+      "device_image": {
+        "name": "Berendzés Kép"
+      }
+    },
+    "climate": {
+      "fridge": {
+        "name": "Hűtő{zone}",
+        "state": {
+          "cool": "Hűtés"
+        }
+      },
+      "freezer": {
+        "name": "Fagyasztó{zone}",
+        "state": {
+          "cool": "Fagyasztás"
+        }
+      }
+    }
+  }
+}
