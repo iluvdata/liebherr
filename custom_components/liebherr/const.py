@@ -3,6 +3,6 @@
 from typing import Final
 
 DOMAIN = "liebherr"
-DEFAULT_UPDATE_INTERVAL: Final[int] = 30  # in seconds
 
-CONF_UPDATE_INTERVAL: Final[str] = "update_interval"
+# See api recommendation https://developer.liebherr.com/apis/smartdevice-homeapi/#advice-for-implementation
+DEFAULT_UPDATE_INTERVAL: Final[int] = 30  # in seconds
