@@ -12,7 +12,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.translation import async_get_translations
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-from .const import CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL, DOMAIN
+from .const import DEFAULT_UPDATE_INTERVAL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,9 +33,7 @@ class LiebherrCoordinator(DataUpdateCoordinator[list[LiebherrDevice]]):
         """Initialize the coordinator."""
         self.api = LiebherrAPI(entry.data[CONF_API_KEY], client_session)
 
-        update_interval: timedelta = timedelta(
-            seconds=entry.options.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
-        )
+        update_interval: timedelta = timedelta(seconds=DEFAULT_UPDATE_INTERVAL)
         super().__init__(
             hass, _LOGGER, name="Liebherr Coordinator", update_interval=update_interval
         )
