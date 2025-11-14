@@ -26,7 +26,7 @@
         }
       },
       "biofreshplus": {
-        "name": "BioFrissPlussz{zone}",
+        "name": "BioFrissPlussz",
         "state": {
           "zero_zero": "0/0",
           "zero_minus_two": "0/-2",
@@ -56,7 +56,7 @@
     },
     "fan": {
       "hydrobreeze": {
-        "name": "HydroBreeze{zone}"
+        "name": "HydroBreeze"
       }
     },
     "cover": {
