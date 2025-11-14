@@ -5,20 +5,6 @@
     "middle": "Middle",
     "bottom": "Lower"
   },
-  "options": {
-    "step": {
-      "init": {
-        "title": "Poll Interval",
-        "description": "The interval at which the integration polls the Liebherr Smart Home API.",
-        "data": {
-          "update_interval": "Interval to poll the Liebherr API for control updates."
-        },
-        "data_description": {
-          "update_interval": "Recommend (default) {default_interval}s.  Min {min_interval}s."
-        }
-      }
-    }
-  },
   "config": {
     "step": {
       "user": {

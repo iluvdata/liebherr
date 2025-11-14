@@ -1,19 +1,5 @@
 {
   "title": "Liebherr",
-  "options": {
-    "step": {
-      "init": {
-        "title": "Intervalo de Encuesta",
-        "description": "Intervalo a que la integración pide datos del Liebherr SmartHome API.",
-        "data": {
-          "update_interval": "Intervalo de equesta al Liebherr API para actualición de los controles."
-        },
-        "data_description": {
-          "update_interval": "Recomendado (opción predetermindada) {default_interval}s.  Minimo {min_interval}s."
-        }
-      }
-    }
-  },
   "config": {
     "step": {
       "user": {

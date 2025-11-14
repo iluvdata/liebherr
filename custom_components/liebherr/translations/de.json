@@ -5,20 +5,6 @@
     "middle": "Mitte",
     "bottom": "unten"
   },
-  "options": {
-    "step": {
-      "init": {
-        "title": "Aktualisierungintervall",
-        "description": "Das Intervall, in dem die Integration die Liebherr Smart Home API abfragt.",
-        "data": {
-          "update_interval": "Abfrageintervall für Geräteeinstellungen bei der Smart Home API."
-        },
-        "data_description": {
-          "update_interval": "Empfohlen (Standard) {default_interval}s.  Min {min_interval}s."
-        }
-      }
-    }
-  },
   "config": {
     "step": {
       "user": {
