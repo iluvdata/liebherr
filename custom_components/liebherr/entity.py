@@ -41,9 +41,6 @@ class LiebherrEntity(CoordinatorEntity[LiebherrCoordinator]):
         self._device: LiebherrDevice = device
         self._control: LiebherrControl = control
         self._zone_id: int = control.zone_id
-        # self._attr_name = f"{control.control_name.capitalize()}"
-        # if control.zone_position:
-        #    self._attr_name = f"{self._attr_name} {control.zone_position.capitalize()}"
         self._attr_unique_id = async_get_unique_id(
             device.device_id, control.control_name, control.zone_id
         )
