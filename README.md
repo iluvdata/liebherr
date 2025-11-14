@@ -17,6 +17,7 @@ This is a rewrite of the great [custom intergration](https://github.com/bhuebsch
 > - AutoDoor
 > - BioFreshPlus
 > - HydroBreeze
+> - Presentation Light
 >
 > If you encounter an issue with these features please submit an issue [here](https://github.com/iluvdata/liebherr/issues).
 
@@ -104,6 +105,7 @@ and click on "Reload" on the configuration menu:
 - Ensure your Liebherr api key is correct.
 - Check the Home Assistant logs for any errors related to the integration.
 - Enable debug on the integration.
+- Download and inspect the integration diagnotics.
 
 ## Support
 If you encounter any issues or have feature requests, please open an issue on the [GitHub Issues page](https://github.com/iluvdata/liebherr/issues).
