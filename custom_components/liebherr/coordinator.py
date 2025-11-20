@@ -42,7 +42,7 @@ class LiebherrCoordinator(DataUpdateCoordinator[list[LiebherrDevice]]):
 
         update_interval: timedelta = timedelta(seconds=DEFAULT_UPDATE_INTERVAL)
         super().__init__(
-            hass, _LOGGER, name="Liebherr Coordinator", update_interval=update_interval
+            hass, _LOGGER, name="liebherr_coordinator", update_interval=update_interval
         )
 
     async def _async_setup(self) -> None:
@@ -75,7 +75,7 @@ class LiebherrCoordinator(DataUpdateCoordinator[list[LiebherrDevice]]):
             _LOGGER.debug("Refreshing controls for device: %s", device.device_id)
             try:
                 device.controls = await self.api.async_get_controls(device.device_id)
-                device.notify_listeners()
+                self.async_update_listeners()
                 if idx != len(self.data) - 1:
                     await asyncio.sleep(
                         DEFAULT_UPDATE_INTERVAL

@@ -86,6 +86,11 @@
       "autodoor": {
         "name": "AutoDoor{zone}"
       }
+    },
+    "sensor": {
+      "updated": {
+        "name": "Last Updated"
+      }
     }
   }
 }

@@ -82,6 +82,11 @@
           "cool": "Freeze"
         }
       }
+    },
+    "sensor": {
+      "updated": {
+        "name": "Last Updated"
+      }
     }
   }
 }

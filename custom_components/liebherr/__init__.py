@@ -19,6 +19,7 @@ PLATFORMS = {
     Platform.FAN,
     Platform.IMAGE,
     Platform.LIGHT,
+    Platform.SENSOR,
     Platform.SELECT,
     Platform.SWITCH,
 }
@@ -71,3 +72,8 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: LiebherrConfigE
 async def async_unload_entry(hass: HomeAssistant, config_entry: LiebherrConfigEntry):
     """Unload a config entry."""
     return await hass.config_entries.async_unload_platforms(config_entry, PLATFORMS)
+
+
+async def async_remove_entry(hass: HomeAssistant, config_entry: LiebherrConfigEntry):
+    """Remove a config entry."""
+    return True

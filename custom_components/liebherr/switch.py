@@ -57,7 +57,7 @@ async def async_setup_entry(
     async_add_entities(entities, update_before_add=True)
 
 
-class LiebherrSwitch(LiebherrEntity, SwitchEntity):
+class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportIncompatibleVariableOverride]
     """Representation of a Liebherr switch entity."""
 
     def __init__(
@@ -72,12 +72,7 @@ class LiebherrSwitch(LiebherrEntity, SwitchEntity):
             ATTR_ICON, "mdi:toggle-switch-variant"
         )
 
-    @property
-    def available(self) -> bool:  # pyright: ignore[reportIncompatibleVariableOverride, reportIncompatibleMethodOverride]
-        """Available."""
-        return super().available
-
-    def _handle_device_update(self) -> None:
+    def _handle_coordinator_update(self) -> None:
         for control in self._device.controls:
             if (
                 control.control_name == self._control.control_name

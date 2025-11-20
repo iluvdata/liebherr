@@ -1,4 +1,4 @@
-# ![logo](https://brands.home-assistant.io/liebherr/logo.png) Integration for Home Assistant
+# Liebherr Integration for Home Assistant
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=flat-square&logo=homeassistantcommunitystore)](https://hacs.xyz/)
 ![GitHub Release](https://img.shields.io/github/v/release/iluvdata/liebherr)
@@ -74,7 +74,7 @@ and click on "Reload" on the configuration menu:
 Given rate limits imposed by Liebherr in the [SmartDevice Home API](https://developer.liebherr.com/apis/smartdevice-homeapi/#advice-for-implementation) the integration can only make a request to the API every 30s.  The interval between poll updates depends on the number of devices (since controls have to be requested separately for each device) and is determined by:
 
 $$
-   update\ interval = number\ of\ devices × 30
+   update\ interval = number\ of\ devices\ ×\ 30\ seconds
 $$
 #### Example
 If you have 4 Liebherr devices associated with your account the update interval will be $4 × 30$ seconds $= 2$ minutes. Over this two minute period each device will be updated *sequentially* at 30 second intervals:

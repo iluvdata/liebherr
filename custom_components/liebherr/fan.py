@@ -81,7 +81,7 @@ class LiebherrFan(LiebherrEntity, FanEntity):
         """Available."""
         return super().available
 
-    def _handle_device_update(self) -> None:
+    def _handle_coordinator_update(self) -> None:
         for control in self._device.controls:
             if (
                 control.control_name == self._control.control_name

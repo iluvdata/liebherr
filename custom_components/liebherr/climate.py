@@ -119,13 +119,15 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
             self._attr_hvac_mode = hvac_mode
 
     @callback
-    def _handle_device_update(self) -> None:
+    def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         for control in self._device.controls:
             if self._control.control_name == control.control_name:
                 if self._zone_id == control.zone_id:
                     self._attr_target_temperature = control.target
-                    self._attr_current_temperature = control.value
+                    self._attr_current_temperature = (
+                        control.value if isinstance(control.value, int) else None
+                    )
                     if control.min:
                         self._attr_min_temp = control.min
                     if control.max:

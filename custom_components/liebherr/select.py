@@ -72,7 +72,7 @@ class LiebherrSelect(LiebherrEntity, SelectEntity):
         return super().available
 
     @callback
-    def _handle_device_update(self) -> None:
+    def _handle_coordinator_update(self) -> None:
         for control in self._device.controls:
             if (
                 self._control.control_name == control.control_name
