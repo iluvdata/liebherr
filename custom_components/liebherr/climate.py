@@ -1,6 +1,5 @@
 """Support for Liebherr appliances as climate devices."""
 
-from asyncio import sleep
 import logging
 
 from pyliebherr import LiebherrControl, LiebherrDevice
@@ -104,9 +103,6 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
         if ATTR_TEMPERATURE in kwargs:
             temperature = kwargs[ATTR_TEMPERATURE]
 
-            self._attr_target_temperature = temperature
-            self.async_write_ha_state()
-
             data = TemperatureControlRequest(
                 zoneId=self._zone_id,
                 target=temperature,
@@ -114,8 +110,8 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
             )
 
             await self.coordinator.api.async_set_value(self._device.device_id, data)
-            await sleep(5)
-            await self.coordinator.async_request_refresh()
+            self._attr_target_temperature = temperature
+            self.async_write_ha_state()
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set the HVAC mode."""
@@ -123,7 +119,7 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
             self._attr_hvac_mode = hvac_mode
 
     @callback
-    def _handle_coordinator_update(self) -> None:
+    def _handle_device_update(self) -> None:
         """Handle updated data from the coordinator."""
         for control in self._device.controls:
             if self._control.control_name == control.control_name:

@@ -1,6 +1,5 @@
 """Support for Liebherr mode selections."""
 
-from asyncio import sleep
 import logging
 
 from pyliebherr import LiebherrControl, LiebherrDevice
@@ -73,7 +72,7 @@ class LiebherrSelect(LiebherrEntity, SelectEntity):
         return super().available
 
     @callback
-    def _handle_coordinator_update(self) -> None:
+    def _handle_device_update(self) -> None:
         for control in self._device.controls:
             if (
                 self._control.control_name == control.control_name
@@ -114,11 +113,11 @@ class LiebherrSelect(LiebherrEntity, SelectEntity):
                 data,
             )
 
+            self._attr_current_option = option
+            self._async_write_ha_state()
+
         except LiebherrException as e:
             _LOGGER.error(
                 "Failed to set option '%s' for '%s': %s", option, self.unique_id, e
             )
             return
-
-        await sleep(5)
-        await self.coordinator.async_request_refresh()

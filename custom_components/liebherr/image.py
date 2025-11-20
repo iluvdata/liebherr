@@ -40,7 +40,7 @@ class LiebherrImage(ImageEntity):
         hass: HomeAssistant,
         device: LiebherrDevice,
     ) -> None:
-        """Initialize the switch entity."""
+        """Initialize the image entity."""
         self.has_entity_name = True
         super().__init__(hass=hass)
         self.unique_id = async_get_unique_id(device.device_id, "image")

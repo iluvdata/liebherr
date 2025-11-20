@@ -2,9 +2,12 @@
 
 import logging
 
+from pyliebherr.exception import LiebherrAuthException
+
 from homeassistant.components.hassio import async_get_clientsession
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed
 
 from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
 
@@ -28,7 +31,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEnt
         hass, config_entry, async_get_clientsession(hass)
     )
 
-    await coordinator.async_config_entry_first_refresh()
+    try:
+        await coordinator.async_config_entry_first_refresh()
+    except LiebherrAuthException as ex:
+        _LOGGER.error("Invalid API key, need to reauth")
+        raise ConfigEntryAuthFailed(ex.message) from ex
 
     config_entry.runtime_data = coordinator
 
@@ -63,4 +70,4 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: LiebherrConfigE
 
 async def async_unload_entry(hass: HomeAssistant, config_entry: LiebherrConfigEntry):
     """Unload a config entry."""
-    return True
+    return await hass.config_entries.async_unload_platforms(config_entry, PLATFORMS)

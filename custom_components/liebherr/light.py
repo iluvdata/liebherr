@@ -53,7 +53,7 @@ class LiebherrLight(LiebherrEntity, LightEntity):
         """Available."""
         return super().available
 
-    def _handle_coordinator_update(self) -> None:
+    def _handle_device_update(self) -> None:
         for control in self._device.controls:
             if control.type == self._control.type:
                 if control.target is not None:

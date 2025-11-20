@@ -1,6 +1,5 @@
 """Support for Liebherr mode switches."""
 
-from asyncio import sleep
 import logging
 from typing import Any, Final
 
@@ -78,7 +77,7 @@ class LiebherrSwitch(LiebherrEntity, SwitchEntity):
         """Available."""
         return super().available
 
-    def _handle_coordinator_update(self) -> None:
+    def _handle_device_update(self) -> None:
         for control in self._device.controls:
             if (
                 control.control_name == self._control.control_name
@@ -111,8 +110,8 @@ class LiebherrSwitch(LiebherrEntity, SwitchEntity):
             device_id=self._device.device_id,
             control=controlrequest,
         )
-        await sleep(5)
-        await self.coordinator.async_request_refresh()
+        self._attr_is_on = turn_on
+        self.async_write_ha_state()
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""

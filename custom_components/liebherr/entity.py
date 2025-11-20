@@ -3,7 +3,7 @@
 from pyliebherr import LiebherrControl, LiebherrDevice
 
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.entity import Entity
 
 from .const import DOMAIN
 from .coordinator import LiebherrCoordinator
@@ -26,7 +26,7 @@ def async_get_device_info(device: LiebherrDevice) -> DeviceInfo:
     }
 
 
-class LiebherrEntity(CoordinatorEntity[LiebherrCoordinator]):
+class LiebherrEntity(Entity):
     """Representation of a Liebherr climate entity."""
 
     def __init__(
@@ -36,8 +36,8 @@ class LiebherrEntity(CoordinatorEntity[LiebherrCoordinator]):
         control: LiebherrControl,
     ) -> None:
         """Initialize the climate entity."""
-        super().__init__(coordinator=coordinator)
         self._attr_has_entity_name = True
+        self.coordinator: LiebherrCoordinator = coordinator
         self._device: LiebherrDevice = device
         self._control: LiebherrControl = control
         self._zone_id: int = control.zone_id
@@ -50,3 +50,13 @@ class LiebherrEntity(CoordinatorEntity[LiebherrCoordinator]):
             self._attr_translation_placeholders = {
                 "zone": f" {coordinator.zone_translations[f'component.{DOMAIN}.common.{control.zone_position}']}",
             }
+
+    async def async_added_to_hass(self) -> None:
+        """Run when entity is added to register update signal handler."""
+        self.async_on_remove(
+            self._device.add_update_listener(self._handle_device_update)
+        )
+
+    def _handle_device_update(self) -> None:
+        """Handle updated data from the device."""
+        raise NotImplementedError("Must be implemented in subclass.")

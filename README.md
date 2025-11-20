@@ -1,4 +1,4 @@
-# Liebherr Integration for Home Assistant
+# ![logo](https://brands.home-assistant.io/liebherr/logo.png) Integration for Home Assistant
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=flat-square&logo=homeassistantcommunitystore)](https://hacs.xyz/)
 ![GitHub Release](https://img.shields.io/github/v/release/iluvdata/liebherr)
@@ -6,52 +6,20 @@
 
 This is an *unofficial* custom integration for Home Assistant that allows you to connect and control Liebherr smart devices via the Liebherr SmartHomeAPI.  
 
-## Acknowledgement
-This is a rewrite of the great [custom intergration](https://github.com/bhuebschen/liebherr) orginally maintained by @bhuebschen from a fork created by @skatsavos.  The original intergration stopped working in Oct 2025 and the orginal maintainer did not appear to be maintaining the project.
-
-> [!Warning]
-> This is nearly a complete rewrite to the orginal integration.  As such there is not a suitable upgrade path. I'd suggest starting deleting the prior liebherr entry and HACS respository from your Homeassistant **before** proceeding with installation below.
-
-> [!Caution]
-> I only have access to a Liebherr fridge with a limited number of features.  I have not been able to test:
-> - AutoDoor
-> - BioFreshPlus
-> - HydroBreeze
-> - Presentation Light
->
-> If you encounter an issue with these features please submit an issue [here](https://github.com/iluvdata/liebherr/issues).
-
 ## Features
-- Monitor current and target temperatures of your Liebherr fridges and freezers.
-- Control device features such as cooling modes and ice makers.
-
-## Significant Changes from [bhuebschen/liebherr v0.1.1](https://github.com/bhuebschen/liebherr)
-- Data is now pulled from the API using a single "coordinated" pull set on a configurable interval per https://github.com/bhuebschen/liebherr/issues/44#issuecomment-3442421338 and https://developer.liebherr.com/apis/smartdevice-homeapi/ set to a default interval of 30s.
-- Added support for all the support features in the API such as IceMaker Control, BioFreshPlus, AutoDoor, Presentation Light (wine fridges) and HydroBreeze (see Caution above).
-- Translation support has been greatly expanded but please note I was not able to update the many translations (please feel free to contribute)!
-- Device/appliance list will only be queried upon setup.  If you add a new device to your Liebherr account you with have to "Reload" the integration in Homeassitant (or restart Homeassistant).
-- The integration was modernized to align better with Homeassistant's development standards https://developers.home-assistant.io/docs/development_index and remove the use of deprecated functions.
+- Monitor current and target temperatures of your Liebherr refridgeratorss and freezers.
+- Control device features such as BioFreshPlus, Hydrobreeze, AutoDoor, Presentation Lights, and Ice Makers.
 
 ## Installation
 
 ### HACS (Recommended)
 
 > [!Warning]
-> Consider manually removing the prior version to avoid orphaned devices/entities.
+> Consider manually removing the prior `bhuebschen/liebherr` version to avoid orphaned devices/entities.
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?category=integration&owner=iluvdata&repository=liebherr)
 
-### OR
-
-1. Ensure that [HACS](https://hacs.xyz/) is installed in your Home Assistant instance.
-2. Add this repository as a custom repository in HACS:
-   - Open HACS in Home Assistant.
-   - Go to **Integrations**.
-   - Click on the three dots in the top-right corner and select **Custom repositories**.
-   - Add the following URL: `https://github.com/iluvdata/liebherr`.
-   - Select **Integration** as the category.
-3. Search for "Liebherr" in the HACS integrations list and install it.
-
+or search for the Liebherr integration in HACS
 
 ### Manual Installation
 1. Download the latest release from the [GitHub Releases page](https://github.com/iluvdata/liebherr/releases).
@@ -101,11 +69,46 @@ and click on "Reload" on the configuration menu:
 
 ![Menu Image](https://raw.githubusercontent.com/iluvdata/liebherr/refs/heads/main/assets/menu.png)
 
+## Update Interval
+
+Given rate limits imposed by Liebherr in the [SmartDevice Home API](https://developer.liebherr.com/apis/smartdevice-homeapi/#advice-for-implementation) the integration can only make a request to the API every 30s.  The interval between poll updates depends on the number of devices (since controls have to be requested separately for each device) and is determined by:
+
+$$
+   update\ interval = number\ of\ devices × 30
+$$
+#### Example
+If you have 4 Liebherr devices associated with your account the update interval will be $4 × 30$ seconds $= 2$ minutes. Over this two minute period each device will be updated *sequentially* at 30 second intervals:
+
+>  Device 1 > 30 seconds > Device 2 > 30 seconds > Device 3 > 30 Seconds > Device 4 > 30 seconds > Device 1 > ...
+
 ## Troubleshooting
 - Ensure your Liebherr api key is correct.
 - Check the Home Assistant logs for any errors related to the integration.
 - Enable debug on the integration.
 - Download and inspect the integration diagnotics.
+
+## Acknowledgements
+This is a rewrite of the great [custom intergration](https://github.com/bhuebschen/liebherr) orginally maintained by @bhuebschen from a fork created by @skatsavos.  The original intergration stopped working in Oct 2025 and the orginal maintainer did not appear to be maintaining the project.
+
+> [!Warning]
+> This is nearly a complete rewrite to the orginal integration.  As such there is not a suitable upgrade path. I'd suggest starting deleting the prior liebherr entry and HACS respository from your Homeassistant **before** proceeding with installation below.
+
+> [!Warning]
+> This was tested on using Liebherr Device lacking:
+>> - AutoDoor
+>> - Presentation Light
+>> - BioFreshPlus (reported to be working)
+>> - HydroBreeze (reported to be working)
+>
+> If you encounter an issue with these features please submit an issue [here](https://github.com/iluvdata/liebherr/issues).
+
+### Significant Changes from [bhuebschen/liebherr v0.1.1](https://github.com/bhuebschen/liebherr)
+- Data is now pulled from the API using a single "coordinated" pull set on a configurable interval per https://github.com/bhuebschen/liebherr/issues/44#issuecomment-3442421338 and https://developer.liebherr.com/apis/smartdevice-homeapi/ set to a default interval of 30s.
+- Added support for all the support features in the API such as IceMaker Control, BioFreshPlus, AutoDoor, Presentation Light (wine fridges) and HydroBreeze (see Caution above).
+- Translation support has been greatly expanded but please note I was not able to update the many translations (please feel free to contribute)!
+- Device/appliance list will only be queried upon setup.  If you add a new device to your Liebherr account you with have to "Reload" the integration in Homeassitant (or restart Homeassistant).
+- The integration was modernized to align better with Homeassistant's development standards https://developers.home-assistant.io/docs/development_index and remove the use of deprecated functions.
+
 
 ## Support
 If you encounter any issues or have feature requests, please open an issue on the [GitHub Issues page](https://github.com/iluvdata/liebherr/issues).
