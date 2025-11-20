@@ -1,20 +1,86 @@
 {
   "title": "Liebherr",
-  "options": {
-    "step": {
-      "init": {
-        "title": "Notifiche",
-        "description": "Se desideri ricevere avvisi e notifiche per i tuoi dispositivi Liebherr, seleziona i dispositivi per i quali desideri ricevere notifiche.",
-        "data": {
-          "devices_to_notify": "Dispositivi per i quali desideri ricevere notifiche:"
-        }
-      }
-    }
+  "common": {
+    "top": "Superiore",
+    "middle": "Mezzo",
+    "bottom": "Inferiore"
   },
   "config": {
     "step": {
       "user": {
-        "description": "Collega il tuo elettrodomestico alla rete WiFi domestica tramite l'app **SmartDevice**.\n\n**1. [Scarica](https://smartdevice.onelink.me/OrY5/8neax8lp) l'app**\n**2. Segui le [istruzioni](https://go.liebherr.com/cb2ct1) per collegare il tuo elettrodomestico**\n**3. Ottieni la tua chiave API tramite l'app SmartDevice**\n\nVai su *Impostazioni* nell'app SmartDevice e seleziona **“Funzionalità beta”**, poi attiva HomeAPI.\n\nCopia la chiave API e incollala qui sotto. La chiave API può essere copiata **solo una volta**.\n\nNon appena lasci la schermata, il codice **non potrà più** essere copiato.\n\nSe hai dimenticato la tua chiave, devi crearne una nuova tramite l'app."
+        "description": "Collega il tuo elettrodomestico alla rete WiFi domestica tramite l'app **SmartDevice**.\n\n**1. [Scarica](https://smartdevice.onelink.me/OrY5/8neax8lp) l'app**\n**2. Segui le [istruzioni](https://go.liebherr.com/cb2ct1) per collegare il tuo elettrodomestico**\n**3. Ottieni la tua chiave API tramite l'app SmartDevice**\n\nVai su *Impostazioni* nell'app SmartDevice e seleziona **“Funzionalità beta”**, poi attiva HomeAPI.\n\nCopia la chiave API e incollala qui sotto. La chiave API può essere copiata **solo una volta**.\n\nNon appena lasci la schermata, il codice **non potrà più** essere copiato.\n\nSe hai dimenticato la tua chiave, devi crearne una nuova tramite l'app.",
+        "data": {
+          "api_key": "Chiave API dall'app SmartDevice"
+        }
+      }
+    }
+  },
+  "entity": {
+    "select": {
+      "icemaker": {
+        "name": "Macchina per il Ghiaccio{zone}",
+        "state": {
+          "on": "Acceso",
+          "off": "Spento",
+          "max_ice": "Ghiaccio Massimo"
+        }
+      },
+      "biofreshplus": {
+        "name": "BioFreshPlus",
+        "state": {
+          "zero_zero": "0/0",
+          "zero_minus_two": "0/-2",
+          "minus_two_minus_two": "-2/-2",
+          "minus_two_zero": "-2/0"
+        }
+      }
+    },
+    "switch": {
+      "supercool": {
+        "name": "SuperCool{zone}"
+      },
+      "superfrost": {
+        "name": "SuperFrost{zone}"
+      },
+      "partymode": {
+        "name": "Modalità festa"
+      },
+      "nightmode": {
+        "name": "Modalità notturna"
+      }
+    },
+    "light": {
+      "presentationlight": {
+        "name": "Luce di presentazione"
+      }
+    },
+    "fan": {
+      "hydrobreeze": {
+        "name": "HydroBreeze"
+      }
+    },
+    "cover": {
+      "autodoor": {
+        "name": "AutoDoor{zone}"
+      }
+    },
+    "image": {
+      "device_image": {
+        "name": "Immagine del dispositivo"
+      }
+    },
+    "climate": {
+      "fridge": {
+        "name": "Refridgerator{zone}",
+        "state": {
+          "cool": "Chill"
+        }
+      },
+      "freezer": {
+        "name": "Freezer{zone}",
+        "state": {
+          "cool": "Freeze"
+        }
       }
     }
   }
