@@ -71,21 +71,33 @@ and click on "Reload" on the configuration menu:
 
 ## Update Interval
 
+### Version 2025.10.4
+
 Given rate limits imposed by Liebherr in the [SmartDevice Home API](https://developer.liebherr.com/apis/smartdevice-homeapi/#advice-for-implementation) the integration can only make a request to the API every 30s.  The interval between poll updates depends on the number of devices (since controls have to be requested separately for each device) and is determined by:
 
 $$
-   update\ interval = number\ of\ devices\ ×\ 30\ seconds
+   polling\ interval = number\ of\ devices\ ×\ 30\ seconds
 $$
 #### Example
 If you have 4 Liebherr devices associated with your account the update interval will be $4 × 30$ seconds $= 2$ minutes. Over this two minute period each device will be updated *sequentially* at 30 second intervals:
 
 >  Device 1 > 30 seconds > Device 2 > 30 seconds > Device 3 > 30 Seconds > Device 4 > 30 seconds > Device 1 > ...
 
+### Version 2025.12.0
+
+This version will calculate the polling interval based on the number of devices/appliances associated with your Liebherr account.  Essentially the goal is to poll each device's controls every 30 seconds and is calculated thusly:
+
+```math
+poll\ interval=\frac{30\ seconds}{number\ of\ devices}
+```
+With a minimun poll interval of 30 seconds.
+
 ## Troubleshooting
 - Ensure your Liebherr api key is correct.
 - Check the Home Assistant logs for any errors related to the integration.
 - Enable debug on the integration.
 - Download and inspect the integration diagnotics.
+- If there are many `HTTP 429 - Too many requests` try increasing the polling interval.
 
 ## Acknowledgements
 This is a rewrite of the great [custom intergration](https://github.com/bhuebschen/liebherr) orginally maintained by @bhuebschen from a fork created by @skatsavos.  The original intergration stopped working in Oct 2025 and the orginal maintainer did not appear to be maintaining the project.

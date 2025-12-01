@@ -14,24 +14,24 @@
         }
       }
     },
-    "options": {
-      "step": {
-        "init": {
-          "title": "Liebherr Polling Interval",
-          "data": {
-            "poll_interval": "Polling Interval"
-          },
-          "data_description": {
-            "poll_interval": "Recommended interval is {rec_int}s.  Maximum is {max_int}s."
-          },
-          "description": "The polling interval will determine the interval between requests to refresh a devices's controls.\n\nBased on testing the minimun is approximately {min_int} seconds. Shorter intervals will result in `HTTP 429 - Too Many Requests` errors.\n\nIf you have one device 30 seconds is recommended.  If you have multiple devices 30 seconds between each device poll is recommended (e.g. 2 devices = 15 seconds)."
-        }
-      }
-    },
     "abort": {
       "already_configured": "API Key already configured.",
       "invalid_source": "An invalid flow source was specified, this should never happen (see logs).",
       "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Liebherr Polling Interval",
+        "data": {
+          "poll_interval": "Polling Interval"
+        },
+        "data_description": {
+          "poll_interval": "Recommended interval is {rec_int}s.  Maximum is {max_int}s."
+        },
+        "description": "The polling interval will determine the interval between requests to refresh a devices's controls.\n\nBased on testing the minimun is approximately {min_int} seconds. Shorter intervals will result in `HTTP 429 - Too Many Requests` errors.\n\nIf you have one device 30 seconds is recommended.  If you have multiple devices 30 seconds between each device poll is recommended (e.g. 2 devices = 15 seconds)."
+      }
     }
   },
   "exceptions": {

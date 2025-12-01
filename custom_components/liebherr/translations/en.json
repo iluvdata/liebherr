@@ -13,6 +13,11 @@
           "api_key": "API Key from the SmartDevice App"
         }
       }
+    },
+    "abort": {
+      "already_configured": "API Key already configured.",
+      "invalid_source": "An invalid flow source was specified, this should never happen (see logs).",
+      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
     }
   },
   "options": {
