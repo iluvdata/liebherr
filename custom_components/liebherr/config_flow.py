@@ -3,7 +3,7 @@
 from collections.abc import Mapping
 from typing import Any
 
-from pyliebherr import LiebherrAPI
+from pyliebherr import LiebherrAPI, LiebherrDevice
 from pyliebherr.exception import LiebherrAuthException
 import voluptuous as vol
 
@@ -12,12 +12,92 @@ from homeassistant.config_entries import (
     SOURCE_USER,
     ConfigFlow,
     ConfigFlowResult,
+    OptionsFlowWithReload,
 )
 from homeassistant.const import CONF_API_KEY
-from homeassistant.helpers.selector import TextSelector
+from homeassistant.core import callback
+from homeassistant.helpers.selector import (
+    NumberSelector,
+    NumberSelectorConfig,
+    NumberSelectorMode,
+    TextSelector,
+)
 
 from . import _LOGGER
-from .const import DOMAIN
+from .const import (
+    CONF_POLL_INTERVAL,
+    DEFAULT_UPDATE_INTERVAL,
+    DOMAIN,
+    MAX_UPDATE_INTERVAL,
+    MIN_UPDATE_INTERVAL,
+)
+from .coordinator import LiebherrConfigEntry
+
+
+def async_calculate_poll_interval(number_of_devices: int) -> int:
+    """Calculate poll interval based on number of devices."""
+    if number_of_devices == 1:
+        return DEFAULT_UPDATE_INTERVAL
+    return max(
+        # this ensures that the controls for eac device aren't polled more frequently than
+        # the recommended default interval.
+        round(DEFAULT_UPDATE_INTERVAL / number_of_devices),
+        MIN_UPDATE_INTERVAL,
+    )
+
+
+class OptionsFlowHandler(OptionsFlowWithReload):
+    """Handle options flow for Liebherr Integration."""
+
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Manage the options."""
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            return self.async_create_entry(
+                data={
+                    CONF_POLL_INTERVAL: async_calculate_poll_interval(
+                        len(self.config_entry.runtime_data.data)
+                    ),
+                }
+            )
+
+        data_schema: vol.Schema = vol.Schema(
+            {
+                vol.Required(CONF_POLL_INTERVAL): NumberSelector(
+                    NumberSelectorConfig(
+                        min=MIN_UPDATE_INTERVAL,
+                        max=MAX_UPDATE_INTERVAL,  # 5 minutes
+                        step=1,
+                        unit_of_measurement="s",
+                        mode=NumberSelectorMode.BOX,
+                    )
+                ),
+            }
+        )
+        suggested_values = {
+            CONF_POLL_INTERVAL: self.config_entry.options.get(
+                CONF_POLL_INTERVAL,
+                async_calculate_poll_interval(len(self.config_entry.runtime_data.data)),
+            ),
+        }
+        return self.async_show_form(
+            step_id="init",
+            data_schema=self.add_suggested_values_to_schema(
+                data_schema, suggested_values
+            ),
+            description_placeholders={
+                "min_int": str(MIN_UPDATE_INTERVAL),
+                "max_int": str(MAX_UPDATE_INTERVAL),
+                "rec_int": str(
+                    async_calculate_poll_interval(
+                        len(self.config_entry.runtime_data.data)
+                    )
+                ),
+            },
+            errors=errors,
+        )
 
 
 class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -36,8 +116,9 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             # check the API key
             api: LiebherrAPI = LiebherrAPI(user_input[CONF_API_KEY])
+            devices: list[LiebherrDevice] = []
             try:
-                await api.async_get_appliances()
+                devices = await api.async_get_appliances()
             except LiebherrAuthException:
                 errors["base"] = "auth_error"
             if not errors:
@@ -48,6 +129,11 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
                         title="Liebherr SmartDevice",
                         data={
                             CONF_API_KEY: user_input[CONF_API_KEY],
+                        },
+                        options={
+                            CONF_POLL_INTERVAL: async_calculate_poll_interval(
+                                len(devices)
+                            ),
                         },
                     )
                 if self.source == SOURCE_REAUTH:
@@ -77,3 +163,11 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
     ) -> ConfigFlowResult:
         """Perform reauth upon an API authentication error."""
         return await self.async_step_user()
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(
+        config_entry: LiebherrConfigEntry,
+    ) -> OptionsFlowHandler:
+        """Create the options flow."""
+        return OptionsFlowHandler()
