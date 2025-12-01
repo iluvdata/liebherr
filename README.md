@@ -15,7 +15,7 @@ This is an *unofficial* custom integration for Home Assistant that allows you to
 ### HACS (Recommended)
 
 > [!Warning]
-> Consider manually removing the prior `bhuebschen/liebherr` version to avoid orphaned devices/entities.
+> If you are upgrading from the `bhuebschen/liebherr` version, it's recommended to remove this first to avoid orphaned devices/entities.
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?category=integration&owner=iluvdata&repository=liebherr)
 
@@ -91,10 +91,10 @@ If you have 4 Liebherr devices associated with your account the update interval 
 This is a rewrite of the great [custom intergration](https://github.com/bhuebschen/liebherr) orginally maintained by @bhuebschen from a fork created by @skatsavos.  The original intergration stopped working in Oct 2025 and the orginal maintainer did not appear to be maintaining the project.
 
 > [!Warning]
-> This is nearly a complete rewrite to the orginal integration.  As such there is not a suitable upgrade path. I'd suggest starting deleting the prior liebherr entry and HACS respository from your Homeassistant **before** proceeding with installation below.
+> This is nearly a complete rewrite to the orginal integration.  As such there is not a suitable upgrade path. Start by removing the prior liebherr entry and HACS respository from your Homeassistant **before** proceeding with installation.
 
 > [!Warning]
-> This was tested on using Liebherr Device lacking:
+> This was tested on a Liebherr Device lacking:
 >> - AutoDoor
 >> - Presentation Light
 >> - BioFreshPlus (reported to be working)
