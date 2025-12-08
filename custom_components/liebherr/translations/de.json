@@ -16,7 +16,7 @@
     }
     "abort": {
       "already_configured": "HomeAPI-Schlüssel bereits konfiguriert.",
-      "invalid_source": "Eine ungülltige Quelle wurde angegeben. Sehen Sie im Fehlerprotokoll nach.",
+      "invalid_source": "Eine ungültige Quelle wurde angegeben. Sehen Sie im Fehlerprotokoll nach.",
       "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
     }
   },
