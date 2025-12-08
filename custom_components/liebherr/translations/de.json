@@ -1,17 +1,36 @@
 {
-  "title": "Liebherr SmartDevice",
+  "title": "Liebherr",
   "common": {
-    "top": "oben",
-    "middle": "Mitte",
-    "bottom": "unten"
+    "top": "Upper",
+    "middle": "Middle",
+    "bottom": "Lower"
   },
   "config": {
     "step": {
       "user": {
-        "description": "Verbinden Sie Ihr Gerät mit Hilfe der **SmartDevice App** mit dem WLAN in Ihrem Heimnetzwerk.\n\n**1. App [herunterladen](https://smartdevice.onelink.me/OrY5/8neax8lp)**\n**2. Folgen Sie den [Anweisungen](https://go.liebherr.com/cb2ct1) und verbinden Sie Ihr Gerät**\n**3. Erzeugen Sie den HomeAPI-Schlüssel in der SmartDevice App**\n\nÖffnen Sie die *Einstellungen* der SmartDevice App und wählen Sie **“Werden Sie Betatester”**, dann aktivieren Sie die HomeAPI.\n\nKopieren Sie den HomeAPI-Schlüssel und fügen Sie ihn unten ein.\n\nDer HomeAPI-Schlüssel kann nur **einmal** kopiert werden. Er kann nicht erneut angezeigt werden, wenn Sie die Ansicht verlassen haben.\n\nFalls Sie den HomeAPI-Schlüssel vergessen haben sollten, können Sie in der App einen neuen Schlüssel erzeugen.",
+        "description": "Connect your appliance via the **SmartDevice app** to your home WiFi network.\n\n**1. [Download](https://smartdevice.onelink.me/OrY5/8neax8lp) the app**\n**2. Follow the [instructions](https://go.liebherr.com/cb2ct1) to connect your appliance**\n**3. Get your API Key via the SmartDevice app**\n\nGo to *Settings* in the SmartDevice app and select **“Beta features”**, then activate the HomeAPI.\n\nCopy the API Key and paste it below. The API Key can only be copied **once**.\n\nAs soon as you leave the screen, the code **cannot** be copied again.\n\nIf you forgot your key, you need to create a new one via the app.",
         "data": {
-          "api_key": "HomeAPI-Schlüssel aus der SmartDevice App"
+          "api_key": "API Key from the SmartDevice App"
         }
+      }
+    },
+    "abort": {
+      "already_configured": "API Key already configured.",
+      "invalid_source": "An invalid flow source was specified, this should never happen (see logs).",
+      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Liebherr Polling Interval",
+        "data": {
+          "poll_interval": "Polling Interval"
+        },
+        "data_description": {
+          "poll_interval": "Recommended interval is {rec_int}s.  Maximum is {max_int}s."
+        },
+        "description": "The polling interval will determine the interval between requests to refresh a devices's controls.\n\nBased on testing the minimun is approximately {min_int} seconds. Shorter intervals will result in `HTTP 429 - Too Many Requests` errors.\n\nIf you have one device 30 seconds is recommended.  If you have multiple devices 30 seconds between each device poll is recommended (e.g. 2 devices = 15 seconds)."
       }
     }
   },
