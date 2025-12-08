@@ -13,7 +13,7 @@
           "api_key": "HomeAPI-Schlüssel aus der SmartDevice App"
         }
       }
-    }
+    },
     "abort": {
       "already_configured": "HomeAPI-Schlüssel bereits konfiguriert.",
       "invalid_source": "Eine ungültige Quelle wurde angegeben. Sehen Sie im Fehlerprotokoll nach.",
