@@ -13,6 +13,25 @@
           "api_key": "HomeAPI-Schlüssel aus der SmartDevice App"
         }
       }
+    },
+    "abort": {
+      "already_configured": "HomeAPI-Schlüssel bereits konfiguriert.",
+      "invalid_source": "Eine ungültige Quelle wurde angegeben. Sehen Sie im Fehlerprotokoll nach.",
+      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Liebherr Abfrageinterval",
+        "data": {
+          "poll_interval": "Abfrageinterval"
+        },
+        "data_description": {
+          "poll_interval": "Das empfohlene Interval beträgt {rec_int} Sekunden und maximal {max_int} Sekunden."
+        },
+        "description": "Das Abfrageintervall bestimmt den Abstand zwischen den Anfragen zur Aktualisierung der Geräteinformationen.\n\nBasierend auf Tests beträgt das Minimum etwa {min_int} Sekunden. Kürzere Intervalle führen zu Fehlern (HTTP 429 - Too Many Requests).\n\nEin Abfrageintervall von 30 Sekunden wird empfohlen, wenn Sie ein Gerät einbinden. Wenn Sie mehrere Geräte haben, wird ein Abstand von 30 Sekunden zwischen den einzelnen Geräteabfragen empfohlen (z. B. 2 Geräte = 15 Sekunden)."
+      }
     }
   },
   "entity": {
