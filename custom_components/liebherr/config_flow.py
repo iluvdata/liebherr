@@ -57,9 +57,7 @@ class OptionsFlowHandler(OptionsFlowWithReload):
         if user_input is not None:
             return self.async_create_entry(
                 data={
-                    CONF_POLL_INTERVAL: async_calculate_poll_interval(
-                        len(self.config_entry.runtime_data.data)
-                    ),
+                    CONF_POLL_INTERVAL: user_input[CONF_POLL_INTERVAL],
                 }
             )
 
