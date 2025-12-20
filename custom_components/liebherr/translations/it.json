@@ -43,10 +43,10 @@
         "name": "SuperFrost{zone}"
       },
       "partymode": {
-        "name": "Modalità festa"
+        "name": "PartyMode"
       },
       "nightmode": {
-        "name": "Modalità notturna"
+        "name": "NightMode"
       }
     },
     "light": {
@@ -71,15 +71,15 @@
     },
     "climate": {
       "fridge": {
-        "name": "Refridgerator{zone}",
+        "name": "Frigorifero{zone}",
         "state": {
-          "cool": "Chill"
+          "cool": "Raffreddamento"
         }
       },
       "freezer": {
-        "name": "Freezer{zone}",
+        "name": "Congelatore{zone}",
         "state": {
-          "cool": "Freeze"
+          "cool": "Congelamento"
         }
       }
     }
