@@ -4,7 +4,7 @@
 ![GitHub Release](https://img.shields.io/github/v/release/iluvdata/liebherr)
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Filuvdata%2Fliebherr%2Frefs%2Fheads%2Fmain%2Fcustom_components%2Fliebherr%2Fmanifest.json&query=%24.version&prefix=v&label=dev-version&labelColor=orange)
 
-This is an *unofficial* custom integration for Home Assistant that allows you to connect and control Liebherr smart devices via the Liebherr SmartHomeAPI.  
+This is an *unofficial* custom integration for Home Assistant that allows you to connect and control Liebherr smart devices via the Liebherr SmartHomeAPI using the simple [pylieberr](https://github.com/iluvdata/pyliebherr) library.
 
 ## Features
 - Monitor current and target temperatures of your Liebherr refridgeratorss and freezers.
