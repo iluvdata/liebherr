@@ -1,5 +1,6 @@
 """Support for Liebherr HydroBreeze."""
 
+import math
 from typing import Any
 
 from pyliebherr import LiebherrControl, LiebherrDevice
@@ -8,7 +9,7 @@ from pyliebherr.models import PresentationLightControlRequest
 
 from homeassistant.components.light import ATTR_BRIGHTNESS, ColorMode, LightEntity
 from homeassistant.core import HomeAssistant
-from homeassistant.util.color import value_to_brightness
+from homeassistant.util.color import brightness_to_value, value_to_brightness
 
 from .const import BRIGHTNESS_SCALE, DEFAULT_BRIGHTNESS_SCALE
 from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
@@ -54,26 +55,13 @@ class LiebherrLight(LiebherrEntity, LightEntity):
     def _handle_coordinator_update(self) -> None:
         for control in self._device.controls:
             if control.type == self._control.type:
-                if control.target is not None:
+                if control.target is not None and control.target > 0:
                     self._attr_brightness = value_to_brightness(
                         self.brightness_scale, control.target
                     )
-                    self._attr_is_on = control.target > 0
-        self.async_write_ha_state()
-
-    async def _async_on_off(self, brightness: int) -> None:
-        await self.coordinator.api.async_set_value(
-            device_id=self._device.device_id,
-            control=PresentationLightControlRequest(brightness),
-        )
-        if brightness > 0:
-            self._attr_brightness = value_to_brightness(
-                self.brightness_scale, brightness
-            )
-            self._attr_is_on = True
-        else:
-            self._attr_is_on = False
-
+                    self._attr_is_on = True
+                else:
+                    self._attr_is_on = False
         self.async_write_ha_state()
 
     async def async_turn_on(
@@ -81,10 +69,24 @@ class LiebherrLight(LiebherrEntity, LightEntity):
         **kwargs: Any,
     ) -> None:
         """Turn the light on."""
-        await self._async_on_off(
-            value_to_brightness(self.brightness_scale, kwargs[ATTR_BRIGHTNESS])
+
+        await self.coordinator.api.async_set_value(
+            device_id=self._device.device_id,
+            control=PresentationLightControlRequest(
+                math.ceil(
+                    brightness_to_value(self.brightness_scale, kwargs[ATTR_BRIGHTNESS])
+                )
+            ),
         )
+        self._attr_brightness = kwargs[ATTR_BRIGHTNESS]
+        self._attr_is_on = True
+        self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs):
         """Turn the light off."""
-        await self._async_on_off(0)
+        await self.coordinator.api.async_set_value(
+            device_id=self._device.device_id,
+            control=PresentationLightControlRequest(0),
+        )
+        self._attr_is_on = False
+        self.async_write_ha_state()
