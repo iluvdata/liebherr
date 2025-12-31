@@ -83,7 +83,8 @@ class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportInc
                     if isinstance(control.value, bool)
                     else bool(control.value)
                 )
-        self.async_write_ha_state()
+                self.async_write_ha_state()
+                return
 
     async def _async_set_toggle(self, turn_on: bool) -> None:
         control_name = self._control.control_name.lower()

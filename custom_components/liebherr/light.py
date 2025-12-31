@@ -62,7 +62,8 @@ class LiebherrLight(LiebherrEntity, LightEntity):
                     self._attr_is_on = True
                 else:
                     self._attr_is_on = False
-        self.async_write_ha_state()
+                self.async_write_ha_state()
+                return
 
     async def async_turn_on(
         self,

@@ -14,8 +14,7 @@ This is an *unofficial* custom integration for Home Assistant that allows you to
 
 ### HACS (Recommended)
 
-> [!Warning]
-> If you are upgrading from the `bhuebschen/liebherr` version, it's recommended to remove this first to avoid orphaned devices/entities.
+
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?category=integration&owner=iluvdata&repository=liebherr)
 
@@ -40,8 +39,8 @@ or search for the Liebherr integration in HACS
 ### Then
 
 1. Enter your Liebherr HomeAPI API key. (see [here](https://developer.liebherr.com/apis/smartdevice-homeapi/), how to get the key)
-2. Check if you prefer type of control to create for "Presentation Lights" if applicable (Light or Select).
-3. Complete the setup process.
+2. Complete the setup process.
+3. (Optional):  Configure the polling interval and the entity type for Presentation Light (see below).
 
 ## Usage
 Once the integration is configured, your Liebherr devices will appear as entities in Home Assistant. You can:
@@ -60,6 +59,7 @@ Controls will map to the following domains:
 | Temperature | Climate |
 | `image_url` (Device) | Image |
 | Bottle Timer | Not available |
+
 *\* In version ≥ 2025.12.5 the domain/type of control/entity created can be selected in the integration options.*
 
 ### Discover New Appliances
