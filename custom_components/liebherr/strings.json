@@ -119,6 +119,11 @@
         "name": "AutoDoor{zone}"
       }
     },
+    "number": {
+      "presentationlight": {
+        "name": "Presentation Light"
+      }
+    },
     "sensor": {
       "updated": {
         "name": "Last Updated"

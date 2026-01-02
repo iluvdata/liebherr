@@ -63,7 +63,9 @@
           "minus_two_minus_two": "-2/-2",
           "minus_two_zero": "-2/0"
         }
-      },
+      }
+    },
+    "number": {
       "presentationlight": {
         "name": "Presentation Light"
       }
