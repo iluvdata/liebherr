@@ -117,8 +117,8 @@ class LiebherrCover(LiebherrEntity, CoverEntity):
                     self._last_state = (
                         STATE_OPENING if self._attr_is_opening else STATE_CLOSING
                     )
-                break
-        self.async_write_ha_state()
+                self.async_write_ha_state()
+                return
 
     async def async_open_cover(self, **kwargs):
         """Send command to open the cover."""

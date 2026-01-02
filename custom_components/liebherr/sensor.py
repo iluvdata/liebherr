@@ -53,4 +53,5 @@ class UpdateSensor(LiebherrEntity, SensorEntity):  # pyright: ignore[reportIncom
         for control in self._device.controls:
             if self._control.control_name == control.control_name:
                 self._attr_native_value = datetime.now(UTC)
-        self.async_write_ha_state()
+                self.async_write_ha_state()
+                return

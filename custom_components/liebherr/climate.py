@@ -132,4 +132,5 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
                         self._attr_min_temp = control.min
                     if control.max:
                         self._attr_max_temp = control.max
-        self.async_write_ha_state()
+                    self.async_write_ha_state()
+                    return

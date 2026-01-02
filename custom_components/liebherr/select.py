@@ -85,9 +85,10 @@ class LiebherrSelect(LiebherrEntity, SelectEntity):
                     self._attr_current_option = control.iceMakerMode.lower()
                 elif control.current_mode:
                     self._attr_current_option = control.current_mode.lower()
-        self._async_write_ha_state()
+                self._async_write_ha_state()
+                return
 
-    async def async_select_option(self, option: str):
+    async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
         if option not in self._attr_options:
             _LOGGER.error("Invalid option selected: %s", option)

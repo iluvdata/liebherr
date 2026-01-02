@@ -23,14 +23,25 @@
   "options": {
     "step": {
       "init": {
-        "title": "Liebherr Abfrageinterval",
-        "data": {
-          "poll_interval": "Abfrageinterval"
-        },
-        "data_description": {
-          "poll_interval": "Das empfohlene Interval beträgt {rec_int} Sekunden und maximal {max_int} Sekunden."
-        },
-        "description": "Das Abfrageintervall bestimmt den Abstand zwischen den Anfragen zur Aktualisierung der Geräteinformationen.\n\nBasierend auf Tests beträgt das Minimum etwa {min_int} Sekunden. Kürzere Intervalle führen zu Fehlern (HTTP 429 - Too Many Requests).\n\nEin Abfrageintervall von 30 Sekunden wird empfohlen, wenn Sie ein Gerät einbinden. Wenn Sie mehrere Geräte haben, wird ein Abstand von 30 Sekunden zwischen den einzelnen Geräteabfragen empfohlen (z. B. 2 Geräte = 15 Sekunden)."
+        "title": "Liebherr Optionen",
+        "sections": {
+          "polling_options": {
+            "name": "Abfrageintervall",
+            "description": "Das Abfrageintervall bestimmt den Abstand zwischen den Anfragen zur Aktual",
+            "data": {
+              "poll_interval": "Abfrageinterval"
+            },
+            "data_description": {
+              "poll_interval": "Das empfohlene Interval beträgt {rec_int} Sekunden und maximal {max_int} Sekunden."
+            }
+          },
+          "presentation_light_options": {
+            "name": "Präsentationslicht Optionen",
+            "data": {
+              "presentation_light_as_number": "Präsentationslicht-Steuerung (falls vorhanden) als Zahlen-Entität (Schieberegler) anstelle einer Licht-Entität verwenden?"
+            }
+          }
+        }
       }
     }
   },
@@ -69,6 +80,11 @@
       }
     },
     "light": {
+      "presentationlight": {
+        "name": "Präsentationslicht"
+      }
+    },
+    "number": {
       "presentationlight": {
         "name": "Präsentationslicht"
       }

@@ -94,7 +94,8 @@ class LiebherrFan(LiebherrEntity, FanEntity):
                 self._attr_percentage = ordered_list_item_to_percentage(
                     list(HydroBreezeControlRequest.HydroBreezeMode), mode
                 )
-        self.async_write_ha_state()
+                self.async_write_ha_state()
+                return
 
     async def _async_set_mode(
         self, mode: HydroBreezeControlRequest.HydroBreezeMode
