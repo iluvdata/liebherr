@@ -38,7 +38,7 @@
           "presentation_light_options": {
             "name": "Presentation Light Options",
             "data": {
-              "presentation_light_as_select": "Use a select instead of a light entity for Presentation Light control (if applicable)?"
+              "presentation_light_as_number": "Use a number entity (slider) instead of a light entity for Presentation Light control (if applicable)?"
             }
           }
         }

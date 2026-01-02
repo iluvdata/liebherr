@@ -10,7 +10,7 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 
-from .const import CONF_PRESENTATION_LIGHT_AS_SELECT
+from .const import CONF_PRESENTATION_LIGHT_AS_NUMBER
 from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -41,7 +41,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEnt
 
     config_entry.runtime_data = coordinator
 
-    if not config_entry.options.get(CONF_PRESENTATION_LIGHT_AS_SELECT, False):
+    if config_entry.options.get(CONF_PRESENTATION_LIGHT_AS_NUMBER, False):
+        PLATFORMS.add(Platform.NUMBER)
+    else:
         # Add Light to platforms
         PLATFORMS.add(Platform.LIGHT)
 
@@ -62,7 +64,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: LiebherrConfigE
         if config_entry.minor_version < 3:
             # Add presentation_light_as_select option defaulting to False
             options: dict[str, Any] = config_entry.options.copy()
-            options[CONF_PRESENTATION_LIGHT_AS_SELECT] = False
+            options[CONF_PRESENTATION_LIGHT_AS_NUMBER] = False
             hass.config_entries.async_update_entry(
                 config_entry, options=options, minor_version=3, version=1
             )

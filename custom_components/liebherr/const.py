@@ -10,7 +10,7 @@ MIN_UPDATE_INTERVAL: Final[int] = 5  # in seconds
 MAX_UPDATE_INTERVAL: Final[int] = 300  # in seconds, 5 minutes
 
 CONF_POLL_INTERVAL: Final[str] = "poll_interval"
-CONF_PRESENTATION_LIGHT_AS_SELECT: Final[str] = "presentation_light_as_select"
+CONF_PRESENTATION_LIGHT_AS_NUMBER: Final[str] = "presentation_light_as_number"
 
 BRIGHTNESS_SCALE: Final[dict[str, tuple[int, int]]] = {"WPgbi 7472-20": (1, 5)}
 DEFAULT_BRIGHTNESS_SCALE: Final[tuple[int, int]] = (1, 4)
