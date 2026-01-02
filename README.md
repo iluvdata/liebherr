@@ -15,7 +15,6 @@ This is an *unofficial* custom integration for Home Assistant that allows you to
 ### HACS (Recommended)
 
 
-
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?category=integration&owner=iluvdata&repository=liebherr)
 
 or search for the Liebherr integration in HACS
@@ -53,7 +52,7 @@ Controls will map to the following domains:
 | -----------------| ---------------------|
 | Auto Door | Cover |
 |Ice Maker, BioFreshPlus | Select |
-| Presentation Light | Light or Select*|
+| Presentation Light | Light or Number*|
 | SuperCool, SuperFreeze, PartyMode, NightMode | Switch|
 | HydroBreeze | Fan |
 | Temperature | Climate |
