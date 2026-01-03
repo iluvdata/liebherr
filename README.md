@@ -86,6 +86,9 @@ This version will calculate the polling interval based on the number of devices/
 poll\ interval=\frac{30\ seconds}{number\ of\ devices}
 ```
 With a minimun poll interval of 30 seconds. 
+
+The polling interval can be adjusted manual (within some present limits) by changing the integration options.
+
 ## Troubleshooting
 - Ensure your Liebherr api key is correct.
 - Check the Home Assistant logs for any errors related to the integration.
