@@ -12,6 +12,15 @@
   },
   "entity": {
     "select": {
+      "biofreshplus": {
+        "name": "BioFreshPlus",
+        "state": {
+          "zero_zero": "0/0",
+          "zero_minus_two": "0/-2",
+          "minus_two_minus_two": "-2/-2",
+          "minus_two_zero": "-2/0"
+        }
+      },
       "icemaker": {
         "name": "Máquina de Hielo{zone}",
         "state": {
@@ -19,19 +28,63 @@
           "OFF": "Apagado",
           "MAX_ICE": "HieloMax"
         }
+      }
+    },
+    "number": {
+      "presentationlight": {
+        "name": "Presentation Light"
+      }
+    },
+    "switch": {
+      "supercool": {
+        "name": "SuperCool{zone}"
       },
-      "climate": {
-        "fridge": {
-          "name": "Nevera{zone}",
-          "state": {
-            "cool": "Enfriar"
-          }
-        },
-        "freezer": {
-          "name": "Congelador{zone}",
-          "state": {
-            "cool": "Congelar"
-          }
+      "superfrost": {
+        "name": "SuperFrost{zone}"
+      },
+      "partymode": {
+        "name": "Moda de fiesta"
+      },
+      "nightmode": {
+        "name": "Modo nocturno"
+      }
+    },
+    "light": {
+      "presentationlight": {
+        "name": "Luz de presentación"
+      }
+    },
+    "fan": {
+      "hydrobreeze": {
+        "name": "HydroBreeze"
+      }
+    },
+    "cover": {
+      "autodoor": {
+        "name": "AutoDoor{zone}"
+      }
+    },
+    "image": {
+      "device_image": {
+        "name": "Imagen del dispositivo"
+      }
+    },
+    "sensor": {
+      "updated": {
+        "name": "Última actualización"
+      }
+    },
+    "climate": {
+      "fridge": {
+        "name": "Nevera{zone}",
+        "state": {
+          "cool": "Enfriar"
+        }
+      },
+      "freezer": {
+        "name": "Congelador{zone}",
+        "state": {
+          "cool": "Congelar"
         }
       }
     }

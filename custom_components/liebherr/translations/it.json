@@ -15,6 +15,31 @@
       }
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opzioni Liebherr",
+        "sections": {
+          "polling_options": {
+            "name": "Intervallo di polling",
+            "description": "L'intervallo di polling determina la frequenza delle richieste per aggiornare i comandi di un dispositivo.\n\nDai test, il minimo è di circa {min_int} secondi. Intervalli più brevi causeranno errori `HTTP 429 - Too Many Requests`.\n\nPer un singolo dispositivo, si raccomandano 30 secondi. Se hai più dispositivi, si consiglia di avere 30 secondi tra ogni polling del dispositivo (es. 2 dispositivi = 15 secondi).",
+            "data": {
+              "poll_interval": "Intervallo di polling"
+            },
+            "data_description": {
+              "poll_interval": "Intervallo consigliato: {rec_int}s. Massimo: {max_int}s"
+            }
+          },
+          "presentation_light_options": {
+            "name": "Opzioni illuminazione di presentazione",
+            "data": {
+              "presentation_light_as_number": "Utilizzare un'entità di tipo numero (cursore) al posto di un'entità luce per controllare l'illuminazione di presentazione (se applicabile)?"
+            }
+          }
+        }
+      }
+    }
+  },
   "entity": {
     "select": {
       "icemaker": {
@@ -47,6 +72,11 @@
       },
       "nightmode": {
         "name": "NightMode"
+      }
+    },
+    "number": {
+      "presentationlight": {
+        "name": "Luce di presentazione"
       }
     },
     "light": {

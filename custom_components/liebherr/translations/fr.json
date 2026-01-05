@@ -1,30 +1,127 @@
 {
   "title": "Liebherr",
-  "options": {
-    "step": {
-      "init": {
-        "title": "Notifications",
-        "description": "Si vous souhaitez recevoir des alertes et des notifications pour vos appareils Liebherr, veuillez sélectionner les appareils pour lesquels vous souhaitez recevoir des notifications.",
-        "data": {
-          "devices_to_notify": "Appareils pour lesquels vous souhaitez recevoir des notifications :"
-        }
-      }
-    }
+  "common": {
+    "top": "Haut",
+    "middle": "Milieu",
+    "bottom": "Bas"
   },
   "config": {
     "step": {
       "user": {
-        "description": "Connectez votre appareil au réseau WiFi de votre domicile via l'application **SmartDevice**.\n\n**1. [Téléchargez](https://smartdevice.onelink.me/OrY5/8neax8lp) l'application**\n**2. Suivez les [instructions](https://go.liebherr.com/cb2ct1) pour connecter votre appareil**\n**3. Obtenez votre clé API via l'application SmartDevice**\n\nAccédez aux *Paramètres* dans l'application SmartDevice et sélectionnez **“Fonctionnalités bêta”**, puis activez HomeAPI.\n\nCopiez la clé API et collez-la ci-dessous. La clé API ne peut être copiée **qu'une seule fois**.\n\nDès que vous quittez l'écran, le code **ne pourra plus** être copié.\n\nSi vous avez oublié votre clé, vous devez en générer une nouvelle via l'application."
+        "description": "Connectez votre appareil au réseau Wi‑Fi de votre domicile via l'**application SmartDevice**.\n\n**1. [Téléchargez](https://smartdevice.onelink.me/OrY5/8neax8lp) l'application**\n**2. Suivez les [instructions](https://go.liebherr.com/cb2ct1) pour connecter votre appareil**\n**3. Obtenez votre clé API via l'application SmartDevice**\n\nAllez dans *Paramètres* de l'application SmartDevice et sélectionnez **« Fonctionnalités bêta »**, puis activez HomeAPI.\n\nCopiez la clé API et collez-la ci‑dessous. La clé API ne peut être copiée **qu'une seule fois**.\n\nDès que vous quittez l'écran, le code **ne peut** plus être copié.\n\nSi vous avez oublié votre clé, vous devez en créer une nouvelle via l'application.",
+        "data": {
+          "api_key": "Clé API de l'application SmartDevice"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Clé API déjà configurée",
+      "invalid_source": "Une source de flux invalide a été spécifiée, cela ne devrait jamais arriver (voir les logs)",
+      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options Liebherr",
+        "sections": {
+          "polling_options": {
+            "name": "Intervalle de sondage",
+            "description": "L'intervalle de sondage détermine la fréquence des requêtes pour actualiser les commandes d'un appareil.\n\nD'après les tests, le minimum est d'environ {min_int} secondes. Des intervalles plus courts entraîneront des erreurs `HTTP 429 - Too Many Requests`.\n\nPour un seul appareil, 30 secondes sont recommandées. Si vous avez plusieurs appareils, il est recommandé d'avoir 30 secondes entre chaque sondage d'appareil (ex. 2 appareils = 15 secondes).",
+            "data": {
+              "poll_interval": "Intervalle de sondage"
+            },
+            "data_description": {
+              "poll_interval": "Intervalle recommandé: {rec_int}s. Maximum: {max_int}s"
+            }
+          },
+          "presentation_light_options": {
+            "name": "Options d'éclairage de présentation",
+            "data": {
+              "presentation_light_as_number": "Utiliser une entité de type nombre (curseur) au lieu d'une entité lumière pour contrôler l'éclairage de présentation (si applicable)?"
+            }
+          }
+        }
       }
     }
   },
-  "notificationType": {
-    "door_alarm": "Alarme de porte",
-    "auto_door_obstacle_alarm": "Obstacle détecté par AutoDoor",
-    "auto_door_overheat_alarm": "Moteur AutoDoor en surchauffe",
-    "upper_power_failure_alarm": "Coupure de courant",
-    "lower_power_failure_alarm": "Coupure de courant",
-    "upper_temperature_alarm": "Alarme de température",
-    "lower_temperature_alarm": "Alarme de température"
+  "entity": {
+    "select": {
+      "icemaker": {
+        "name": "Fabrique à glaçons{zone}",
+        "state": {
+          "on": "Activé",
+          "off": "Désactivé",
+          "max_ice": "MaxIce"
+        }
+      },
+      "biofreshplus": {
+        "name": "BioFreshPlus",
+        "state": {
+          "zero_zero": "0/0",
+          "zero_minus_two": "0/-2",
+          "minus_two_minus_two": "-2/-2",
+          "minus_two_zero": "-2/0"
+        }
+      }
+    },
+    "number": {
+      "presentationlight": {
+        "name": "Éclairage de présentation"
+      }
+    },
+    "switch": {
+      "supercool": {
+        "name": "SuperCool{zone}"
+      },
+      "superfrost": {
+        "name": "SuperFrost{zone}"
+      },
+      "partymode": {
+        "name": "Mode fête"
+      },
+      "nightmode": {
+        "name": "Mode nuit"
+      }
+    },
+    "light": {
+      "presentationlight": {
+        "name": "Éclairage de présentation"
+      }
+    },
+    "fan": {
+      "hydrobreeze": {
+        "name": "HydroBreeze"
+      }
+    },
+    "cover": {
+      "autodoor": {
+        "name": "AutoDoor{zone}"
+      }
+    },
+    "image": {
+      "device_image": {
+        "name": "Image de l'appareil"
+      }
+    },
+    "climate": {
+      "fridge": {
+        "name": "Réfrigérateur{zone}",
+        "state": {
+          "cool": "Frais"
+        }
+      },
+      "freezer": {
+        "name": "Congélateur{zone}",
+        "state": {
+          "cool": "Congélation"
+        }
+      }
+    },
+    "sensor": {
+      "updated": {
+        "name": "Dernière actualisation"
+      }
+    }
   }
 }
