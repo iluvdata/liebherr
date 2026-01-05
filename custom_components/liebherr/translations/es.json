@@ -10,6 +10,31 @@
       }
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opciones de Liebherr",
+        "sections": {
+          "polling_options": {
+            "name": "Intervalo de sondeo",
+            "description": "El intervalo de sondeo determinará el intervalo entre las solicitudes para actualizar los controles de un dispositivo.\n\nSegún las pruebas, el mínimo es aproximadamente {min_int} segundos. Los intervalos más cortos resultarán en errores `HTTP 429 - Demasiadas solicitudes`.\n\nSi tienes un solo dispositivo, se recomienda 30 segundos. Si tienes varios dispositivos, se recomienda 30 segundos entre cada sondeo de dispositivo (por ejemplo, 2 dispositivos = 15 segundos).",
+            "data": {
+              "poll_interval": "Intervalo de sondeo"
+            },
+            "data_description": {
+              "poll_interval": "El intervalo recomendado es de {rec_int}s. El máximo es de {max_int}s."
+            }
+          },
+          "presentation_light_options": {
+            "name": "Opciones de Presentation Light",
+            "data": {
+              "presentation_light_as_select": "¿Usar un entidat númerico (control deslizante) en lugar de una entidad de luz para el control de Presentation Light (si corresponde)?"
+            }
+          }
+        }
+      }
+    }
+  },
   "entity": {
     "select": {
       "biofreshplus": {

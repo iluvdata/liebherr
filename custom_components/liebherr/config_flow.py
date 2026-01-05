@@ -16,7 +16,9 @@ from homeassistant.config_entries import (
 )
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import callback
+from homeassistant.data_entry_flow import section
 from homeassistant.helpers.selector import (
+    BooleanSelector,
     NumberSelector,
     NumberSelectorConfig,
     NumberSelectorMode,
@@ -26,12 +28,43 @@ from homeassistant.helpers.selector import (
 from . import _LOGGER
 from .const import (
     CONF_POLL_INTERVAL,
+    CONF_PRESENTATION_LIGHT_AS_NUMBER,
     DEFAULT_UPDATE_INTERVAL,
     DOMAIN,
     MAX_UPDATE_INTERVAL,
     MIN_UPDATE_INTERVAL,
 )
 from .coordinator import LiebherrConfigEntry
+
+POLLING_SECTION: str = "polling_options"
+LIGHT_SECTION: str = "presentation_light_options"
+
+OPTIONS_SCHEMA: vol.Schema = vol.Schema(
+    {
+        vol.Required(POLLING_SECTION): section(
+            vol.Schema(
+                {
+                    vol.Required(CONF_POLL_INTERVAL): NumberSelector(
+                        NumberSelectorConfig(
+                            min=MIN_UPDATE_INTERVAL,
+                            max=MAX_UPDATE_INTERVAL,  # 5 minutes
+                            step=1,
+                            unit_of_measurement="s",
+                            mode=NumberSelectorMode.BOX,
+                        )
+                    )
+                }
+            )
+        ),
+        vol.Required(LIGHT_SECTION): section(
+            vol.Schema(
+                {
+                    vol.Required(CONF_PRESENTATION_LIGHT_AS_NUMBER): BooleanSelector(),
+                }
+            )
+        ),
+    }
+)
 
 
 def async_calculate_poll_interval(number_of_devices: int) -> int:
@@ -57,33 +90,32 @@ class OptionsFlowHandler(OptionsFlowWithReload):
         if user_input is not None:
             return self.async_create_entry(
                 data={
-                    CONF_POLL_INTERVAL: user_input[CONF_POLL_INTERVAL],
+                    CONF_POLL_INTERVAL: user_input[POLLING_SECTION][CONF_POLL_INTERVAL],
+                    CONF_PRESENTATION_LIGHT_AS_NUMBER: user_input[LIGHT_SECTION][
+                        CONF_PRESENTATION_LIGHT_AS_NUMBER
+                    ],
                 }
             )
 
-        data_schema: vol.Schema = vol.Schema(
-            {
-                vol.Required(CONF_POLL_INTERVAL): NumberSelector(
-                    NumberSelectorConfig(
-                        min=MIN_UPDATE_INTERVAL,
-                        max=MAX_UPDATE_INTERVAL,  # 5 minutes
-                        step=1,
-                        unit_of_measurement="s",
-                        mode=NumberSelectorMode.BOX,
-                    )
-                ),
-            }
-        )
         suggested_values = {
-            CONF_POLL_INTERVAL: self.config_entry.options.get(
-                CONF_POLL_INTERVAL,
-                async_calculate_poll_interval(len(self.config_entry.runtime_data.data)),
-            ),
+            POLLING_SECTION: {
+                CONF_POLL_INTERVAL: self.config_entry.options.get(
+                    CONF_POLL_INTERVAL,
+                    async_calculate_poll_interval(
+                        len(self.config_entry.runtime_data.data)
+                    ),
+                )
+            },
+            LIGHT_SECTION: {
+                CONF_PRESENTATION_LIGHT_AS_NUMBER: self.config_entry.options.get(
+                    CONF_PRESENTATION_LIGHT_AS_NUMBER, False
+                ),
+            },
         }
         return self.async_show_form(
             step_id="init",
             data_schema=self.add_suggested_values_to_schema(
-                data_schema, suggested_values
+                OPTIONS_SCHEMA, suggested_values
             ),
             description_placeholders={
                 "min_int": str(MIN_UPDATE_INTERVAL),
@@ -103,7 +135,7 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
-    MINOR_VERSION = 2
+    MINOR_VERSION = 3
 
     async def async_step_user(
         self, user_input: dict[str, str] | None = None

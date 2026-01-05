@@ -14,8 +14,6 @@ This is an *unofficial* custom integration for Home Assistant that allows you to
 
 ### HACS (Recommended)
 
-> [!Warning]
-> If you are upgrading from the `bhuebschen/liebherr` version, it's recommended to remove this first to avoid orphaned devices/entities.
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?category=integration&owner=iluvdata&repository=liebherr)
 
@@ -41,6 +39,7 @@ or search for the Liebherr integration in HACS
 
 1. Enter your Liebherr HomeAPI API key. (see [here](https://developer.liebherr.com/apis/smartdevice-homeapi/), how to get the key)
 2. Complete the setup process.
+3. (Optional):  Configure the polling interval and the entity type for Presentation Light (see below).
 
 ## Usage
 Once the integration is configured, your Liebherr devices will appear as entities in Home Assistant. You can:
@@ -51,13 +50,16 @@ Once the integration is configured, your Liebherr devices will appear as entitie
 Controls will map to the following domains:
 | Liebherr Control | Homeassistant Domain |
 | -----------------| ---------------------|
-| Ice Maker, BioFreshPlus | Select |
-| Presentation Light | Light |
+| Auto Door | Cover |
+|Ice Maker, BioFreshPlus | Select |
+| Presentation Light | Light or Number*|
 | SuperCool, SuperFreeze, PartyMode, NightMode | Switch|
 | HydroBreeze | Fan |
 | Temperature | Climate |
 | `image_url` (Device) | Image |
 | Bottle Timer | Not available |
+
+*\* In version ≥ 2025.12.5 the domain/type of control/entity created can be selected in the integration options.*
 
 ### Discover New Appliances
 
@@ -71,26 +73,21 @@ and click on "Reload" on the configuration menu:
 
 ## Update Interval
 
-### Version 2025.10.4
+Given rate limits imposed by Liebherr in the beta [SmartDevice Home API](https://developer.liebherr.com/apis/smartdevice-homeapi/#advice-for-implementation) the integration can only make a request to the device control API more often than every 30s.
 
-Given rate limits imposed by Liebherr in the [SmartDevice Home API](https://developer.liebherr.com/apis/smartdevice-homeapi/#advice-for-implementation) the integration can only make a request to the API every 30s.  The interval between poll updates depends on the number of devices (since controls have to be requested separately for each device) and is determined by:
+> [!NOTE] Last Updated Sensor
+> A diagnostic sensor will be created for each device showing the last timestamp of the most recent poll but is disabled by default (as it will quickly fill up your database with state changes).
 
-$$
-   polling\ interval = number\ of\ devices\ ×\ 30\ seconds
-$$
-#### Example
-If you have 4 Liebherr devices associated with your account the update interval will be $4 × 30$ seconds $= 2$ minutes. Over this two minute period each device will be updated *sequentially* at 30 second intervals:
-
->  Device 1 > 30 seconds > Device 2 > 30 seconds > Device 3 > 30 Seconds > Device 4 > 30 seconds > Device 1 > ...
-
-### Version 2025.12.0
+### Version ≥ 2025.12.0
 
 This version will calculate the polling interval based on the number of devices/appliances associated with your Liebherr account.  Essentially the goal is to poll each device's controls every 30 seconds and is calculated thusly:
 
 ```math
 poll\ interval=\frac{30\ seconds}{number\ of\ devices}
 ```
-With a minimun poll interval of 30 seconds.
+With a minimun poll interval of 30 seconds. 
+
+The polling interval can be adjusted manual (within some present limits) by changing the integration options.
 
 ## Troubleshooting
 - Ensure your Liebherr api key is correct.
@@ -102,8 +99,6 @@ With a minimun poll interval of 30 seconds.
 ## Acknowledgements
 This is a rewrite of the great [custom intergration](https://github.com/bhuebschen/liebherr) orginally maintained by @bhuebschen from a fork created by @skatsavos.  The original intergration stopped working in Oct 2025 and the orginal maintainer did not appear to be maintaining the project.
 
-> [!Warning]
-> This is nearly a complete rewrite to the orginal integration.  As such there is not a suitable upgrade path. Start by removing the prior liebherr entry and HACS respository from your Homeassistant **before** proceeding with installation.
 
 > [!Warning]
 > This was tested on a Liebherr Device lacking:
@@ -112,15 +107,7 @@ This is a rewrite of the great [custom intergration](https://github.com/bhuebsch
 >> - BioFreshPlus (reported to be working)
 >> - HydroBreeze (reported to be working)
 >
-> If you encounter an issue with these features please submit an issue [here](https://github.com/iluvdata/liebherr/issues).
-
-### Significant Changes from [bhuebschen/liebherr v0.1.1](https://github.com/bhuebschen/liebherr)
-- Data is now pulled from the API using a single "coordinated" pull set on a configurable interval per https://github.com/bhuebschen/liebherr/issues/44#issuecomment-3442421338 and https://developer.liebherr.com/apis/smartdevice-homeapi/ set to a default interval of 30s.
-- Added support for all the support features in the API such as IceMaker Control, BioFreshPlus, AutoDoor, Presentation Light (wine fridges) and HydroBreeze (see Caution above).
-- Translation support has been greatly expanded but please note I was not able to update the many translations (please feel free to contribute)!
-- Device/appliance list will only be queried upon setup.  If you add a new device to your Liebherr account you with have to "Reload" the integration in Homeassitant (or restart Homeassistant).
-- The integration was modernized to align better with Homeassistant's development standards https://developers.home-assistant.io/docs/development_index and remove the use of deprecated functions.
-
+> If you encounter an issue with these features please submit an issue.
 
 ## Support
 If you encounter any issues or have feature requests, please open an issue on the [GitHub Issues page](https://github.com/iluvdata/liebherr/issues).

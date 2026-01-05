@@ -1,6 +1,7 @@
 """Liebherr HomeAPI for HomeAssistant."""
 
 import logging
+from typing import Any
 
 from pyliebherr.exception import LiebherrAuthException
 
@@ -9,6 +10,7 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 
+from .const import CONF_PRESENTATION_LIGHT_AS_NUMBER
 from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -18,7 +20,6 @@ PLATFORMS = {
     Platform.COVER,
     Platform.FAN,
     Platform.IMAGE,
-    Platform.LIGHT,
     Platform.SENSOR,
     Platform.SELECT,
     Platform.SWITCH,
@@ -40,6 +41,12 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEnt
 
     config_entry.runtime_data = coordinator
 
+    if config_entry.options.get(CONF_PRESENTATION_LIGHT_AS_NUMBER, False):
+        PLATFORMS.add(Platform.NUMBER)
+    else:
+        # Add Light to platforms
+        PLATFORMS.add(Platform.LIGHT)
+
     await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
 
     return True
@@ -47,24 +54,20 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEnt
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: LiebherrConfigEntry):
     """Migrate old entry to newer version."""
-    _LOGGER.debug(
-        "Migrating configuration from version %s.%s",
-        config_entry.version,
-        config_entry.minor_version,
-    )
 
     if config_entry.version == 1:
         if config_entry.minor_version < 2:
-            # No longer using options for interval
+            # No longer using options for interval, since reverted
             hass.config_entries.async_update_entry(
                 config_entry, options={}, minor_version=2, version=1
             )
-
-    _LOGGER.debug(
-        "Migration to configuration version %s.%s successful",
-        config_entry.version,
-        config_entry.minor_version,
-    )
+        if config_entry.minor_version < 3:
+            # Add presentation_light_as_select option defaulting to False
+            options: dict[str, Any] = config_entry.options.copy()
+            options[CONF_PRESENTATION_LIGHT_AS_NUMBER] = False
+            hass.config_entries.async_update_entry(
+                config_entry, options=options, minor_version=3, version=1
+            )
 
     return True
 

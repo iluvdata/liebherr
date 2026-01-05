@@ -23,5 +23,6 @@ async def async_get_config_entry_diagnostics(
 
     return {
         "entry_data": async_redact_data(entry.data, TO_REDACT),
+        "options": async_redact_data(entry.options, TO_REDACT),
         "data": async_redact_data(devices, TO_REDACT),
     }

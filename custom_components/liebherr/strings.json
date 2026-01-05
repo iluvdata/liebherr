@@ -23,14 +23,25 @@
   "options": {
     "step": {
       "init": {
-        "title": "Liebherr Polling Interval",
-        "data": {
-          "poll_interval": "Polling Interval"
-        },
-        "data_description": {
-          "poll_interval": "Recommended interval is {rec_int}s.  Maximum is {max_int}s."
-        },
-        "description": "The polling interval will determine the interval between requests to refresh a devices's controls.\n\nBased on testing the minimun is approximately {min_int} seconds. Shorter intervals will result in `HTTP 429 - Too Many Requests` errors.\n\nIf you have one device 30 seconds is recommended.  If you have multiple devices 30 seconds between each device poll is recommended (e.g. 2 devices = 15 seconds)."
+        "title": "Liebherr Options",
+        "sections": {
+          "polling_options": {
+            "name": "Poll Interval",
+            "description": "The polling interval will determine the interval between requests to refresh a devices's controls.\n\nBased on testing the minimun is approximately {min_int} seconds. Shorter intervals will result in `HTTP 429 - Too Many Requests` errors.\n\nIf you have one device 30 seconds is recommended.  If you have multiple devices 30 seconds between each device poll is recommended (e.g. 2 devices = 15 seconds).",
+            "data": {
+              "poll_interval": "Polling Interval"
+            },
+            "data_description": {
+              "poll_interval": "Recommended interval is {rec_int}s.  Maximum is {max_int}s."
+            }
+          },
+          "presentation_light_options": {
+            "name": "Presentation Light Options",
+            "data": {
+              "presentation_light_as_number": "Use a number entity (slider) instead of a light entity for Presentation Light control (if applicable)?"
+            }
+          }
+        }
       }
     }
   },
@@ -60,6 +71,9 @@
           "minus_two_minus_two": "-2/-2",
           "minus_two_zero": "-2/0"
         }
+      },
+      "presentationlight": {
+        "name": "Presentation Light"
       }
     },
     "switch": {
@@ -103,6 +117,11 @@
     "cover": {
       "autodoor": {
         "name": "AutoDoor{zone}"
+      }
+    },
+    "number": {
+      "presentationlight": {
+        "name": "Presentation Light"
       }
     },
     "sensor": {
