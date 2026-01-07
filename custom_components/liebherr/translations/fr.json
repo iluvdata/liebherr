@@ -15,7 +15,8 @@
       }
     },
      "error": {
-      "auth_error": "Clé API non autorisée ou invalide."
+      "auth_error": "Clé API non autorisée ou invalide.",
+      "whitespace_api_key": "There is whitespace before or after the api key."
     },
 
     "abort": {

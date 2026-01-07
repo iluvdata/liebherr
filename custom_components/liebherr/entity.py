@@ -2,8 +2,8 @@
 
 import logging
 
-from pyliebherr import LiebherrControl, LiebherrDevice
-from pyliebherr.models import ControlType, LiebherrMappedControls
+from pyliebherr import ControlType, LiebherrControl, LiebherrDevice
+from pyliebherr.models import LiebherrMappedControls
 
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback

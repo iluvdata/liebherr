@@ -1,6 +1,7 @@
 """Config flow for Liebherr Integration."""
 
 from collections.abc import Mapping
+import re
 from typing import Any
 
 from pyliebherr import LiebherrAPI, LiebherrDevice
@@ -145,13 +146,16 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             # check the API key
-            api: LiebherrAPI = LiebherrAPI(user_input[CONF_API_KEY])
-            devices: list[LiebherrDevice] = []
-            try:
-                devices = await api.async_get_appliances()
-            except LiebherrAuthException:
-                errors["base"] = "auth_error"
-            await api.async_close()
+            if not re.fullmatch("^\\S.*\\S$", user_input[CONF_API_KEY]):
+                errors[CONF_API_KEY] = "whitespace_api_key"
+            else:
+                api: LiebherrAPI = LiebherrAPI(user_input[CONF_API_KEY])
+                devices: list[LiebherrDevice] = []
+                try:
+                    devices = await api.async_get_appliances()
+                except LiebherrAuthException:
+                    errors["base"] = "auth_error"
+                await api.async_close()
             if not errors:
                 await self.async_set_unique_id(f"{DOMAIN}_{user_input[CONF_API_KEY]}")
                 self._abort_if_unique_id_configured()
@@ -181,9 +185,7 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
                 return self.async_abort(reason="invalid_source")
 
         data_schema: vol.Schema = vol.Schema(
-            {
-                vol.Required(CONF_API_KEY): TextSelector(),
-            }
+            {vol.Required(CONF_API_KEY): vol.All(TextSelector())}
         )
         return self.async_show_form(
             step_id="user", data_schema=data_schema, errors=errors

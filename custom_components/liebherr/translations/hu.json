@@ -15,7 +15,8 @@
       }
     },
     "error": {
-      "auth_error": "API Key nincs engedélyezve vagy érvénytelen."
+      "auth_error": "API Key nincs engedélyezve vagy érvénytelen.",
+      "whitespace_api_key": "There is whitespace before or after the api key."
     },
     "abort": {
       "already_configured": "API Key már konfigurálva.",

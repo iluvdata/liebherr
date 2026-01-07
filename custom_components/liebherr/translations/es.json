@@ -10,7 +10,8 @@
       }
     },
     "error": {
-      "auth_error": "Clavo API no autorizado o inválido."
+      "auth_error": "Clavo API no autorizado o inválido.",
+      "whitespace_api_key": "Hay espacio en blanco antes o detras del Clavo API."
     },
     "abort": {
       "already_configured": "Clavo API ya configurada.",
