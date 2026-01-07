@@ -151,6 +151,7 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
                 devices = await api.async_get_appliances()
             except LiebherrAuthException:
                 errors["base"] = "auth_error"
+            await api.async_close()
             if not errors:
                 await self.async_set_unique_id(f"{DOMAIN}_{user_input[CONF_API_KEY]}")
                 self._abort_if_unique_id_configured()
