@@ -4,7 +4,7 @@ import logging
 from typing import Any, Final
 
 from pyliebherr import LiebherrControl, LiebherrDevice
-from pyliebherr.const import CONTROL_TYPE
+from pyliebherr.const import ControlType
 from pyliebherr.models import BaseToggleControlRequest, ZoneToggleControlRequest
 
 from homeassistant.components.switch import SwitchEntity
@@ -12,7 +12,7 @@ from homeassistant.const import ATTR_ICON
 from homeassistant.core import HomeAssistant
 
 from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
-from .entity import LiebherrEntity
+from .entity import LiebherrEntity, base_async_setup_entry
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -36,25 +36,9 @@ async def async_setup_entry(
 ):
     """Set up Liebherr switches from a config entry."""
 
-    entities = []
-    for device in config_entry.runtime_data.data:
-        controls: list[LiebherrControl] = device.controls
-        if not controls:
-            _LOGGER.warning("No controls found for appliance %s", device.device_id)
-            continue
-
-        for control in controls:
-            if control.type == CONTROL_TYPE.TOGGLE:
-                entities.extend(
-                    [
-                        LiebherrSwitch(config_entry.runtime_data, device, control),
-                    ]
-                )
-
-    if not entities:
-        _LOGGER.error("No switch entities created")
-
-    async_add_entities(entities, update_before_add=True)
+    await base_async_setup_entry(
+        config_entry, async_add_entities, LiebherrSwitch, ControlType.TOGGLE
+    )
 
 
 class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportIncompatibleVariableOverride]
@@ -73,18 +57,13 @@ class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportInc
         )
 
     def _handle_coordinator_update(self) -> None:
-        for control in self._device.controls:
-            if (
-                control.control_name == self._control.control_name
-                and control.zone_id == self._control.zone_id
-            ):
-                self._attr_is_on = (
-                    control.value
-                    if isinstance(control.value, bool)
-                    else bool(control.value)
-                )
-                self.async_write_ha_state()
-                return
+        if control := self.get_control():
+            self._attr_is_on = (
+                control.value
+                if isinstance(control.value, bool)
+                else bool(control.value)
+            )
+            self.async_write_ha_state()
 
     async def _async_set_toggle(self, turn_on: bool) -> None:
         control_name = self._control.control_name.lower()
@@ -113,6 +92,6 @@ class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportInc
         """Turn the switch on."""
         await self._async_set_toggle(True)
 
-    async def async_turn_off(self, **kwargs):
+    async def async_turn_off(self, **kwargs) -> None:
         """Turn the switch off."""
         await self._async_set_toggle(False)

@@ -4,7 +4,7 @@ from enum import StrEnum
 import logging
 
 from pyliebherr import LiebherrControl, LiebherrDevice
-from pyliebherr.const import CONTROL_TYPE
+from pyliebherr.const import ControlType
 from pyliebherr.models import AutoDoorControl
 
 from homeassistant.components.cover import (
@@ -22,7 +22,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 
 from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
-from .entity import LiebherrEntity
+from .entity import LiebherrEntity, base_async_setup_entry
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -40,21 +40,12 @@ async def async_setup_entry(
 ):
     """Set up Liebherr covers from a config entry."""
 
-    entities: list[LiebherrCover] = []
-
-    for device in config_entry.runtime_data.data:
-        controls = device.controls
-        if not controls:
-            _LOGGER.warning("No controls found for appliance %s", device.device_id)
-            continue
-
-        for control in controls:
-            if control.type == CONTROL_TYPE.AUTO_DOOR_CONTROL:
-                entities.extend(
-                    [LiebherrCover(config_entry.runtime_data, device, control)]
-                )
-
-    async_add_entities(entities, update_before_add=True)
+    await base_async_setup_entry(
+        config_entry,
+        async_add_entities,
+        LiebherrCover,
+        ControlType.AUTO_DOOR_CONTROL,
+    )
 
 
 class LiebherrCover(LiebherrEntity, CoverEntity):
@@ -89,36 +80,31 @@ class LiebherrCover(LiebherrEntity, CoverEntity):
         return super().available
 
     def _handle_coordinator_update(self) -> None:
-        for control in self._device.controls:
-            if (
-                control.control_name == self._control.control_name
-                and control.zone_id == self._control.zone_id
-            ):
-                if control.value != DOOR_STATE.MOVING:
-                    self._attr_is_closed = control.value == DOOR_STATE.CLOSED
-                    self._attr_is_closing = False
-                    self._attr_is_opening = False
-                    if control.value == DOOR_STATE.CLOSED:
-                        self._last_state = STATE_CLOSED
-                        self._attr_icon = "mdi:door"
-                    else:
-                        self._last_state = STATE_OPEN
-                        self._attr_icon = "mdi:door-open"
+        if control := self.get_control():
+            if control.value != DOOR_STATE.MOVING:
+                self._attr_is_closed = control.value == DOOR_STATE.CLOSED
+                self._attr_is_closing = False
+                self._attr_is_opening = False
+                if control.value == DOOR_STATE.CLOSED:
+                    self._last_state = STATE_CLOSED
+                    self._attr_icon = "mdi:door"
                 else:
-                    self._attr_is_closed = False
-                    self._attr_is_opening = self._last_state in [
-                        STATE_CLOSED,
-                        STATE_OPENING,
-                    ]
-                    self._attr_is_closing = self._last_state == [
-                        STATE_OPEN,
-                        STATE_CLOSING,
-                    ]
-                    self._last_state = (
-                        STATE_OPENING if self._attr_is_opening else STATE_CLOSING
-                    )
-                self.async_write_ha_state()
-                return
+                    self._last_state = STATE_OPEN
+                    self._attr_icon = "mdi:door-open"
+            else:
+                self._attr_is_closed = False
+                self._attr_is_opening = self._last_state in [
+                    STATE_CLOSED,
+                    STATE_OPENING,
+                ]
+                self._attr_is_closing = self._last_state == [
+                    STATE_OPEN,
+                    STATE_CLOSING,
+                ]
+                self._last_state = (
+                    STATE_OPENING if self._attr_is_opening else STATE_CLOSING
+                )
+            self.async_write_ha_state()
 
     async def async_open_cover(self, **kwargs):
         """Send command to open the cover."""

@@ -4,7 +4,7 @@ import math
 from typing import Any
 
 from pyliebherr import LiebherrControl, LiebherrDevice
-from pyliebherr.const import CONTROL_TYPE
+from pyliebherr.const import ControlType
 from pyliebherr.models import PresentationLightControlRequest
 
 from homeassistant.components.light import ATTR_BRIGHTNESS, ColorMode, LightEntity
@@ -13,21 +13,16 @@ from homeassistant.util.color import brightness_to_value, value_to_brightness
 
 from .const import BRIGHTNESS_SCALE, DEFAULT_BRIGHTNESS_SCALE
 from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
-from .entity import LiebherrEntity
+from .entity import LiebherrEntity, base_async_setup_entry
 
 
 async def async_setup_entry(
     hass: HomeAssistant, config_entry: LiebherrConfigEntry, async_add_entities
 ):
-    """Set up Liebherr switches from a config entry."""
-    entities: list[LiebherrLight] = []
-    for device in config_entry.runtime_data.data:
-        for control in device.controls:
-            if control.type == CONTROL_TYPE.PRESENTATION_LIGHT:
-                entities.extend(
-                    [LiebherrLight(config_entry.runtime_data, device, control)]
-                )
-    async_add_entities(entities, update_before_add=True)
+    """Set up Liebherr light from a config entry."""
+    await base_async_setup_entry(
+        config_entry, async_add_entities, LiebherrLight, ControlType.PRESENTATION_LIGHT
+    )
 
 
 class LiebherrLight(LiebherrEntity, LightEntity):
@@ -53,17 +48,15 @@ class LiebherrLight(LiebherrEntity, LightEntity):
         return super().available
 
     def _handle_coordinator_update(self) -> None:
-        for control in self._device.controls:
-            if control.type == self._control.type:
-                if control.target is not None and control.target > 0:
-                    self._attr_brightness = value_to_brightness(
-                        self.brightness_scale, control.target
-                    )
-                    self._attr_is_on = True
-                else:
-                    self._attr_is_on = False
-                self.async_write_ha_state()
-                return
+        if control := self.get_control():
+            if control.target is not None and control.target > 0:
+                self._attr_brightness = value_to_brightness(
+                    self.brightness_scale, control.target
+                )
+                self._attr_is_on = True
+            else:
+                self._attr_is_on = False
+            self.async_write_ha_state()
 
     async def async_turn_on(
         self,

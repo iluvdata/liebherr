@@ -2,7 +2,7 @@
 
 from datetime import UTC, datetime
 
-from pyliebherr import CONTROL_TYPE, LiebherrControl, LiebherrDevice
+from pyliebherr import ControlType, LiebherrControl, LiebherrDevice
 
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.const import EntityCategory
@@ -20,16 +20,16 @@ async def async_setup_entry(
 ):
     """Set up Liebherr appliances as devices and entities from a config entry."""
 
-    devices: list[LiebherrDevice] = config_entry.runtime_data.data
-    entities = []
-    for device in devices:
-        for control in device.controls:
-            if control.type == CONTROL_TYPE.UPDATED:
-                entities.append(  # noqa: PERF401
-                    UpdateSensor(config_entry.runtime_data, device, control)
-                )
+    entities: list[UpdateSensor] = [
+        UpdateSensor(
+            config_entry.runtime_data,
+            device,
+            LiebherrControl(ControlType.UPDATED, "updated"),
+        )
+        for device in config_entry.runtime_data.data
+    ]
 
-    async_add_entities(entities, update_before_add=True)
+    async_add_entities(entities)
 
 
 class UpdateSensor(LiebherrEntity, SensorEntity):  # pyright: ignore[reportIncompatibleVariableOverride]
@@ -50,8 +50,5 @@ class UpdateSensor(LiebherrEntity, SensorEntity):  # pyright: ignore[reportIncom
 
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        for control in self._device.controls:
-            if self._control.control_name == control.control_name:
-                self._attr_native_value = datetime.now(UTC)
-                self.async_write_ha_state()
-                return
+        self._attr_native_value = datetime.now(UTC)
+        self.async_write_ha_state()

@@ -1,9 +1,7 @@
 """Support for Liebherr appliances as climate devices."""
 
-import logging
-
 from pyliebherr import LiebherrControl, LiebherrDevice
-from pyliebherr.const import CONTROL_TYPE, ZONE_POSITION
+from pyliebherr.const import ControlType, ZonePosition
 from pyliebherr.models import TemperatureControlRequest
 
 from homeassistant.components.climate import (
@@ -16,9 +14,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
-from .entity import LiebherrEntity
-
-_LOGGER = logging.getLogger(__name__)
+from .entity import LiebherrEntity, base_async_setup_entry
 
 
 async def async_setup_entry(
@@ -28,26 +24,9 @@ async def async_setup_entry(
 ):
     """Set up Liebherr appliances as devices and entities from a config entry."""
 
-    devices: list[LiebherrDevice] = config_entry.runtime_data.data
-    entities = []
-    for device in devices:
-        if not device.controls:
-            _LOGGER.warning("No controls found for appliance %s", device.device_id)
-            continue
-        if device.type in LiebherrDevice.Type:
-            for control in device.controls:
-                if control.type == CONTROL_TYPE.TEMPERATURE:
-                    _LOGGER.debug(
-                        "Adding climate entity for %s_%s_%s",
-                        device.device_id,
-                        control.control_name if control.control_name else control.type,
-                        control.zone_position,
-                    )
-                    entities.append(
-                        LiebherrClimate(config_entry.runtime_data, device, control)
-                    )
-
-    async_add_entities(entities, update_before_add=True)
+    await base_async_setup_entry(
+        config_entry, async_add_entities, LiebherrClimate, ControlType.TEMPERATURE
+    )
 
 
 class LiebherrClimate(LiebherrEntity, ClimateEntity):
@@ -70,9 +49,9 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
         self._attr_hvac_modes = [HVACMode.COOL]
         self._attr_hvac_mode = HVACMode.COOL
-        if control.zone_position == ZONE_POSITION.TOP:
+        if control.zone_position == ZonePosition.TOP:
             self._attr_icon = "mdi:fridge-top"
-        elif control.zone_position == ZONE_POSITION.BOTTOM:
+        elif control.zone_position == ZonePosition.BOTTOM:
             self._attr_icon = "mdi:fridge-bottom"
         else:
             self._attr_icon = "mdi:fridge"
@@ -121,16 +100,13 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        for control in self._device.controls:
-            if self._control.control_name == control.control_name:
-                if self._zone_id == control.zone_id:
-                    self._attr_target_temperature = control.target
-                    self._attr_current_temperature = (
-                        control.value if isinstance(control.value, int) else None
-                    )
-                    if control.min:
-                        self._attr_min_temp = control.min
-                    if control.max:
-                        self._attr_max_temp = control.max
-                    self.async_write_ha_state()
-                    return
+        if control := self.get_control():
+            self._attr_target_temperature = control.target
+            self._attr_current_temperature = (
+                control.value if isinstance(control.value, int) else None
+            )
+            if control.min:
+                self._attr_min_temp = control.min
+            if control.max:
+                self._attr_max_temp = control.max
+            self.async_write_ha_state()

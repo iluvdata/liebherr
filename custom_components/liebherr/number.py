@@ -1,7 +1,7 @@
 """Number entity definitions for Liebherr integration."""
 
 from pyliebherr import LiebherrControl, LiebherrDevice
-from pyliebherr.const import CONTROL_TYPE
+from pyliebherr.const import ControlType
 from pyliebherr.exception import LiebherrException
 from pyliebherr.models import PresentationLightControlRequest
 
@@ -12,7 +12,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import BRIGHTNESS_SCALE, DEFAULT_BRIGHTNESS_SCALE
 from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
-from .entity import LiebherrEntity
+from .entity import LiebherrEntity, base_async_setup_entry
 
 
 async def async_setup_entry(
@@ -22,17 +22,9 @@ async def async_setup_entry(
 ):
     """Set up Liebherr number entities from a config entry."""
 
-    entities: list[LiebherrNumber] = []
-
-    for device in config_entry.runtime_data.data:
-        for control in device.controls:
-            if control.type == CONTROL_TYPE.PRESENTATION_LIGHT:
-                entities.extend(
-                    [LiebherrNumber(config_entry.runtime_data, device, control)]
-                )
-                break  # inner loop
-
-    async_add_entities(entities)
+    await base_async_setup_entry(
+        config_entry, async_add_entities, LiebherrNumber, ControlType.PRESENTATION_LIGHT
+    )
 
 
 class LiebherrNumber(LiebherrEntity, NumberEntity):
@@ -61,14 +53,12 @@ class LiebherrNumber(LiebherrEntity, NumberEntity):
         return super().available
 
     def _handle_coordinator_update(self) -> None:
-        for control in self._device.controls:
-            if control.type == self._control.type:
-                if control.target is not None and control.target > 0:
-                    self._attr_native_value = control.target
-                else:
-                    self._attr_native_value = 0
-                self.async_write_ha_state()
-                return
+        if control := self.get_control():
+            if control.target is not None and control.target > 0:
+                self._attr_native_value = control.target
+            else:
+                self._attr_native_value = 0
+            self.async_write_ha_state()
 
     async def async_set_native_value(self, value: float) -> None:
         """Set new value."""
