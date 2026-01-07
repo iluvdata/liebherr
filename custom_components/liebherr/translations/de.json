@@ -14,10 +14,13 @@
         }
       }
     },
+    "error": {
+      "auth_error": "API-Schlüssel ist nicht autorisiert oder ungültig."
+    },
     "abort": {
       "already_configured": "HomeAPI-Schlüssel bereits konfiguriert.",
       "invalid_source": "Eine ungültige Quelle wurde angegeben. Sehen Sie im Fehlerprotokoll nach.",
-      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+      "reauth_successful": "Neuauthentifizierung erfolgreich."
     }
   },
   "options": {

@@ -14,10 +14,14 @@
         }
       }
     },
+     "error": {
+      "auth_error": "Clé API non autorisée ou invalide."
+    },
+
     "abort": {
       "already_configured": "Clé API déjà configurée",
       "invalid_source": "Une source de flux invalide a été spécifiée, cela ne devrait jamais arriver (voir les logs)",
-      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+      "reauth_successful": "Réauthentification réussie."
     }
   },
   "options": {

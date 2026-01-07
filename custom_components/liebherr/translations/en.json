@@ -14,10 +14,13 @@
         }
       }
     },
+    "error": {
+      "auth_error": "API Key is unauthorized or invalid."
+    },
     "abort": {
       "already_configured": "API Key already configured.",
       "invalid_source": "An invalid flow source was specified, this should never happen (see logs).",
-      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]"
+      "reauth_successful": "Reauthentication successful."
     }
   },
   "options": {

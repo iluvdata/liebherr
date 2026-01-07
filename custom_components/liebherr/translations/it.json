@@ -13,6 +13,14 @@
           "api_key": "Chiave API dall'app SmartDevice"
         }
       }
+    },
+    "error": {
+      "auth_error": "API Key non autorizzata o invalida."
+    },
+    "abort": {
+      "already_configured": "API Key già configurata.",
+      "invalid_source": "È stata specificata una fonte di flusso non valida, questo non dovrebbe mai accadere (vedi i log).",
+      "reauth_successful": "Riconnessione riuscita."
     }
   },
   "options": {

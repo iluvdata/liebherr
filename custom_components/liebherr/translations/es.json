@@ -8,6 +8,14 @@
           "api_key": "Clavo API a través de la aplicación SmartDevice."
         }
       }
+    },
+    "error": {
+      "auth_error": "Clavo API no autorizado o inválido."
+    },
+    "abort": {
+      "already_configured": "Clavo API ya configurada.",
+      "invalid_source": "Se especificó una fuente de flujo no válida, esto nunca debería suceder (ver registros).",
+      "reauth_successful": "Reautenticación exitosa."
     }
   },
   "options": {

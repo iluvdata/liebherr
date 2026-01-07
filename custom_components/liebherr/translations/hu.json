@@ -13,6 +13,14 @@
           "api_key": "API Key a SmartDevice App-ból"
         }
       }
+    },
+    "error": {
+      "auth_error": "API Key nincs engedélyezve vagy érvénytelen."
+    },
+    "abort": {
+      "already_configured": "API Key már konfigurálva.",
+      "invalid_source": "Egy érvénytelen folyamattípus lett megadva, ez soha nem fordulhat elő (lásd a naplókat).",
+      "reauth_successful": "Újraautentikáció sikeres."
     }
   },
   "entity": {
