@@ -75,7 +75,8 @@ and click on "Reload" on the configuration menu:
 
 Given rate limits imposed by Liebherr in the beta [SmartDevice Home API](https://developer.liebherr.com/apis/smartdevice-homeapi/#advice-for-implementation) the integration can only make a request to the device control API more often than every 30s.
 
-> [!NOTE] Last Updated Sensor
+> [!Tip]
+> #### Last Updated Sensor
 > A diagnostic sensor will be created for each device showing the last timestamp of the most recent poll but is disabled by default (as it will quickly fill up your database with state changes).
 
 ### Version ≥ 2025.12.0
