@@ -64,15 +64,21 @@ class LiebherrLight(LiebherrEntity, LightEntity):
     ) -> None:
         """Turn the light on."""
 
+        # turn on via switch brightness not so will try to set to previous brightness
+        # a brightness of zero won't turn on the light so turn on to max brightness
+        brightness: int = (
+            kwargs[ATTR_BRIGHTNESS]
+            if kwargs[ATTR_BRIGHTNESS]
+            else (self._attr_brightness if self._attr_brightness else 255)
+        )
+
         await self.coordinator.api.async_set_value(
             device_id=self._device.device_id,
             control=PresentationLightControlRequest(
-                math.ceil(
-                    brightness_to_value(self.brightness_scale, kwargs[ATTR_BRIGHTNESS])
-                )
+                math.ceil(brightness_to_value(self.brightness_scale, brightness))
             ),
         )
-        self._attr_brightness = kwargs[ATTR_BRIGHTNESS]
+        self._attr_brightness = brightness
         self._attr_is_on = True
         self.async_write_ha_state()
 
