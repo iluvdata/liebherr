@@ -1,7 +1,7 @@
 name: Feature request
 description: Suggest an idea for this integration
 title: '[Feature]: '
-labels: ['feature']
+labels: ['enhancement']
 assignees: iluvdata
 body:
   - type: markdown
