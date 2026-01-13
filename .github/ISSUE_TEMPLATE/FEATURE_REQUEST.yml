@@ -1,0 +1,30 @@
+name: Feature request
+descriptiont: Suggest an idea for this integration
+title: '[Feature]: '
+labels: ['feature']
+assignees: iluvdata
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not use this form to report bugs (i.e. things not working the way you expect them to work.  Use the "Bug Request" Form).  If you are suggesting changes to the translation of a specific language please consider:
+        1. Fork this respository
+        2. Add or change the appropriate language `.json` file in your respostory (this can be done in GitHub without the need for any special tools).
+        3. Create a pull request.
+        If your not comfortable with the above, you can still contribute, but be very clear about which translation changes are needed.
+  - type:  textarea
+    attributes: 
+      label: Feature description
+      placeholder:  |
+        Describe the problem you'd like the feature to address or the functionality you think is missing from this integration.  Example:  X function works in the manufacture's app but doesn't in the integration.  Note that many features in the "native" app may not yet exposed through the API.
+    validations:  required
+  - type:  textarea
+    attributes:
+      label:  Desired solution
+      placeholder: |
+        Describe what type of solution you think would address the problem. e.g. A select entity or a light entity that addresses a certain function.
+  - type:  textarea
+    attributes:
+      label:  Alternatives / Workarounds
+      placeholder: |
+        Describe any alternatives or workarounds you have tried.
