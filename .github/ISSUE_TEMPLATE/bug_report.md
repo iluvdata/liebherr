@@ -1,40 +1,58 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
+title: 'Bug Report'
 labels: ''
 assignees: iluvdata
-
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please complete all fields to the best of your ability. Issues with scant information
+        will be deprioritized.
+  - type: textarea
+    attributes:
+      label:  Describe the bug
+    validation:
+      required: true
+  - type: textarea
+    attributes:
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error       
+      label: "Steps to reproduce"
+  - type: input
+    attributes:
+      description: |
+        Add your model numbers here.  Helpful to understand which features /
+        settings are present on your device
+      placeholder: "Example:  CNsdh 754i-107 138"
+      label: "Liebherr model number(s)"
+  - type: checkboxes
+    attributes:
+      label: Screenshot(s)
+      options:
+        - label:  Uploaded
+  - type: textarea
+    attributes:
+      label: Logs
+      description: |
+        Copy and paste any errors, warnings, or debug information from the log file (or upload).
+        If there are no errors or warnings in the log file, please enable debug logging and try again.
+        Please note that your device IDs will be presented in debug logs but the API Key will not:
+        you may want to redact logsmanually.
+  - type: checkboxes
+    attributes:
+      label: Diagnostic Download(s)
+      description: |
+        Copy and paste or attach the diagnostic download (*.json) from the integration
+        (see https://www.home-assistant.io/integrations/diagnostics/)
+      options:
+        - label:  Config Entry
+        - label:  Device Diagnostics (affected devices only, if applicable)
+  - type: textarea
+    attributes:
+      label: Additional Context
 ---
-<!-- Please complete all fields to the best of your ability. Issues with scant information will be deprioritized. -->
-
-### Describe the bug
-<!-- A clear and concise description of what the bug is. -->
-
-### To Reproduce
-Steps to reproduce the behavior:
-<!--
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
--->
-
-### Liebherr Model Number(s) (optional)
-<!-- Add your model numbers here.  Helpful to understand which features / settings are present on your device -->
-<!-- Example:  CNsdh 754i-107 138 -->
-
-### Screenshot(s)
-<!-- If applicable, add screenshots (or upload) to help explain your problem. -->
-- [ ] Uploaded
-
-### Relevant Homeassistant Log Entries
-<!-- Copy and paste any errors, warnings, or debug information from the log file.  If there are no errors or warnings in the log file, please enable debug logging and try again. Please note that your device IDs will be presented in debug logs but the API Key will not:  you may want to redact logsmanually. -->
-
-### Diagnostic Downloads
-<!-- Copy and paste or attach the diagnostic download (*.json) from the integration (see https://www.home-assistant.io/integrations/diagnostics/) -->
-- [ ] Config Entry
-- [ ] Device Diagnostics (affected devices only, if applicable)
-
-### Additional Context
-<!-- Add any other context about the problem here. -->
