@@ -17,7 +17,8 @@ body:
       label: Feature description
       placeholder:  |
         Describe the problem you'd like the feature to address or the functionality you think is missing from this integration.  Example:  X function works in the manufacture's app but doesn't in the integration.  Note that many features in the "native" app may not yet exposed through the API.
-    validations:  required
+    validations:  
+      - required
   - type:  textarea
     attributes:
       label:  Desired solution
