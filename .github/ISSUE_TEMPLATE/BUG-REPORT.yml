@@ -31,7 +31,6 @@ body:
   - type: textarea
     attributes:
       label: Screenshot(s)
-      value: "- [ ] Uploaded"
   - type: textarea
     attributes:
       label: Logs
@@ -44,9 +43,7 @@ body:
         Copy and paste or attach the diagnostic download (*.json) from the integration (see https://www.home-assistant.io/integrations/diagnostics/). 
         Please mark which diagnostics you've included.
       value: |
-        - [ ] Config Entry
-        - [ ] Device Diagnostics (affected devices only, if applicable)
-        <!-- Paste .json file contents below -->
+        <!-- Paste or upload .json file contents below -->
         ### Config Entry `.json` diagnostic
 
         ### Device `.json` diagnostic
