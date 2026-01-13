@@ -8,10 +8,11 @@ body:
     attributes:
       value: |
         Do not use this form to report bugs (i.e. things not working the way you expect them to work.  Use the "Bug Request" Form).  If you are suggesting changes to the translation of a specific language please consider:
-        1. Fork this respository
+        1. Fork this respository.
         2. Add or change the appropriate language `.json` file in your respostory (this can be done in GitHub without the need for any special tools).
         3. Create a pull request.
-        If your not comfortable with the above, you can still contribute, but be very clear about which translation changes are needed.
+        
+        If your not comfortable with the above, you can still contribute translations using this form, but be very clear about which translation changes are needed (and please provide them yourself)!
   - type:  textarea
     attributes: 
       label: Feature description
