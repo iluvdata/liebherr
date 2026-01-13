@@ -8,8 +8,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Please complete all fields to the best of your ability. Issues with scant information
-        will be deprioritized.
+        Please complete all fields to the best of your ability. Issues with scant information will be deprioritized.
   - type: textarea
     attributes:
       label:  Describe the bug
@@ -26,32 +25,31 @@ body:
   - type: input
     attributes:
       description: |
-        Add your model numbers here.  Helpful to understand which features /
-        settings are present on your device
+        Add your model numbers here.  Helpful to understand which features / settings are present on your device
       placeholder: "Example:  CNsdh 754i-107 138"
       label: "Liebherr model number(s)"
-  - type: checkboxes
+  - type: textarea
     attributes:
       label: Screenshot(s)
-      options:
-        - label:  Uploaded
+      value: "- [ ] Uploaded"
   - type: textarea
     attributes:
       label: Logs
       description: |
-        Copy and paste any errors, warnings, or debug information from the log file (or upload).
-        If there are no errors or warnings in the log file, please enable debug logging and try again.
-        Please note that your device IDs will be presented in debug logs but the API Key will not:
-        you may want to redact logsmanually.
-  - type: checkboxes
+        Copy and paste any errors, warnings, or debug information from the log file (or upload). If there are no errors or warnings in the log file, please enable debug logging and try again. Please note that your device IDs will be presented in debug logs but the API Key will not: you may want to redact logs manually.
+  - type: textarea
     attributes:
       label: Diagnostic Download(s)
       description: |
-        Copy and paste or attach the diagnostic download (*.json) from the integration
-        (see https://www.home-assistant.io/integrations/diagnostics/)
-      options:
-        - label:  Config Entry
-        - label:  Device Diagnostics (affected devices only, if applicable)
+        Copy and paste or attach the diagnostic download (*.json) from the integration (see https://www.home-assistant.io/integrations/diagnostics/). 
+        Please mark which diagnostics you've included.
+      value: |
+        - [ ] Config Entry
+        - [ ] Device Diagnostics (affected devices only, if applicable)
+        <!-- Paste .json file contents below -->
+        ### Config Entry `.json` diagnostic
+
+        ### Device `.json` diagnostic
   - type: textarea
     attributes:
       label: Additional Context
