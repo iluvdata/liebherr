@@ -3,6 +3,7 @@ about: Create a report to help us improve
 title: 'Bug Report'
 labels: ''
 assignees: iluvdata
+type: bug
 body:
   - type: markdown
     attributes:
