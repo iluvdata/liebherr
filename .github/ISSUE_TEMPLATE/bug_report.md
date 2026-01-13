@@ -28,13 +28,13 @@ Steps to reproduce the behavior:
 <!-- If applicable, add screenshots (or upload) to help explain your problem. -->
 - [ ] Uploaded
 
-## Relevant Homeassistant Log Entries
+### Relevant Homeassistant Log Entries
 <!-- Copy and paste any errors, warnings, or debug information from the log file.  If there are no errors or warnings in the log file, please enable debug logging and try again. Please note that your device IDs will be presented in debug logs but the API Key will not:  you may want to redact logsmanually. -->
 
-## Diagnostic Downloads
+### Diagnostic Downloads
 <!-- Copy and paste or attach the diagnostic download (*.json) from the integration (see https://www.home-assistant.io/integrations/diagnostics/) -->
 - [ ] Config Entry
 - [ ] Device Diagnostics (affected devices only, if applicable)
 
-## Additional Context
+### Additional Context
 <!-- Add any other context about the problem here. -->
