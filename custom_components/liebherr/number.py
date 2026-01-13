@@ -48,21 +48,16 @@ class LiebherrNumber(LiebherrEntity, NumberEntity):
         self._attr_mode = NumberMode.SLIDER
 
     @property
-    def available(self) -> bool:  # pyright: ignore[reportIncompatibleVariableOverride, reportIncompatibleMethodOverride]
-        """Available."""
-        return super().available
-
-    def _handle_coordinator_update(self) -> None:
-        if control := self.get_control():
-            if control.target is not None and control.target > 0:
-                self._attr_native_value = control.target
-            else:
-                self._attr_native_value = 0
-            self.async_write_ha_state()
+    async def native_value(self) -> float:
+        """Light brightness."""
+        return (
+            self._control.target
+            if self._control.target is not None and self._control.target > 0
+            else 0
+        )
 
     async def async_set_native_value(self, value: float) -> None:
         """Set new value."""
-
         try:
             await self.coordinator.api.async_set_value(
                 device_id=self._device.device_id,
@@ -70,3 +65,6 @@ class LiebherrNumber(LiebherrEntity, NumberEntity):
             )
         except LiebherrException as ex:
             raise HomeAssistantError(f"Error setting value: {value}") from ex
+
+        self._control.target = round(value)
+        self.async_write_ha_state()

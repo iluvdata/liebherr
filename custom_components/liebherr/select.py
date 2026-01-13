@@ -12,7 +12,7 @@ from pyliebherr.models import (
 )
 
 from homeassistant.components.select import SelectEntity
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 
 from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
 from .entity import LiebherrEntity, base_async_setup_entry
@@ -50,9 +50,26 @@ class LiebherrSelect(LiebherrEntity, SelectEntity):
         super().__init__(coordinator=coordinator, device=device, control=control)
 
     @property
-    def available(self) -> bool:  # pyright: ignore[reportIncompatibleVariableOverride]
-        """Available from super."""
-        return super().available
+    def current_option(self) -> str | None:
+        """Current Option."""
+        return (
+            self._control.current_mode.lower() if self._control.current_mode else None
+        )
+
+    async def _async_select_option(self, data: LiebherrControlRequest) -> None:
+        try:
+            await self.coordinator.api.async_set_value(
+                self._device.device_id,
+                data,
+            )
+
+        except LiebherrException as e:
+            _LOGGER.error(
+                "Failed to set option '%s' for '%s': %s",
+                data,
+                self._device.device_id,
+                e,
+            )
 
 
 class LiebherrBioFreshPlus(LiebherrSelect):
@@ -74,39 +91,22 @@ class LiebherrBioFreshPlus(LiebherrSelect):
                 "Cannot setup %s for device %s", control.type, device.device_id
             )
 
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        if control := self.get_control():
-            if control.current_mode:
-                self._attr_current_option = control.current_mode.lower()
-                self._async_write_ha_state()
-
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
         if option not in self._attr_options:
             _LOGGER.error("Invalid option selected: %s", option)
             return
 
-        try:
-            data: LiebherrControlRequest = BioFreshPlusControlRequest(
-                zoneId=self._control.zone_id,
-                bioFreshPlusMode=BioFreshPlusControlRequest.BioFreshPlusMode(
-                    option.upper()
-                ),
-            )
+        data: LiebherrControlRequest = BioFreshPlusControlRequest(
+            zoneId=self._control.zone_id if self._control.zone_id else 0,
+            bioFreshPlusMode=BioFreshPlusControlRequest.BioFreshPlusMode(
+                option.upper()
+            ),
+        )
+        await self._async_select_option(data)
 
-            await self.coordinator.api.async_set_value(
-                self._device.device_id,
-                data,
-            )
-
-            self._attr_current_option = option
-            self._async_write_ha_state()
-
-        except LiebherrException as e:
-            _LOGGER.error(
-                "Failed to set option '%s' for '%s': %s", option, self.unique_id, e
-            )
+        self._control.currentMode = option
+        self.async_write_ha_state()
 
 
 class LiebherrIceMaker(LiebherrSelect):
@@ -125,12 +125,12 @@ class LiebherrIceMaker(LiebherrSelect):
             ["on", "off", "max_ice"] if control.hasMaxIce else ["on", "off"]
         )
 
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        if control := self.get_control():
-            if control.iceMakerMode:
-                self._attr_current_option = control.iceMakerMode.lower()
-                self._async_write_ha_state()
+    @property
+    def current_option(self) -> str | None:
+        """Current option."""
+        return (
+            self._control.iceMakerMode.lower() if self._control.iceMakerMode else None
+        )
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
@@ -138,21 +138,11 @@ class LiebherrIceMaker(LiebherrSelect):
             _LOGGER.error("Invalid option selected: %s", option)
             return
 
-        try:
-            data: LiebherrControlRequest = IceMakerControlRequest(
-                zoneId=self._control.zone_id,
-                iceMakerMode=IceMakerControlRequest.IceMakerMode(option.upper()),
-            )
+        data: LiebherrControlRequest = IceMakerControlRequest(
+            zoneId=self._control.zone_id if self._control.zone_id else 0,
+            iceMakerMode=IceMakerControlRequest.IceMakerMode(option.upper()),
+        )
 
-            await self.coordinator.api.async_set_value(
-                self._device.device_id,
-                data,
-            )
-
-            self._attr_current_option = option
-            self._async_write_ha_state()
-
-        except LiebherrException as e:
-            _LOGGER.error(
-                "Failed to set option '%s' for '%s': %s", option, self.unique_id, e
-            )
+        await self._async_select_option(data)
+        self._control.iceMakerMode = IceMakerControlRequest.IceMakerMode(option.upper())
+        self._async_write_ha_state()

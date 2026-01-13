@@ -75,42 +75,46 @@ class LiebherrCover(LiebherrEntity, CoverEntity):
         self._last_state: str = STATE_UNKNOWN
 
     @property
-    def available(self) -> bool:  # pyright: ignore[reportIncompatibleVariableOverride]
-        """Overrride available in CoverEntity."""
-        return super().available
+    def is_closed(self) -> bool:
+        """Is closed."""
+        return self._control.value == DOOR_STATE.CLOSED
+
+    @property
+    def is_opening(self) -> bool:
+        """Is opening."""
+        return self._control.value == DOOR_STATE.MOVING and self._last_state in [
+            STATE_CLOSED,
+            STATE_OPENING,
+        ]
+
+    @property
+    def is_closing(self) -> bool:
+        """Is Closing."""
+        return self._control.value == DOOR_STATE.MOVING and self._last_state in [
+            STATE_OPEN,
+            STATE_OPENING,
+        ]
 
     def _handle_coordinator_update(self) -> None:
-        if control := self.get_control():
-            if control.value != DOOR_STATE.MOVING:
-                self._attr_is_closed = control.value == DOOR_STATE.CLOSED
-                self._attr_is_closing = False
-                self._attr_is_opening = False
-                if control.value == DOOR_STATE.CLOSED:
-                    self._last_state = STATE_CLOSED
-                    self._attr_icon = "mdi:door"
-                else:
-                    self._last_state = STATE_OPEN
-                    self._attr_icon = "mdi:door-open"
-            else:
-                self._attr_is_closed = False
-                self._attr_is_opening = self._last_state in [
-                    STATE_CLOSED,
-                    STATE_OPENING,
-                ]
-                self._attr_is_closing = self._last_state == [
-                    STATE_OPEN,
-                    STATE_CLOSING,
-                ]
-                self._last_state = (
-                    STATE_OPENING if self._attr_is_opening else STATE_CLOSING
-                )
-            self.async_write_ha_state()
+        super().__handle_coordinator_update(False)
+        if self._control.value == DOOR_STATE.CLOSED:
+            self._last_state = STATE_CLOSED
+        elif self._control.value == DOOR_STATE.OPEN:
+            self._last_state = STATE_OPEN
+        elif self._control.value == DOOR_STATE.MOVING:
+            if self._last_state in [STATE_CLOSED, STATE_OPENING]:
+                self._last_state = STATE_OPENING
+            elif self._last_state in [STATE_OPEN, STATE_CLOSING]:
+                self._last_state = STATE_CLOSING
+        self.async_write_ha_state()
 
     async def async_open_cover(self, **kwargs):
         """Send command to open the cover."""
         await self.coordinator.api.async_set_value(
             self._device.device_id,
-            AutoDoorControl(self._control.zone_id, True),
+            AutoDoorControl(
+                self._control.zone_id if self._control.zone_id else 0, True
+            ),
         )
         self._attr_is_opening = True
         self._attr_is_closing = False
@@ -121,7 +125,9 @@ class LiebherrCover(LiebherrEntity, CoverEntity):
         """Send command to close the cover."""
         await self.coordinator.api.async_set_value(
             self._device.device_id,
-            AutoDoorControl(self._control.zone_id, False),
+            AutoDoorControl(
+                self._control.zone_id if self._control.zone_id else 0, False
+            ),
         )
         self._attr_is_opening = False
         self._attr_is_closing = True

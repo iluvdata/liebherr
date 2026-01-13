@@ -10,7 +10,7 @@ from homeassistant.components.climate import (
     HVACMode,
 )
 from homeassistant.const import ATTR_TEMPERATURE
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
@@ -44,12 +44,14 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
         self._attr_temperature_unit = (
             control.unit_of_measurement
             if control.unit_of_measurement is not None
-            else ""
+            else "°C"
         )
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
         self._attr_hvac_modes = [HVACMode.COOL]
         self._attr_hvac_mode = HVACMode.COOL
-        if control.zone_position == ZonePosition.TOP:
+        if self._device.deviceType != LiebherrDevice.DeviceType.COMBI:
+            self._attr_icon = "mdi:fridge-industrial-outline"
+        elif control.zone_position == ZonePosition.TOP:
             self._attr_icon = "mdi:fridge-top"
         elif control.zone_position == ZonePosition.BOTTOM:
             self._attr_icon = "mdi:fridge-bottom"
@@ -72,24 +74,19 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
         else:
             self._attr_translation_key = "fridge"
 
-    @property
-    def available(self) -> bool:  # pyright: ignore[reportIncompatibleVariableOverride, reportIncompatibleMethodOverride]
-        """Available."""
-        return super().available
-
     async def async_set_temperature(self, **kwargs):
         """Set the target temperature."""
         if ATTR_TEMPERATURE in kwargs:
-            temperature = kwargs[ATTR_TEMPERATURE]
+            temperature: int = kwargs[ATTR_TEMPERATURE]
 
             data = TemperatureControlRequest(
-                zoneId=self._zone_id,
+                zoneId=self._control.zone_id if self._control.zone_id else 0,
                 target=temperature,
                 unit=self._attr_temperature_unit,
             )
 
             await self.coordinator.api.async_set_value(self._device.device_id, data)
-            self._attr_target_temperature = temperature
+            self._control.target = temperature
             self.async_write_ha_state()
 
     async def async_set_hvac_mode(self, hvac_mode):
@@ -97,16 +94,22 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
         if hvac_mode in self._attr_hvac_modes:
             self._attr_hvac_mode = hvac_mode
 
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-        if control := self.get_control():
-            self._attr_target_temperature = control.target
-            self._attr_current_temperature = (
-                control.value if isinstance(control.value, int) else None
-            )
-            if control.min:
-                self._attr_min_temp = control.min
-            if control.max:
-                self._attr_max_temp = control.max
-            self.async_write_ha_state()
+    @property
+    def target_temperature(self) -> float | None:
+        """Target Temperature."""
+        return self._control.target
+
+    @property
+    def min_temp(self) -> float | None:
+        """Min Temp."""
+        return self._control.min
+
+    @property
+    def max_temp(self) -> float | None:
+        """Max Temp."""
+        return self._control.max
+
+    @property
+    def current_temperature(self) -> float | None:
+        """Current Temp."""
+        return self._control.value if isinstance(self._control.value, int) else None

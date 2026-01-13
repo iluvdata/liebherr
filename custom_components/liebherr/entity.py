@@ -2,9 +2,10 @@
 
 import logging
 
-from pyliebherr import ControlType, LiebherrControl, LiebherrDevice
-from pyliebherr.models import LiebherrMappedControls
+from pyliebherr import LiebherrControl, LiebherrDevice
+from pyliebherr.const import CONTROL_NAMES, ControlType
 
+from homeassistant.core import callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -15,9 +16,11 @@ from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
 _LOGGER: logging.Logger = logging.getLogger(__name__)
 
 
-def async_get_unique_id(device_id: str, control_name: str, zone_id: int = 0) -> str:
+def async_get_unique_id(
+    device_id: str, control_name: str, zone_id: int | None = None
+) -> str:
     """Helper to form unique_id."""
-    return f"{DOMAIN}_{device_id}_{control_name}_{zone_id}"
+    return f"{DOMAIN}_{device_id}_{control_name}_{zone_id if zone_id else 0}"
 
 
 def async_get_device_info(device: LiebherrDevice) -> DeviceInfo:
@@ -47,7 +50,6 @@ class LiebherrEntity(CoordinatorEntity[LiebherrCoordinator]):
         self.coordinator: LiebherrCoordinator = coordinator
         self._device: LiebherrDevice = device
         self._control: LiebherrControl = control
-        self._zone_id: int = control.zone_id
         self._attr_unique_id = async_get_unique_id(
             device.device_id, control.control_name, control.zone_id
         )
@@ -58,24 +60,28 @@ class LiebherrEntity(CoordinatorEntity[LiebherrCoordinator]):
                 "zone": f" {coordinator.zone_translations[f'component.{DOMAIN}.common.{control.zone_position}']}",
             }
 
-    def get_control(self) -> LiebherrControl | None:
+    @callback
+    def __handle_coordinator_update(self, write: bool = True) -> None:
         """Get the current control from the device."""
-        if controls := self._device.controls.get(self._control.type):
-            if control := controls.get((self._zone_id, self._control.control_name)):
-                return control
+        if controls := self._device.controls.get(self._control.control_name):
+            if isinstance(controls, LiebherrControl):
+                self._control = controls
+                self.async_write_ha_state()
+                return
+            if control := controls.get(self._control.zone_id):
+                self._control = control
+                self.async_write_ha_state()
+                return
             _LOGGER.warning(
-                "Control with zone ID %s not found for device %s and control type %s",
-                self._zone_id,
+                "Unable to find control %s for device %s with zone id %s",
+                self._control.control_name,
                 self._device.device_id,
-                self._control.type,
+                self._control.zone_id,
             )
-            return None
-        _LOGGER.warning(
-            "Control type %s not found for device %s",
-            self._control.type,
-            self._device.device_id,
-        )
-        return None
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        self.__handle_coordinator_update()
 
 
 async def base_async_setup_entry(
@@ -92,16 +98,19 @@ async def base_async_setup_entry(
         if not device.controls:
             _LOGGER.warning("No controls found for appliance %s", device.device_id)
             continue
-        if device.type in LiebherrDevice.Type:
-            controls: LiebherrMappedControls | None = device.controls.get(control_type)
-            if controls is not None:
-                entities = [
-                    liebherr_entity_class(
-                        coordinator=config_entry.runtime_data,
-                        device=device,
-                        control=control,
+        if device.deviceType in LiebherrDevice.DeviceType:
+            for control_name in CONTROL_NAMES[control_type]:
+                if controls := device.controls.get(control_name):
+                    if isinstance(controls, LiebherrControl):
+                        controls = {None: controls}
+                    entities.extend(
+                        [
+                            liebherr_entity_class(
+                                coordinator=config_entry.runtime_data,
+                                device=device,
+                                control=control,
+                            )
+                            for control in controls.values()
+                        ]
                     )
-                    for control in controls.values()
-                ]
-
     async_add_entities(entities)

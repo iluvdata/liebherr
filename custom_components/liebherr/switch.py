@@ -56,14 +56,14 @@ class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportInc
             ATTR_ICON, "mdi:toggle-switch-variant"
         )
 
-    def _handle_coordinator_update(self) -> None:
-        if control := self.get_control():
-            self._attr_is_on = (
-                control.value
-                if isinstance(control.value, bool)
-                else bool(control.value)
-            )
-            self.async_write_ha_state()
+    @property
+    def is_on(self) -> bool:
+        """Is on attribute."""
+        return (
+            self._control.value
+            if isinstance(self._control.value, bool)
+            else bool(self._control.value)
+        )
 
     async def _async_set_toggle(self, turn_on: bool) -> None:
         control_name = self._control.control_name.lower()
@@ -78,14 +78,19 @@ class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportInc
         controlrequest: BaseToggleControlRequest | ZoneToggleControlRequest = (
             BaseToggleControlRequest(value=turn_on)
             if "zone" not in config
-            else ZoneToggleControlRequest(value=turn_on, zoneId=self._control.zone_id)
+            else ZoneToggleControlRequest(
+                value=turn_on,
+                zoneId=self._control.zone_id
+                if self._control.zone_id is not None
+                else 0,
+            )
         )
         controlrequest.control_name = self._control.control_name
         await self.coordinator.api.async_set_value(
             device_id=self._device.device_id,
             control=controlrequest,
         )
-        self._attr_is_on = turn_on
+        self._control.value = turn_on
         self.async_write_ha_state()
 
     async def async_turn_on(self, **kwargs) -> None:

@@ -1,5 +1,6 @@
 """Last update sensor for Liebherr appliances."""
 
+from dataclasses import dataclass
 from datetime import UTC, datetime
 
 from pyliebherr import ControlType, LiebherrControl, LiebherrDevice
@@ -13,6 +14,13 @@ from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
 from .entity import LiebherrEntity
 
 
+@dataclass
+class LiebherrUpdateControl(LiebherrControl):
+    """Overrride LiebherrControl."""
+
+    control_name: str = "updated"
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: LiebherrConfigEntry,
@@ -24,7 +32,7 @@ async def async_setup_entry(
         UpdateSensor(
             config_entry.runtime_data,
             device,
-            LiebherrControl(ControlType.UPDATED, "updated"),
+            LiebherrUpdateControl(ControlType.UPDATED),
         )
         for device in config_entry.runtime_data.data
     ]
@@ -47,6 +55,7 @@ class UpdateSensor(LiebherrEntity, SensorEntity):  # pyright: ignore[reportIncom
         self._attr_device_class = SensorDeviceClass.TIMESTAMP
         self._attr_entity_category = EntityCategory.DIAGNOSTIC
         self._attr_entity_registry_enabled_default = False
+        self._attr_native_value = datetime.now(UTC)
 
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""

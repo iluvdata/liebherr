@@ -41,22 +41,23 @@ class LiebherrLight(LiebherrEntity, LightEntity):
         self.brightness_scale: tuple[int, int] = BRIGHTNESS_SCALE.get(
             device.model, DEFAULT_BRIGHTNESS_SCALE
         )
+        self._set_brightness()
 
-    @property
-    def available(self) -> bool:  # pyright: ignore[reportIncompatibleVariableOverride, reportIncompatibleMethodOverride]
-        """Available."""
-        return super().available
+    def _set_brightness(self) -> None:
+        if self._control.target is not None and self._control.target > 0:
+            self._attr_brightness = self._attr_brightness = value_to_brightness(
+                self.brightness_scale, self._control.target
+            )
 
     def _handle_coordinator_update(self) -> None:
-        if control := self.get_control():
-            if control.target is not None and control.target > 0:
-                self._attr_brightness = value_to_brightness(
-                    self.brightness_scale, control.target
-                )
-                self._attr_is_on = True
-            else:
-                self._attr_is_on = False
-            self.async_write_ha_state()
+        super().__handle_coordinator_update(False)
+        self._set_brightness()
+        self.async_write_ha_state()
+
+    @property
+    def is_on(self) -> bool:
+        """Light on attribute."""
+        return self._control.target is not None and self._control.target > 0
 
     async def async_turn_on(
         self,
@@ -72,21 +73,22 @@ class LiebherrLight(LiebherrEntity, LightEntity):
             else (self._attr_brightness if self._attr_brightness else 255)
         )
 
+        self._control.target = math.ceil(
+            brightness_to_value(self.brightness_scale, brightness)
+        )
         await self.coordinator.api.async_set_value(
             device_id=self._device.device_id,
-            control=PresentationLightControlRequest(
-                math.ceil(brightness_to_value(self.brightness_scale, brightness))
-            ),
+            control=PresentationLightControlRequest(self._control.target),
         )
+
         self._attr_brightness = brightness
-        self._attr_is_on = True
         self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs):
         """Turn the light off."""
+        self._control.target = 0
         await self.coordinator.api.async_set_value(
             device_id=self._device.device_id,
             control=PresentationLightControlRequest(0),
         )
-        self._attr_is_on = False
         self.async_write_ha_state()

@@ -1,6 +1,6 @@
 """Support for Liebherr HydroBreeze."""
 
-from typing import Any, cast
+from typing import Any
 
 from pyliebherr import LiebherrControl, LiebherrDevice
 from pyliebherr.const import ControlType
@@ -52,43 +52,49 @@ class LiebherrFan(LiebherrEntity, FanEntity):
     ) -> None:
         """Initialize the switch entity."""
         super().__init__(coordinator, device, control)
-        self._attr_icon = "mdi:fan"
+        self._attr_icon = "mdi:fan-off"
         self._attr_speed_count = len(HydroBreezeControlRequest.HydroBreezeMode)
         self._attr_supported_features = (
             FanEntityFeature.TURN_OFF
             | FanEntityFeature.TURN_ON
             | FanEntityFeature.SET_SPEED
         )
+        self._set_percentage()
 
     @property
-    def available(self) -> bool:  # pyright: ignore[reportIncompatibleVariableOverride, reportIncompatibleMethodOverride]
-        """Available."""
-        return super().available
+    def is_on(self) -> bool:
+        """Is on."""
+        return self._mode != HydroBreezeControlRequest.HydroBreezeMode.OFF
+
+    @property
+    def _mode(self) -> HydroBreezeControlRequest.HydroBreezeMode:
+        if self._control.current_mode and isinstance(
+            self._control.current_mode, HydroBreezeControlRequest.HydroBreezeMode
+        ):
+            return self._control.current_mode
+        return HydroBreezeControlRequest.HydroBreezeMode.OFF
+
+    def _set_percentage(
+        self,
+    ) -> None:
+        self._attr_percentage = get_percent(self._mode)
 
     def _handle_coordinator_update(self) -> None:
-        if control := self.get_control():
-            mode: HydroBreezeControlRequest.HydroBreezeMode = cast(
-                HydroBreezeControlRequest.HydroBreezeMode, control.current_mode
-            )
-            self._attr_is_on = mode != HydroBreezeControlRequest.HydroBreezeMode.OFF
-            self._attr_percentage = ordered_list_item_to_percentage(
-                list(HydroBreezeControlRequest.HydroBreezeMode), mode
-            )
-            self.async_write_ha_state()
+        super().__handle_coordinator_update(False)
+        self._set_percentage()
+        self.async_write_ha_state()
 
     async def _async_set_mode(
         self, mode: HydroBreezeControlRequest.HydroBreezeMode
     ) -> None:
         await self.coordinator.api.async_set_value(
             device_id=self._device.device_id,
-            control=HydroBreezeControlRequest(mode, self._control.zone_id),
+            control=HydroBreezeControlRequest(
+                mode, self._control.zone_id if self._control.zone_id else 0
+            ),
         )
-        if mode != HydroBreezeControlRequest.HydroBreezeMode.OFF:
-            self._attr_percentage = get_percent(mode)
-            self._attr_is_on = True
-        else:
-            self._attr_percentage = 0
-            self._attr_is_on = False
+        self._control.currentMode = mode
+        self._set_percentage()
         self.async_write_ha_state()
 
     async def async_turn_on(
@@ -106,3 +112,9 @@ class LiebherrFan(LiebherrEntity, FanEntity):
     async def async_turn_off(self, **kwargs):
         """Turn the fan off."""
         await self._async_set_mode(HydroBreezeControlRequest.HydroBreezeMode.OFF)
+
+    async def async_set_percentage(self, percentage: int) -> None:
+        """Set speed."""
+        if not percentage:
+            return await self.async_turn_off()
+        return await self.async_turn_on(percentage)
