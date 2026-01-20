@@ -8,20 +8,20 @@
   "config": {
     "step": {
       "user": {
-        "description": "Collega il tuo elettrodomestico alla rete WiFi domestica tramite l'app **SmartDevice**.\n\n**1. [Scarica](https://smartdevice.onelink.me/OrY5/8neax8lp) l'app**\n**2. Segui le [istruzioni](https://go.liebherr.com/cb2ct1) per collegare il tuo elettrodomestico**\n**3. Ottieni la tua chiave API tramite l'app SmartDevice**\n\nVai su *Impostazioni* nell'app SmartDevice e seleziona **“Funzionalità beta”**, poi attiva HomeAPI.\n\nCopia la chiave API e incollala qui sotto. La chiave API può essere copiata **solo una volta**.\n\nNon appena lasci la schermata, il codice **non potrà più** essere copiato.\n\nSe hai dimenticato la tua chiave, devi crearne una nuova tramite l'app.",
+        "description": "Collega il tuo elettrodomestico alla rete WiFi domestica tramite l'app **SmartDevice**.\n\n**1. [Scarica](https://smartdevice.onelink.me/OrY5/8neax8lp) l'app**\n**2. Segui le [istruzioni](https://go.liebherr.com/cb2ct1) per collegare il tuo elettrodomestico**\n**3. Ottieni la tua chiave HomeAPI tramite l'app SmartDevice**\n\nVai su *Impostazioni* nell'app SmartDevice e seleziona **“Funzionalità beta”**, poi attiva HomeAPI.\n\nCopia la chiave HomeAPI e incollala qui sotto. La chiave HomeAPI può essere copiata **solo una volta**.\n\nNon appena lasci la schermata, il codice **non potrà più** essere copiato.\n\nSe hai dimenticato la tua chiave, devi crearne una nuova tramite l'app.",
         "data": {
-          "api_key": "Chiave API dall'app SmartDevice"
+          "api_key": "Chiave HomeAPI dall'app SmartDevice"
         }
       }
     },
     "error": {
-      "auth_error": "API Key non autorizzata o invalida.",
-      "whitespace_api_key": "There is whitespace before or after the api key."
+      "auth_error": "Chiave HomeAPI non autorizzata o non valida.",
+      "whitespace_api_key": "Sono presenti spazi prima o dopo la chiave HomeAPI."
     },
     "abort": {
-      "already_configured": "API Key già configurata.",
+      "already_configured": "Chiave HomeAPI già configurata.",
       "invalid_source": "È stata specificata una fonte di flusso non valida, questo non dovrebbe mai accadere (vedi i log).",
-      "reauth_successful": "Riconnessione riuscita."
+      "reauth_successful": "Riautenticazione riuscita."
     }
   },
   "options": {
@@ -42,7 +42,7 @@
           "presentation_light_options": {
             "name": "Opzioni illuminazione di presentazione",
             "data": {
-              "presentation_light_as_number": "Utilizzare un'entità di tipo numero (cursore) al posto di un'entità luce per controllare l'illuminazione di presentazione (se applicabile)?"
+              "presentation_light_as_number": "Utilizzare un'entità di tipo numero (cursore) al posto di un'entità di tipo luce per controllare l'illuminazione di presentazione (se possibile)?"
             }
           }
         }
@@ -85,12 +85,12 @@
     },
     "number": {
       "presentationlight": {
-        "name": "Luce di presentazione"
+        "name": "Illuminazione di presentazione"
       }
     },
     "light": {
       "presentationlight": {
-        "name": "Luce di presentazione"
+        "name": "Illuminazione di presentazione"
       }
     },
     "fan": {
