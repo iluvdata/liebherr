@@ -104,7 +104,7 @@ This is a rewrite of the great [custom intergration](https://github.com/bhuebsch
 > [!Warning]
 > This was tested on a Liebherr Device lacking:
 >> - AutoDoor
->> - Presentation Light (reported to be working as number entity and partially as a light entity)
+>> - Presentation Light (reported to be working both as number entity and light entity)
 >> - BioFreshPlus (reported to be working)
 >> - HydroBreeze (reported to be working)
 >
