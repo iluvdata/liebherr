@@ -88,23 +88,22 @@ poll\ interval=\frac{30\ seconds}{number\ of\ devices}
 ```
 With a minimun poll interval of 30 seconds. 
 
-The polling interval can be adjusted manual (within some present limits) by changing the integration options.
+The polling interval can be adjusted manually (within some preset limits) by changing the integration options.
 
 ## Troubleshooting
 - Ensure your Liebherr api key is correct.
 - Check the Home Assistant logs for any errors related to the integration.
 - Enable debug on the integration.
 - Download and inspect the integration diagnotics.
-- If there are many `HTTP 429 - Too many requests` try increasing the polling interval.
+- If there are many `HTTP 429 - Too many requests` in the logs try increasing the polling interval.
 
 ## Acknowledgements
 This is a rewrite of the great [custom intergration](https://github.com/bhuebschen/liebherr) orginally maintained by @bhuebschen from a fork created by @skatsavos.  The original intergration stopped working in Oct 2025 and the orginal maintainer did not appear to be maintaining the project.
 
-
 > [!Warning]
 > This was tested on a Liebherr Device lacking:
 >> - AutoDoor
->> - Presentation Light (reported to be working both as number entity and light entity)
+>> - Presentation Light (reported to be working both as number and light entity)
 >> - BioFreshPlus (reported to be working)
 >> - HydroBreeze (reported to be working)
 >
