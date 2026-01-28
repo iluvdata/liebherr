@@ -86,7 +86,7 @@ This version will calculate the polling interval based on the number of devices/
 ```math
 poll\ interval=\frac{30\ seconds}{number\ of\ devices}
 ```
-With a minimun poll interval of 30 seconds. 
+With a minimun poll interval (floor) of 5 seconds for ≥ 6 devices.
 
 The polling interval can be adjusted manually (within some preset limits) by changing the integration options.
 
