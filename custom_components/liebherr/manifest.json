@@ -2,7 +2,7 @@
   "domain": "liebherr",
   "name": "Liebherr",
   "after_dependencies": ["hassio"],
-  "codeowners": ["@bhuebschen", "@iluvdata", "@skatsavos"],
+  "codeowners": ["@iluvdata"],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/iluvdata/liebherr",
@@ -12,5 +12,5 @@
   "loggers": ["pyliebherr"],
   "requirements": ["pyliebherr==2026.1.3", "Pillow>=11.0.0"],
   "single_config_entry": true,
-  "version": "2026.1.6"
+  "version": "2026.1.7"
 }
