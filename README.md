@@ -4,11 +4,14 @@
 ![GitHub Release](https://img.shields.io/github/v/release/iluvdata/liebherr)
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Filuvdata%2Fliebherr%2Frefs%2Fheads%2Fmain%2Fcustom_components%2Fliebherr%2Fmanifest.json&query=%24.version&prefix=v&label=dev-version&labelColor=orange)
 
-This is an *unofficial* custom integration for Home Assistant that allows you to connect and control Liebherr smart devices via the Liebherr SmartHomeAPI using the simple [pyliebherr](https://github.com/iluvdata/pyliebherr) library.
+This is an *unofficial* **custom** integration for Home Assistant that allows you to connect and control Liebherr smart devices via the Liebherr SmartHomeAPI using the simple [pyliebherr](https://github.com/iluvdata/pyliebherr) library.
 
 ## Features
 - Monitor current and target temperatures of your Liebherr refridgeratorss and freezers.
 - Control device features such as BioFreshPlus, Hydrobreeze, AutoDoor, Presentation Lights, and Ice Makers.
+
+> [!NOTE]
+> [@mettolen](https://github.com/mettolen) has contributed a Liebherr core integration that will be included in an upcoming release of Home Assistant.  While it lacks a number of features provided by this integration the quality of code is very promising!
 
 ## Installation
 
@@ -100,17 +103,18 @@ The polling interval can be adjusted manually (within some preset limits) by cha
 - Download and inspect the integration diagnotics.
 - If there are many `HTTP 429 - Too many requests` in the logs try increasing the polling interval.
 
-## Acknowledgements
-This is a rewrite of the great [custom intergration](https://github.com/bhuebschen/liebherr) orginally maintained by @bhuebschen from a fork created by @skatsavos.  The original intergration stopped working in Oct 2025 and the orginal maintainer did not appear to be maintaining the project.
-
 > [!Warning]
 > This was tested on a Liebherr Device lacking:
->> - AutoDoor
->> - Presentation Light (reported to be working both as number and light entity)
->> - BioFreshPlus (reported to be working)
->> - HydroBreeze (reported to be working)
+> 
+> AutoDoor  
+> Presentation Light (reported to be working both as number and light entity)  
+> BioFreshPlus (reported to be working)  
+> HydroBreeze (reported to be working)  
 >
 > If you encounter an issue with these features please submit an issue.
+
+## Acknowledgements
+This is a complete rewrite of the [custom intergration](https://github.com/bhuebschen/liebherr) orginally maintained by [@bhuebschen](https://github.com/bhuebschen) from a fork created by [@skatsavos](https://github.com/skatsavos).  The original intergration stopped working in Oct 2025 and the orginal maintainer did not appear to be maintaining the project.
 
 ## Support
 If you encounter any issues or have feature requests, please open an issue on the [GitHub Issues page](https://github.com/iluvdata/liebherr/issues).

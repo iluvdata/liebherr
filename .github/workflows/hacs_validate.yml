@@ -17,3 +17,5 @@ jobs:
         uses: "hacs/action@main"
         with:
           category: "integration"
+          # Ignore brand files as now moved to brands/core_integrations/
+          ignore: "brands"
