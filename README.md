@@ -83,10 +83,13 @@ Given rate limits imposed by Liebherr in the beta [SmartDevice Home API](https:/
 
 This version will calculate the polling interval based on the number of devices/appliances associated with your Liebherr account.  Essentially the goal is to poll each device's controls every 30 seconds and is calculated thusly:
 
-```math
-poll\ interval=\frac{30\ seconds}{number\ of\ devices}
 ```
-With a minimun poll interval of 30 seconds. 
+                      30 seconds  
+   poll interval = -----------------
+                   number of devices
+```
+
+With a minimun poll interval (floor) of 5 seconds for ≥ 6 devices.
 
 The polling interval can be adjusted manually (within some preset limits) by changing the integration options.
 
