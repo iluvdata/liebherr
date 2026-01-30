@@ -34,6 +34,8 @@ from .const import (
     DOMAIN,
     MAX_UPDATE_INTERVAL,
     MIN_UPDATE_INTERVAL,
+    URL_CONNECT_INSTRUCTIONS,
+    URL_DOWNLOAD_APP,
 )
 from .coordinator import LiebherrConfigEntry
 
@@ -188,7 +190,9 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
             {vol.Required(CONF_API_KEY): vol.All(TextSelector())}
         )
         return self.async_show_form(
-            step_id="user", data_schema=data_schema, errors=errors
+            step_id="user", data_schema=data_schema, errors=errors, description_placeholders={
+                "url_download_app": URL_DOWNLOAD_APP,
+                "url_connect_instructions": URL_CONNECT_INSTRUCTIONS}
         )
 
     async def async_step_reauth(

@@ -8,7 +8,7 @@
   "config": {
     "step": {
       "user": {
-        "description": "Verbinden Sie Ihr Gerät mit Hilfe der **SmartDevice App** mit dem WLAN in Ihrem Heimnetzwerk.\n\n**1. App [herunterladen](https://smartdevice.onelink.me/OrY5/8neax8lp)**\n**2. Folgen Sie den [Anweisungen](https://go.liebherr.com/cb2ct1) und verbinden Sie Ihr Gerät**\n**3. Erzeugen Sie den HomeAPI-Schlüssel in der SmartDevice App**\n\nÖffnen Sie die *Einstellungen* der SmartDevice App und wählen Sie **“Werden Sie Betatester”**, dann aktivieren Sie die HomeAPI.\n\nKopieren Sie den HomeAPI-Schlüssel und fügen Sie ihn unten ein.\n\nDer HomeAPI-Schlüssel kann nur **einmal** kopiert werden. Er kann nicht erneut angezeigt werden, wenn Sie die Ansicht verlassen haben.\n\nFalls Sie den HomeAPI-Schlüssel vergessen haben sollten, können Sie in der App einen neuen Schlüssel erzeugen.",
+        "description": "Verbinden Sie Ihr Gerät mit Hilfe der **SmartDevice App** mit dem WLAN in Ihrem Heimnetzwerk.\n\n**1. App [herunterladen]({url_download_app})**\n**2. Folgen Sie den [Anweisungen]({url_connect_instructions}) und verbinden Sie Ihr Gerät**\n**3. Erzeugen Sie den HomeAPI-Schlüssel in der SmartDevice App**\n\nÖffnen Sie die *Einstellungen* der SmartDevice App und wählen Sie **“Werden Sie Betatester”**, dann aktivieren Sie die HomeAPI.\n\nKopieren Sie den HomeAPI-Schlüssel und fügen Sie ihn unten ein.\n\nDer HomeAPI-Schlüssel kann nur **einmal** kopiert werden. Er kann nicht erneut angezeigt werden, wenn Sie die Ansicht verlassen haben.\n\nFalls Sie den HomeAPI-Schlüssel vergessen haben sollten, können Sie in der App einen neuen Schlüssel erzeugen.",
         "data": {
           "api_key": "HomeAPI-Schlüssel aus der SmartDevice App"
         }

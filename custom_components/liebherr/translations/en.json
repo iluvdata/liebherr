@@ -8,7 +8,7 @@
   "config": {
     "step": {
       "user": {
-        "description": "Connect your appliance via the **SmartDevice app** to your home WiFi network.\n\n**1. [Download](https://smartdevice.onelink.me/OrY5/8neax8lp) the app**\n**2. Follow the [instructions](https://go.liebherr.com/cb2ct1) to connect your appliance**\n**3. Get your API Key via the SmartDevice app**\n\nGo to *Settings* in the SmartDevice app and select **“Beta features”**, then activate the HomeAPI.\n\nCopy the API Key and paste it below. The API Key can only be copied **once**.\n\nAs soon as you leave the screen, the code **cannot** be copied again.\n\nIf you forgot your key, you need to create a new one via the app.",
+        "description": "Connect your appliance via the **SmartDevice app** to your home WiFi network.\n\n**1. [Download]({url_download_app}) the app**\n**2. Follow the [instructions]({url_connect_instructions}) to connect your appliance**\n**3. Get your API Key via the SmartDevice app**\n\nGo to *Settings* in the SmartDevice app and select **“Beta features”**, then activate the HomeAPI.\n\nCopy the API Key and paste it below. The API Key can only be copied **once**.\n\nAs soon as you leave the screen, the code **cannot** be copied again.\n\nIf you forgot your key, you need to create a new one via the app.",
         "data": {
           "api_key": "API Key from the SmartDevice App"
         }

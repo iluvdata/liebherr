@@ -8,7 +8,7 @@
   "config": {
     "step": {
       "user": {
-        "description": "Connectez votre appareil au réseau Wi‑Fi de votre domicile via l'**application SmartDevice**.\n\n**1. [Téléchargez](https://smartdevice.onelink.me/OrY5/8neax8lp) l'application**\n**2. Suivez les [instructions](https://go.liebherr.com/cb2ct1) pour connecter votre appareil**\n**3. Obtenez votre clé API via l'application SmartDevice**\n\nAllez dans *Paramètres* de l'application SmartDevice et sélectionnez **« Fonctionnalités bêta »**, puis activez HomeAPI.\n\nCopiez la clé API et collez-la ci‑dessous. La clé API ne peut être copiée **qu'une seule fois**.\n\nDès que vous quittez l'écran, le code **ne peut** plus être copié.\n\nSi vous avez oublié votre clé, vous devez en créer une nouvelle via l'application.",
+        "description": "Connectez votre appareil au réseau Wi‑Fi de votre domicile via l'**application SmartDevice**.\n\n**1. [Téléchargez]({url_download_app}) l'application**\n**2. Suivez les [instructions]({url_connect_instructions}) pour connecter votre appareil**\n**3. Obtenez votre clé API via l'application SmartDevice**\n\nAllez dans *Paramètres* de l'application SmartDevice et sélectionnez **« Fonctionnalités bêta »**, puis activez HomeAPI.\n\nCopiez la clé API et collez-la ci‑dessous. La clé API ne peut être copiée **qu'une seule fois**.\n\nDès que vous quittez l'écran, le code **ne peut** plus être copié.\n\nSi vous avez oublié votre clé, vous devez en créer une nouvelle via l'application.",
         "data": {
           "api_key": "Clé API de l'application SmartDevice"
         }

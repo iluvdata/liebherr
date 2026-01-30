@@ -8,7 +8,7 @@
   "config": {
     "step": {
       "user": {
-        "description": "Csatlakoztassa a berendezését a **SmartDevice app** használatával az otthoni WiFi hálózatra.\n\n**1. Töltse le az [applikációt](https://smartdevice.onelink.me/OrY5/8neax8lp)**\n**2. Kövesse az [utasításokat](https://go.liebherr.com/cb2ct1) a berendezés csatlakoztatásához**\n**3. Szerezze meg az API Key-t a SmartDevice app-ban**\n\nMenjen a *Beállítások*-ba a SmartDevice app-ban és válassza ki a **“Beta features”**-t, ahol aktiválja a HomeAPI-t.\n\nMásolja le az API Key-t és illessze be lejjebb. Az API Key-t csak **egyszer** lehet kimásolni.\n\nAhogy elagyja a képernyőt, a Key-hez **nem lehet** még egyszer hozzáférni.\n\nHa elfelejtette a Key-t, újat kell létrehozni az app-ban.",
+        "description": "Csatlakoztassa a berendezését a **SmartDevice app** használatával az otthoni WiFi hálózatra.\n\n**1. Töltse le az [applikációt]({url_download_app})**\n**2. Kövesse az [utasításokat]({url_connect_instructions}) a berendezés csatlakoztatásához**\n**3. Szerezze meg az API Key-t a SmartDevice app-ban**\n\nMenjen a *Beállítások*-ba a SmartDevice app-ban és válassza ki a **“Beta features”**-t, ahol aktiválja a HomeAPI-t.\n\nMásolja le az API Key-t és illessze be lejjebb. Az API Key-t csak **egyszer** lehet kimásolni.\n\nAhogy elagyja a képernyőt, a Key-hez **nem lehet** még egyszer hozzáférni.\n\nHa elfelejtette a Key-t, újat kell létrehozni az app-ban.",
         "data": {
           "api_key": "API Key a SmartDevice App-ból"
         }

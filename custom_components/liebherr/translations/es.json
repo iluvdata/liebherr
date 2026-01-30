@@ -3,7 +3,7 @@
   "config": {
     "step": {
       "user": {
-        "description": "Conecta tu electrodoméstico a la red WiFi de tu hogar mediante la aplicación **SmartDevice**.\n\n**1. [Descarga](https://smartdevice.onelink.me/OrY5/8neax8lp) la aplicación**\n**2. Sigue las [instrucciones](https://go.liebherr.com/cb2ct1) para conectar tu dispositivo**\n**3. Obtén tu clave API a través de la aplicación SmartDevice**\n\nVe a *Ajustes* en la aplicación SmartDevice y selecciona **“Funciones beta”**, luego activa HomeAPI.\n\nCopia la clave API y pégala abajo. La clave solo se puede copiar **una sola vez**.\n\nUna vez que abandones la pantalla, el código **no podrá** ser copiado de nuevo.\n\nSi has olvidado la clave, deberás generar una nueva desde la aplicación.",
+        "description": "Conecta tu electrodoméstico a la red WiFi de tu hogar mediante la aplicación **SmartDevice**.\n\n**1. [Descarga]({url_download_app}) la aplicación**\n**2. Sigue las [instrucciones]({url_connect_instructions}) para conectar tu dispositivo**\n**3. Obtén tu clave API a través de la aplicación SmartDevice**\n\nVe a *Ajustes* en la aplicación SmartDevice y selecciona **“Funciones beta”**, luego activa HomeAPI.\n\nCopia la clave API y pégala abajo. La clave solo se puede copiar **una sola vez**.\n\nUna vez que abandones la pantalla, el código **no podrá** ser copiado de nuevo.\n\nSi has olvidado la clave, deberás generar una nueva desde la aplicación.",
         "data": {
           "api_key": "Clavo API a través de la aplicación SmartDevice."
         }
