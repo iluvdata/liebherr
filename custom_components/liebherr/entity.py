@@ -66,11 +66,13 @@ class LiebherrEntity(CoordinatorEntity[LiebherrCoordinator]):
         if controls := self._device.controls.get(self._control.control_name):
             if isinstance(controls, LiebherrControl):
                 self._control = controls
-                self.async_write_ha_state()
+                if write:
+                    self.async_write_ha_state()
                 return
             if control := controls.get(self._control.zone_id):
                 self._control = control
-                self.async_write_ha_state()
+                if write:
+                    self.async_write_ha_state()
                 return
             _LOGGER.warning(
                 "Unable to find control %s for device %s with zone id %s",
