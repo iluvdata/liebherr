@@ -61,7 +61,7 @@ class LiebherrEntity(CoordinatorEntity[LiebherrCoordinator]):
             }
 
     @callback
-    def __handle_coordinator_update(self, write: bool = True) -> None:
+    def _handle_coordinator_update(self, write: bool = True) -> None:
         """Get the current control from the device."""
         if controls := self._device.controls.get(self._control.control_name):
             if isinstance(controls, LiebherrControl):
@@ -80,10 +80,6 @@ class LiebherrEntity(CoordinatorEntity[LiebherrCoordinator]):
                 self._device.device_id,
                 self._control.zone_id,
             )
-
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        self.__handle_coordinator_update()
 
 
 async def base_async_setup_entry(

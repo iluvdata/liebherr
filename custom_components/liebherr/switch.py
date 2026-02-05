@@ -40,7 +40,6 @@ async def async_setup_entry(
         config_entry, async_add_entities, LiebherrSwitch, ControlType.TOGGLE
     )
 
-
 class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportIncompatibleVariableOverride]
     """Representation of a Liebherr switch entity."""
 

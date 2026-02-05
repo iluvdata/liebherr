@@ -96,7 +96,7 @@ class LiebherrCover(LiebherrEntity, CoverEntity):
         ]
 
     def _handle_coordinator_update(self) -> None:
-        super().__handle_coordinator_update(False)
+        super()._handle_coordinator_update(False)
         if self._control.value == DOOR_STATE.CLOSED:
             self._last_state = STATE_CLOSED
         elif self._control.value == DOOR_STATE.OPEN:
