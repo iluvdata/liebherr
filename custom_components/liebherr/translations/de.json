@@ -16,7 +16,7 @@
     },
     "error": {
       "auth_error": "API-Schlüssel ist nicht autorisiert oder ungültig.",
-      "whitespace_api_key": "There is whitespace before or after the api key."
+      "whitespace_api_key": "Vor oder nach dem API-Schlüssel befindet sich ein Leerzeichen."
     },
     "abort": {
       "already_configured": "HomeAPI-Schlüssel bereits konfiguriert.",
