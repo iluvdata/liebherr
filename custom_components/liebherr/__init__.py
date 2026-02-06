@@ -46,7 +46,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEnt
         devices: list[LiebherrDevice] = await api.async_get_devices()
 
         # If there isn't a base polling interval
-        if config_entry.options[CONF_POLL_INTERVAL] is None:
+        if config_entry.options.get(CONF_POLL_INTERVAL) is None:
             options: dict[str, Any] = {**config_entry.options}
             options[CONF_POLL_INTERVAL] = async_calculate_poll_interval(len(devices))
             hass.config_entries.async_update_entry(config_entry, options=options)
