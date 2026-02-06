@@ -98,13 +98,8 @@ With a minimun poll interval (floor) of 5 seconds for ≥ 6 devices.
 
 In these versions the devices will update independently and the goal is to make sure that **on average** the API is not polled more often than 5 seconds (which is the minimun based on testing). These versions calculate the poll interval for each devices' controls like this:
 
-``` 
-   device control poll interval = 30 seconds,  if number of devices ≤ 6
-
-   
-   device control poll interval = 5 seconds * number of devices,   if number of devices > 6.
-
-```
+* device control poll interval = 30 seconds,  if number of devices ≤ 6
+* device control poll interval = 5 seconds * number of devices,   if number of devices > 6.
 
 > [!tip] 
 > For either implementation, the polling interval can be adjusted manually (within some preset limits) by changing the integration options.
