@@ -80,7 +80,7 @@ class LiebherrFan(LiebherrEntity, FanEntity):
         self._attr_percentage = get_percent(self._mode)
 
     def _handle_coordinator_update(self) -> None:
-        self.__handle_coordinator_update(False)
+        super()._handle_coordinator_update(False)
         self._set_percentage()
         self.async_write_ha_state()
 
