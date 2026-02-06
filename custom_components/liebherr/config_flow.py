@@ -1,6 +1,7 @@
 """Config flow for Liebherr Integration."""
 
 from collections.abc import Mapping
+import logging
 import re
 from typing import Any
 
@@ -26,7 +27,6 @@ from homeassistant.helpers.selector import (
     TextSelector,
 )
 
-from . import _LOGGER
 from .const import (
     CONF_POLL_INTERVAL,
     CONF_PRESENTATION_LIGHT_AS_NUMBER,
@@ -38,6 +38,8 @@ from .const import (
     URL_DOWNLOAD_APP,
 )
 from .coordinator import LiebherrConfigEntry
+
+_LOGGER: logging.Logger = logging.getLogger(__name__)
 
 POLLING_SECTION: str = "polling_options"
 LIGHT_SECTION: str = "presentation_light_options"
