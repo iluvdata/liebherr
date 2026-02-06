@@ -79,10 +79,6 @@ class LiebherrEntity(CoordinatorEntity[LiebherrCoordinator]):
                 self.control.zone_id,
             )
 
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        self.__handle_coordinator_update()
-
     async def async_set_value(
         self, control: LiebherrControlRequest
     ) -> list[dict[str, Any]]:
