@@ -42,33 +42,6 @@ from .coordinator import LiebherrConfigEntry
 POLLING_SECTION: str = "polling_options"
 LIGHT_SECTION: str = "presentation_light_options"
 
-OPTIONS_SCHEMA: vol.Schema = vol.Schema(
-    {
-        vol.Required(POLLING_SECTION): section(
-            vol.Schema(
-                {
-                    vol.Required(CONF_POLL_INTERVAL): NumberSelector(
-                        NumberSelectorConfig(
-                            min=MIN_UPDATE_INTERVAL,
-                            max=MAX_UPDATE_INTERVAL,  # 5 minutes
-                            step=1,
-                            unit_of_measurement="s",
-                            mode=NumberSelectorMode.BOX,
-                        )
-                    )
-                }
-            )
-        ),
-        vol.Required(LIGHT_SECTION): section(
-            vol.Schema(
-                {
-                    vol.Required(CONF_PRESENTATION_LIGHT_AS_NUMBER): BooleanSelector(),
-                }
-            )
-        ),
-    }
-)
-
 
 def async_calculate_poll_interval(number_of_devices: int) -> int:
     """Calculate poll interval based on number of devices."""
@@ -78,7 +51,7 @@ def async_calculate_poll_interval(number_of_devices: int) -> int:
         # this ensures that the controls for eac device aren't polled more frequently than
         # the recommended default interval.
         round(DEFAULT_UPDATE_INTERVAL / number_of_devices),
-        MIN_UPDATE_INTERVAL,
+        MIN_UPDATE_INTERVAL * number_of_devices,
     )
 
 
@@ -99,14 +72,13 @@ class OptionsFlowHandler(OptionsFlowWithReload):
                     ],
                 }
             )
-
+        num_devices: int = len(self.config_entry.runtime_data.coordinators)
+        min_interval: int = MIN_UPDATE_INTERVAL * num_devices
         suggested_values = {
             POLLING_SECTION: {
                 CONF_POLL_INTERVAL: self.config_entry.options.get(
                     CONF_POLL_INTERVAL,
-                    async_calculate_poll_interval(
-                        len(self.config_entry.runtime_data.data)
-                    ),
+                    async_calculate_poll_interval(num_devices),
                 )
             },
             LIGHT_SECTION: {
@@ -115,19 +87,43 @@ class OptionsFlowHandler(OptionsFlowWithReload):
                 ),
             },
         }
+        OPTIONS_SCHEMA: vol.Schema = vol.Schema(
+            {
+                vol.Required(POLLING_SECTION): section(
+                    vol.Schema(
+                        {
+                            vol.Required(CONF_POLL_INTERVAL): NumberSelector(
+                                NumberSelectorConfig(
+                                    min=min_interval,
+                                    max=MAX_UPDATE_INTERVAL,  # 5 minutes
+                                    step=1,
+                                    unit_of_measurement="s",
+                                    mode=NumberSelectorMode.BOX,
+                                )
+                            )
+                        }
+                    )
+                ),
+                vol.Required(LIGHT_SECTION): section(
+                    vol.Schema(
+                        {
+                            vol.Required(
+                                CONF_PRESENTATION_LIGHT_AS_NUMBER
+                            ): BooleanSelector(),
+                        }
+                    )
+                ),
+            }
+        )
         return self.async_show_form(
             step_id="init",
             data_schema=self.add_suggested_values_to_schema(
                 OPTIONS_SCHEMA, suggested_values
             ),
             description_placeholders={
-                "min_int": str(MIN_UPDATE_INTERVAL),
+                "min_int": str(min_interval),
                 "max_int": str(MAX_UPDATE_INTERVAL),
-                "rec_int": str(
-                    async_calculate_poll_interval(
-                        len(self.config_entry.runtime_data.data)
-                    )
-                ),
+                "rec_int": str(async_calculate_poll_interval(num_devices)),
             },
             errors=errors,
         )
@@ -190,9 +186,13 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
             {vol.Required(CONF_API_KEY): vol.All(TextSelector())}
         )
         return self.async_show_form(
-            step_id="user", data_schema=data_schema, errors=errors, description_placeholders={
+            step_id="user",
+            data_schema=data_schema,
+            errors=errors,
+            description_placeholders={
                 "url_download_app": URL_DOWNLOAD_APP,
-                "url_connect_instructions": URL_CONNECT_INSTRUCTIONS}
+                "url_connect_instructions": URL_CONNECT_INSTRUCTIONS,
+            },
         )
 
     async def async_step_reauth(

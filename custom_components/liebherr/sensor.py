@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
-from pyliebherr import ControlType, LiebherrControl, LiebherrDevice
+from pyliebherr import ControlType, LiebherrControl
 
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.const import EntityCategory
@@ -18,7 +18,7 @@ from .entity import LiebherrEntity
 class LiebherrUpdateControl(LiebherrControl):
     """Overrride LiebherrControl."""
 
-    control_name: str = "updated"
+    _control_name: str = "updated"
 
 
 async def async_setup_entry(
@@ -28,16 +28,15 @@ async def async_setup_entry(
 ):
     """Set up Liebherr appliances as devices and entities from a config entry."""
 
-    entities: list[UpdateSensor] = [
-        UpdateSensor(
-            config_entry.runtime_data,
-            device,
-            LiebherrUpdateControl(ControlType.UPDATED),
-        )
-        for device in config_entry.runtime_data.data
-    ]
-
-    async_add_entities(entities)
+    async_add_entities(
+        [
+            UpdateSensor(
+                coordinator,
+                LiebherrUpdateControl(ControlType.UPDATED),
+            )
+            for coordinator in config_entry.runtime_data.coordinators
+        ]
+    )
 
 
 class UpdateSensor(LiebherrEntity, SensorEntity):  # pyright: ignore[reportIncompatibleVariableOverride]
@@ -46,11 +45,10 @@ class UpdateSensor(LiebherrEntity, SensorEntity):  # pyright: ignore[reportIncom
     def __init__(
         self,
         coordinator: LiebherrCoordinator,
-        device: LiebherrDevice,
         control: LiebherrControl,
     ) -> None:
         """Initialize the sensor entity."""
-        super().__init__(coordinator, device, control)
+        super().__init__(coordinator, control)
         self._attr_icon = "mdi:clock-outline"
         self._attr_device_class = SensorDeviceClass.TIMESTAMP
         self._attr_entity_category = EntityCategory.DIAGNOSTIC

@@ -1,17 +1,25 @@
 """Liebherr HomeAPI for HomeAssistant."""
 
+from asyncio import gather
 import logging
 from typing import Any
 
-from pyliebherr.exception import LiebherrAuthException
+from pyliebherr import LiebherrAPI, LiebherrDevice
+from pyliebherr.exception import LiebherrAuthException, LiebherrException
 
 from homeassistant.components.hassio import async_get_clientsession
-from homeassistant.const import Platform
+from homeassistant.const import CONF_API_KEY, Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryError
+from homeassistant.helpers.translation import async_get_translations
 
-from .const import CONF_PRESENTATION_LIGHT_AS_NUMBER
-from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
+from .const import (
+    CONF_POLL_INTERVAL,
+    CONF_PRESENTATION_LIGHT_AS_NUMBER,
+    DOMAIN,
+    MIN_UPDATE_INTERVAL,
+)
+from .coordinator import LiebherrConfigEntry, LiebherrCoordinator, LiebherrRuntimeData
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,17 +37,46 @@ PLATFORMS = {
 async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEntry):
     """Set up Liebherr devices from a config entry."""
 
-    coordinator: LiebherrCoordinator = LiebherrCoordinator(
-        hass, config_entry, async_get_clientsession(hass)
-    )
-
     try:
-        await coordinator.async_config_entry_first_refresh()
+        api: LiebherrAPI = LiebherrAPI(
+            config_entry.data[CONF_API_KEY], async_get_clientsession(hass)
+        )
+
+        devices: list[LiebherrDevice] = await api.async_get_devices()
+
+        # Verify the poll_interval > minimun
+        if (
+            config_entry.options[CONF_POLL_INTERVAL] / len(devices)
+            < MIN_UPDATE_INTERVAL
+        ):
+            options: dict[str, Any] = {**config_entry.options}
+            options[CONF_POLL_INTERVAL] = len(devices) * MIN_UPDATE_INTERVAL
+            hass.config_entries.async_update_entry(config_entry, options=options)
+
+        coordinators: list[LiebherrCoordinator] = [
+            LiebherrCoordinator(hass, config_entry, api, device) for device in devices
+        ]
+
+        await gather(
+            *[
+                coordinator.async_config_entry_first_refresh()
+                for coordinator in coordinators
+            ]
+        )
+
     except LiebherrAuthException as ex:
         _LOGGER.error("Invalid API key, need to reauth")
         raise ConfigEntryAuthFailed(ex.message) from ex
+    except LiebherrException as ex:
+        _LOGGER.exception("Error on integration setup")
+        raise ConfigEntryError from ex
 
-    config_entry.runtime_data = coordinator
+    config_entry.runtime_data = LiebherrRuntimeData(
+        coordinators=coordinators,
+        translations=await async_get_translations(
+            hass, hass.config.language, "common", [DOMAIN]
+        ),
+    )
 
     if config_entry.options.get(CONF_PRESENTATION_LIGHT_AS_NUMBER, False):
         PLATFORMS.add(Platform.NUMBER)

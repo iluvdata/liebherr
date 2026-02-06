@@ -35,11 +35,10 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
     def __init__(
         self,
         coordinator: LiebherrCoordinator,
-        device: LiebherrDevice,
         control: LiebherrControl,
     ) -> None:
         """Initialize the climate entity."""
-        super().__init__(coordinator=coordinator, device=device, control=control)
+        super().__init__(coordinator=coordinator, control=control)
         self._attr_target_temperature_step = 1
         self._attr_temperature_unit = (
             control.unit_of_measurement
@@ -49,7 +48,7 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
         self._attr_hvac_modes = [HVACMode.COOL]
         self._attr_hvac_mode = HVACMode.COOL
-        if self._device.deviceType != LiebherrDevice.DeviceType.COMBI:
+        if self.coordinator.device.device_type != LiebherrDevice.DeviceType.COMBI:
             self._attr_icon = "mdi:fridge-industrial-outline"
         elif control.zone_position == ZonePosition.TOP:
             self._attr_icon = "mdi:fridge-top"
@@ -80,13 +79,13 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
             temperature: int = kwargs[ATTR_TEMPERATURE]
 
             data = TemperatureControlRequest(
-                zoneId=self._control.zone_id if self._control.zone_id else 0,
+                zone_id=self.control.zone_id if self.control.zone_id else 0,
                 target=temperature,
                 unit=self._attr_temperature_unit,
             )
 
-            await self.coordinator.api.async_set_value(self._device.device_id, data)
-            self._control.target = temperature
+            await self.async_set_value(data)
+            self.control.target = temperature
             self.async_write_ha_state()
 
     async def async_set_hvac_mode(self, hvac_mode):
@@ -97,19 +96,19 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
     @property
     def target_temperature(self) -> float | None:
         """Target Temperature."""
-        return self._control.target
+        return self.control.target
 
     @property
     def min_temp(self) -> float | None:
         """Min Temp."""
-        return self._control.min
+        return self.control.min
 
     @property
     def max_temp(self) -> float | None:
         """Max Temp."""
-        return self._control.max
+        return self.control.max
 
     @property
     def current_temperature(self) -> float | None:
         """Current Temp."""
-        return self._control.value if isinstance(self._control.value, int) else None
+        return self.control.value if isinstance(self.control.value, int) else None

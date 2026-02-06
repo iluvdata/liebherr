@@ -26,7 +26,7 @@
         "sections": {
           "polling_options": {
             "name": "Intervalo de sondeo",
-            "description": "El intervalo de sondeo determinará el intervalo entre las solicitudes para actualizar los controles de un dispositivo.\n\nSegún las pruebas, el mínimo es aproximadamente {min_int} segundos. Los intervalos más cortos resultarán en errores `HTTP 429 - Demasiadas solicitudes`.\n\nSi tienes un solo dispositivo, se recomienda 30 segundos. Si tienes varios dispositivos, se recomienda 30 segundos entre cada sondeo de dispositivo (por ejemplo, 2 dispositivos = 15 segundos).",
+            "description": "El intervalo de sondeo determinará el intervalo entre las solicitudes para actualizar los controles de un dispositivo. Con el numero corriente de depositivos el minimo es {min_int}s y {rec_int}s se recomiende. Los intervalos más cortos resultarán en errores `HTTP 429 - Demasiadas solicitudes`.",
             "data": {
               "poll_interval": "Intervalo de sondeo"
             },
