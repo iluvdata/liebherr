@@ -69,6 +69,11 @@
         }
       }
     },
+    "number": {
+      "presentationlight": {
+        "name": "Präsentationslicht"
+      }
+    },
     "switch": {
       "supercool": {
         "name": "SuperCool{zone}"
@@ -84,11 +89,6 @@
       }
     },
     "light": {
-      "presentationlight": {
-        "name": "Präsentationslicht"
-      }
-    },
-    "number": {
       "presentationlight": {
         "name": "Präsentationslicht"
       }
@@ -120,6 +120,11 @@
         "state": {
           "cool": "Gefrieren"
         }
+      }
+    },
+    "sensor": {
+      "updated": {
+        "name": "Zuletzt aktualisiert"
       }
     }
   }
