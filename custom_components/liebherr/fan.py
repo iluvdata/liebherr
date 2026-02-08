@@ -68,10 +68,10 @@ class LiebherrFan(LiebherrEntity, FanEntity):
 
     @property
     def _mode(self) -> HydroBreezeControlRequest.HydroBreezeMode:
-        if self._control.current_mode and isinstance(
-            self._control.current_mode, HydroBreezeControlRequest.HydroBreezeMode
+        if self.control.current_mode and isinstance(
+            self.control.current_mode, HydroBreezeControlRequest.HydroBreezeMode
         ):
-            return self._control.current_mode
+            return self.control.current_mode
         return HydroBreezeControlRequest.HydroBreezeMode.OFF
 
     def _set_percentage(
@@ -87,13 +87,12 @@ class LiebherrFan(LiebherrEntity, FanEntity):
     async def _async_set_mode(
         self, mode: HydroBreezeControlRequest.HydroBreezeMode
     ) -> None:
-        await self.coordinator.api.async_set_value(
-            device_id=self._device.device_id,
+        await self.async_set_value(
             control=HydroBreezeControlRequest(
-                mode, self._control.zone_id if self._control.zone_id else 0
+                mode, self.control.zone_id if self.control.zone_id else 0
             ),
         )
-        self._control.currentMode = mode
+        self.control.current_mode = mode
         self._set_percentage()
         self.async_write_ha_state()
 

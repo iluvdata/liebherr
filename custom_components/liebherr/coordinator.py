@@ -1,32 +1,40 @@
 """Liebherr Data Update Coordinator."""
 
-import asyncio
+from dataclasses import dataclass
 from datetime import timedelta
 import logging
+from typing import Any
 
-from aiohttp import ClientSession
-from pyliebherr import LiebherrAPI, LiebherrDevice
+from pyliebherr import LiebherrAPI, LiebherrControls, LiebherrDevice
 from pyliebherr.exception import (
     LiebherrAPILimitExceededException,
     LiebherrAuthException,
     LiebherrFetchException,
 )
+from pyliebherr.models import LiebherrControlRequest
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
-from homeassistant.helpers.translation import async_get_translations
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import CONF_POLL_INTERVAL, DEFAULT_UPDATE_INTERVAL, DOMAIN
+from .const import CONF_POLL_INTERVAL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-type LiebherrConfigEntry = ConfigEntry["LiebherrCoordinator"]
+
+@dataclass
+class LiebherrRuntimeData:
+    """Holds the integration runtime data."""
+
+    coordinators: list["LiebherrCoordinator"]
+    translations: dict[str, str]
 
 
-class LiebherrCoordinator(DataUpdateCoordinator[list[LiebherrDevice]]):
+type LiebherrConfigEntry = ConfigEntry[LiebherrRuntimeData]
+
+
+class LiebherrCoordinator(DataUpdateCoordinator[LiebherrControls]):
     """Liebherr Data Update Coordinator."""
 
     zone_translations: dict[str, str] = {}
@@ -34,24 +42,29 @@ class LiebherrCoordinator(DataUpdateCoordinator[list[LiebherrDevice]]):
     def __init__(
         self,
         hass: HomeAssistant,
-        entry: LiebherrConfigEntry,
-        client_session: ClientSession | None = None,
+        config_entry: LiebherrConfigEntry,
+        api: LiebherrAPI,
+        device: LiebherrDevice,
     ) -> None:
         """Initialize the coordinator."""
-        self.api = LiebherrAPI(entry.data[CONF_API_KEY], client_session)
-        self.config_entry: LiebherrConfigEntry = entry
-        self.poll_interval: int = DEFAULT_UPDATE_INTERVAL
 
-        update_interval: timedelta = timedelta(seconds=self.poll_interval)
+        self.config_entry: LiebherrConfigEntry = config_entry
+        self.api: LiebherrAPI = api
+        self.device: LiebherrDevice = device
 
         super().__init__(
-            hass, _LOGGER, name="liebherr_coordinator", update_interval=update_interval
+            hass,
+            _LOGGER,
+            name=f"liebherr_coordinator_{device.device_id}",
+            update_interval=timedelta(
+                seconds=int(config_entry.options[CONF_POLL_INTERVAL])
+            ),
         )
 
-    async def _async_setup(self) -> None:
-        """Set up the coordinator by getting devices."""
+    async def _async_update_data(self) -> LiebherrControls:
+        """Fetch data from Liebherr API."""
         try:
-            self.data = await self.api.async_get_appliances()
+            self.data = await self.api.async_get_controls(self.device.device_id)
         except LiebherrAuthException as ex:
             _LOGGER.error("Invalid API key")
             raise ConfigEntryAuthFailed(ex.message) from ex
@@ -63,36 +76,10 @@ class LiebherrCoordinator(DataUpdateCoordinator[list[LiebherrDevice]]):
         except LiebherrFetchException as ex:
             _LOGGER.error("Error fetching devices: %s", ex.message)
             raise UpdateFailed(ex.message) from ex
-        self.poll_interval = self.config_entry.options.get(
-            CONF_POLL_INTERVAL, DEFAULT_UPDATE_INTERVAL
-        )
-        # The coordiantor will only updated each device's controls at most once per poll_interval * the number of devices.
-        self.update_interval = timedelta(seconds=self.poll_interval * len(self.data))
-        self.zone_translations = await async_get_translations(
-            self.hass, self.hass.config.language, "common", [DOMAIN]
-        )
-
-    async def _async_update_data(self) -> list[LiebherrDevice]:
-        """Fetch data from Liebherr API."""
-
-        for idx, device in enumerate(self.data):
-            _LOGGER.debug("Refreshing controls for device: %s", device.device_id)
-            try:
-                device.controls = await self.api.async_get_controls(device.device_id)
-                self.async_update_listeners()
-                if idx != len(self.data) - 1:
-                    await asyncio.sleep(self.poll_interval)  # to avoid rate limiting
-            except LiebherrAuthException as ex:
-                _LOGGER.error("Invalid API key")
-                raise ConfigEntryAuthFailed(ex.message) from ex
-            except LiebherrAPILimitExceededException as ex:
-                _LOGGER.warning(
-                    "API rate limit exceeded getting devices: %s", ex.message
-                )
-                raise UpdateFailed(
-                    translation_domain=DOMAIN, translation_key="api_limit_exceeded"
-                ) from ex
-            except LiebherrFetchException as ex:
-                _LOGGER.error("Error fetching devices: %s", ex.message)
-                raise UpdateFailed(ex.message) from ex
         return self.data
+
+    async def async_set_value(
+        self, control: LiebherrControlRequest
+    ) -> list[dict[str, Any]]:
+        """Perform Control Request on Device."""
+        return await self.api.async_set_value(self.device.device_id, control)

@@ -1,10 +1,10 @@
 """Download diagnostics."""
 
-from dataclasses import asdict
+import json
 import re
 from typing import Any
 
-import json
+from pyliebherr import LiebherrControl, LiebherrDevice
 
 from homeassistant.components.diagnostics import REDACTED, async_redact_data
 from homeassistant.const import (
@@ -35,9 +35,21 @@ async def async_get_config_entry_diagnostics(
 ) -> dict[str, Any]:
     """Return diagnostics for a config entry."""
 
-    devices: list[dict[str, Any]] = [
-        asdict(device) for device in entry.runtime_data.data
-    ]
+    devices: list[dict[str, Any]] = []
+    for coordinator in entry.runtime_data.coordinators:
+        device: LiebherrDevice = coordinator.device.to_dict()
+        device["controls"] = {}
+        for key, control in coordinator.data.items():
+            if isinstance(control, dict):  # zoned controls
+                device["controls"][key] = {
+                    zone_id: zonedcontrol.to_dict()
+                    for zone_id, zonedcontrol in control.items()
+                }
+            elif isinstance(control, LiebherrControl):
+                device["controls"][key] = control.to_dict()
+            else:
+                device["controls"][key] = control
+        devices.append(device)
 
     return {
         "entry_config": {

@@ -44,9 +44,9 @@ class LiebherrLight(LiebherrEntity, LightEntity):
         self._set_brightness()
 
     def _set_brightness(self) -> None:
-        if self._control.target is not None and self._control.target > 0:
+        if self.control.target is not None and self.control.target > 0:
             self._attr_brightness = self._attr_brightness = value_to_brightness(
-                self.brightness_scale, self._control.target
+                self.brightness_scale, self.control.target
             )
 
     def _handle_coordinator_update(self) -> None:
@@ -57,7 +57,7 @@ class LiebherrLight(LiebherrEntity, LightEntity):
     @property
     def is_on(self) -> bool:
         """Light on attribute."""
-        return self._control.target is not None and self._control.target > 0
+        return self.control.target is not None and self.control.target > 0
 
     async def async_turn_on(
         self,
@@ -73,12 +73,11 @@ class LiebherrLight(LiebherrEntity, LightEntity):
             else (self._attr_brightness if self._attr_brightness else 255)
         )
 
-        self._control.target = math.ceil(
+        self.control.target = math.ceil(
             brightness_to_value(self.brightness_scale, brightness)
         )
-        await self.coordinator.api.async_set_value(
-            device_id=self._device.device_id,
-            control=PresentationLightControlRequest(self._control.target),
+        await self.async_set_value(
+            control=PresentationLightControlRequest(self.control.target),
         )
 
         self._attr_brightness = brightness
@@ -86,9 +85,8 @@ class LiebherrLight(LiebherrEntity, LightEntity):
 
     async def async_turn_off(self, **kwargs):
         """Turn the light off."""
-        self._control.target = 0
-        await self.coordinator.api.async_set_value(
-            device_id=self._device.device_id,
+        self.control.target = 0
+        await self.async_set_value(
             control=PresentationLightControlRequest(0),
         )
         self.async_write_ha_state()

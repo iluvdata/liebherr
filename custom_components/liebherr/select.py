@@ -2,7 +2,7 @@
 
 import logging
 
-from pyliebherr import LiebherrControl, LiebherrDevice
+from pyliebherr import LiebherrControl
 from pyliebherr.const import ControlType
 from pyliebherr.exception import LiebherrException
 from pyliebherr.models import (
@@ -43,23 +43,19 @@ class LiebherrSelect(LiebherrEntity, SelectEntity):
     def __init__(
         self,
         coordinator: LiebherrCoordinator,
-        device: LiebherrDevice,
         control: LiebherrControl,
     ) -> None:
         """Initialize the select entity."""
-        super().__init__(coordinator=coordinator, device=device, control=control)
+        super().__init__(coordinator=coordinator, control=control)
 
     @property
     def current_option(self) -> str | None:
         """Current Option."""
-        return (
-            self._control.current_mode.lower() if self._control.current_mode else None
-        )
+        return self.control.current_mode.lower() if self.control.current_mode else None
 
     async def _async_select_option(self, data: LiebherrControlRequest) -> None:
         try:
-            await self.coordinator.api.async_set_value(
-                self._device.device_id,
+            await self.async_set_value(
                 data,
             )
 
@@ -67,7 +63,7 @@ class LiebherrSelect(LiebherrEntity, SelectEntity):
             _LOGGER.error(
                 "Failed to set option '%s' for '%s': %s",
                 data,
-                self._device.device_id,
+                self.coordinator.device.device_id,
                 e,
             )
 
@@ -78,17 +74,18 @@ class LiebherrBioFreshPlus(LiebherrSelect):
     def __init__(
         self,
         coordinator: LiebherrCoordinator,
-        device: LiebherrDevice,
         control: LiebherrControl,
     ) -> None:
         """Initialize the select entity."""
-        super().__init__(coordinator=coordinator, device=device, control=control)
+        super().__init__(coordinator=coordinator, control=control)
         self._attr_icon = "mdi: leaf"
-        if control.supportedModes is not None:
-            self._attr_options = [mode.lower() for mode in control.supportedModes]
+        if control.supported_modes is not None:
+            self._attr_options = [mode.lower() for mode in control.supported_modes]
         else:
             _LOGGER.error(
-                "Cannot setup %s for device %s", control.type, device.device_id
+                "Cannot setup %s for device %s",
+                control.type,
+                coordinator.device.device_id,
             )
 
     async def async_select_option(self, option: str) -> None:
@@ -98,14 +95,14 @@ class LiebherrBioFreshPlus(LiebherrSelect):
             return
 
         data: LiebherrControlRequest = BioFreshPlusControlRequest(
-            zoneId=self._control.zone_id if self._control.zone_id else 0,
-            bioFreshPlusMode=BioFreshPlusControlRequest.BioFreshPlusMode(
+            zone_id=self.control.zone_id if self.control.zone_id else 0,
+            bio_fresh_plus_mode=BioFreshPlusControlRequest.BioFreshPlusMode(
                 option.upper()
             ),
         )
         await self._async_select_option(data)
 
-        self._control.currentMode = option
+        self.control.current_mode = option
         self.async_write_ha_state()
 
 
@@ -115,21 +112,20 @@ class LiebherrIceMaker(LiebherrSelect):
     def __init__(
         self,
         coordinator: LiebherrCoordinator,
-        device: LiebherrDevice,
         control: LiebherrControl,
     ) -> None:
         """Initialize the Ice Maker entity."""
-        super().__init__(coordinator=coordinator, device=device, control=control)
+        super().__init__(coordinator=coordinator, control=control)
         self._attr_icon = "mdi:cube-outline"
         self._attr_options = (
-            ["on", "off", "max_ice"] if control.hasMaxIce else ["on", "off"]
+            ["on", "off", "max_ice"] if control.has_max_ice else ["on", "off"]
         )
 
     @property
     def current_option(self) -> str | None:
         """Current option."""
         return (
-            self._control.iceMakerMode.lower() if self._control.iceMakerMode else None
+            self.control.ice_maker_mode.lower() if self.control.ice_maker_mode else None
         )
 
     async def async_select_option(self, option: str) -> None:
@@ -139,10 +135,12 @@ class LiebherrIceMaker(LiebherrSelect):
             return
 
         data: LiebherrControlRequest = IceMakerControlRequest(
-            zoneId=self._control.zone_id if self._control.zone_id else 0,
-            iceMakerMode=IceMakerControlRequest.IceMakerMode(option.upper()),
+            zone_id=self.control.zone_id if self.control.zone_id else 0,
+            ice_maker_mode=IceMakerControlRequest.IceMakerMode(option.upper()),
         )
 
         await self._async_select_option(data)
-        self._control.iceMakerMode = IceMakerControlRequest.IceMakerMode(option.upper())
+        self.control.ice_maker_mode = IceMakerControlRequest.IceMakerMode(
+            option.upper()
+        )
         self._async_write_ha_state()

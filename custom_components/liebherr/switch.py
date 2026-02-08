@@ -3,7 +3,7 @@
 import logging
 from typing import Any, Final
 
-from pyliebherr import LiebherrControl, LiebherrDevice
+from pyliebherr import LiebherrControl
 from pyliebherr.const import ControlType
 from pyliebherr.models import BaseToggleControlRequest, ZoneToggleControlRequest
 
@@ -46,12 +46,11 @@ class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportInc
     def __init__(
         self,
         coordinator: LiebherrCoordinator,
-        device: LiebherrDevice,
         control: LiebherrControl,
     ) -> None:
         """Initialize the switch entity."""
-        super().__init__(coordinator, device, control)
-        self._attr_icon = CONFIG.get(self._control.control_name.lower(), {}).get(
+        super().__init__(coordinator, control)
+        self._attr_icon = CONFIG.get(self.control.control_name.lower(), {}).get(
             ATTR_ICON, "mdi:toggle-switch-variant"
         )
 
@@ -59,17 +58,17 @@ class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportInc
     def is_on(self) -> bool:
         """Is on attribute."""
         return (
-            self._control.value
-            if isinstance(self._control.value, bool)
-            else bool(self._control.value)
+            self.control.value
+            if isinstance(self.control.value, bool)
+            else bool(self.control.value)
         )
 
     async def _async_set_toggle(self, turn_on: bool) -> None:
-        control_name = self._control.control_name.lower()
+        control_name = self.control.control_name.lower()
         if not (config := CONFIG.get(control_name, {})):
             _LOGGER.error(
                 "Could not map set request for %s using control_name %s",
-                self._device.device_id,
+                self.coordinator.device.device_id,
                 control_name,
             )
             return
@@ -79,17 +78,14 @@ class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportInc
             if "zone" not in config
             else ZoneToggleControlRequest(
                 value=turn_on,
-                zoneId=self._control.zone_id
-                if self._control.zone_id is not None
-                else 0,
+                zone_id=self.control.zone_id if self.control.zone_id is not None else 0,
             )
         )
-        controlrequest.control_name = self._control.control_name
-        await self.coordinator.api.async_set_value(
-            device_id=self._device.device_id,
+        controlrequest.control_name = self.control.control_name
+        await self.async_set_value(
             control=controlrequest,
         )
-        self._control.value = turn_on
+        self.control.value = turn_on
         self.async_write_ha_state()
 
     async def async_turn_on(self, **kwargs) -> None:
