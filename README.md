@@ -114,7 +114,7 @@ In these versions the devices will update independently and the goal is to make 
 > [!Warning]
 > This was tested on a Liebherr Device lacking:
 > 
-> AutoDoor (reported to be working)
+> AutoDoor (reported to be working)  
 > Presentation Light (reported to be working both as number and light entity)  
 > BioFreshPlus (reported to be working)  
 > HydroBreeze (reported to be working)  
