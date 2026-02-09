@@ -84,7 +84,7 @@ Given rate limits imposed by Liebherr in the beta [SmartDevice Home API](https:/
 
 ### Version ≥ 2025.12.0
 
-This version will calculate the polling interval based on the number of devices/appliances associated with your Liebherr account.  Essentially the goal is to poll each device's controls every 30 seconds and is calculated thusly:
+These versions will calculate the polling interval based on the number of devices/appliances associated with your Liebherr account.  Essentially the goal is to poll each device's controls every 30 seconds and is calculated thusly:
 
 ```
                       30 seconds  
@@ -94,7 +94,15 @@ This version will calculate the polling interval based on the number of devices/
 
 With a minimun poll interval (floor) of 5 seconds for ≥ 6 devices.
 
-The polling interval can be adjusted manually (within some preset limits) by changing the integration options.
+### Beta Versions ≥ 2026.2.3-beta
+
+In these versions the devices will update independently and the goal is to make sure that **on average** the API is not polled more often than 5 seconds (which is the minimun based on testing). These versions calculate the poll interval for each devices' controls like this:
+
+* device control poll interval = 30 seconds,  if number of devices ≤ 6
+* device control poll interval = 5 seconds * number of devices,   if number of devices > 6.
+
+> [!tip] 
+> For either implementation, the polling interval can be adjusted manually (within some preset limits) by changing the integration options.
 
 ## Troubleshooting
 - Ensure your Liebherr api key is correct.
@@ -106,7 +114,7 @@ The polling interval can be adjusted manually (within some preset limits) by cha
 > [!Warning]
 > This was tested on a Liebherr Device lacking:
 > 
-> AutoDoor  
+> AutoDoor (reported to be working)
 > Presentation Light (reported to be working both as number and light entity)  
 > BioFreshPlus (reported to be working)  
 > HydroBreeze (reported to be working)  
