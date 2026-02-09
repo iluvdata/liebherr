@@ -11,7 +11,6 @@ from homeassistant.components.light import ATTR_BRIGHTNESS, ColorMode, LightEnti
 from homeassistant.core import HomeAssistant
 from homeassistant.util.color import brightness_to_value, value_to_brightness
 
-from .const import BRIGHTNESS_SCALE, DEFAULT_BRIGHTNESS_SCALE
 from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
 from .entity import LiebherrEntity, base_async_setup_entry
 
@@ -38,9 +37,7 @@ class LiebherrLight(LiebherrEntity, LightEntity):
         super().__init__(coordinator, device, control)
         self._attr_icon = "mdi:lightbulb"
         self._attr_supported_color_modes = {ColorMode.BRIGHTNESS}
-        self.brightness_scale: tuple[int, int] = BRIGHTNESS_SCALE.get(
-            device.model, DEFAULT_BRIGHTNESS_SCALE
-        )
+        self.brightness_scale: tuple[int, int] = (0, control.max if control.max else 4)
         self._set_brightness()
 
     def _set_brightness(self) -> None:
@@ -50,7 +47,7 @@ class LiebherrLight(LiebherrEntity, LightEntity):
             )
 
     def _handle_coordinator_update(self) -> None:
-        self._handle_coordinator_update(False)
+        super()._handle_coordinator_update(False)
         self._set_brightness()
         self.async_write_ha_state()
 
