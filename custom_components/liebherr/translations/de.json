@@ -31,7 +31,7 @@
         "sections": {
           "polling_options": {
             "name": "Abfrageintervall",
-            "description": "Das Abfrageintervall bestimmt den Abstand zwischen den Anfragen zur Aktualisierung der Geräteinformationen.\n\nBasierend auf Tests beträgt das Minimum etwa {min_int} Sekunden. Kürzere Intervalle führen zu Fehlern (HTTP 429 - Too Many Requests).\n\nEin Abfrageintervall von 30 Sekunden wird empfohlen, wenn Sie ein Gerät einbinden. Wenn Sie mehrere Geräte haben, wird ein Abstand von 30 Sekunden zwischen den einzelnen Geräteabfragen empfohlen (z. B. 2 Geräte = 15 Sekunden).",
+            "description": "Das Abfrageintervall bestimmt den Abstand zwischen den Anfragen zur Aktualisierung der Geräteinformationen. Basierend auf der Zahl der aktuell verbundenen Geräte beträgt das zulässige Mindestintervall {min_int} Sekunden, empfohlen werden {rec_int} Sekunden. Kürzere Intervalle führen zu Fehlern `HTTP 429 - Too Many Requests`.",
             "data": {
               "poll_interval": "Abfrageinterval"
             },
@@ -69,6 +69,11 @@
         }
       }
     },
+    "number": {
+      "presentationlight": {
+        "name": "Präsentationslicht"
+      }
+    },
     "switch": {
       "supercool": {
         "name": "SuperCool{zone}"
@@ -84,11 +89,6 @@
       }
     },
     "light": {
-      "presentationlight": {
-        "name": "Präsentationslicht"
-      }
-    },
-    "number": {
       "presentationlight": {
         "name": "Präsentationslicht"
       }
@@ -120,6 +120,11 @@
         "state": {
           "cool": "Gefrieren"
         }
+      }
+    },
+    "sensor": {
+      "updated": {
+        "name": "Zuletzt aktualisiert"
       }
     }
   }

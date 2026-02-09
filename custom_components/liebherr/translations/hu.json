@@ -8,20 +8,45 @@
   "config": {
     "step": {
       "user": {
-        "description": "Csatlakoztassa a berendezését a **SmartDevice app** használatával az otthoni WiFi hálózatra.\n\n**1. Töltse le az [applikációt]({url_download_app})**\n**2. Kövesse az [utasításokat]({url_connect_instructions}) a berendezés csatlakoztatásához**\n**3. Szerezze meg az API Key-t a SmartDevice app-ban**\n\nMenjen a *Beállítások*-ba a SmartDevice app-ban és válassza ki a **“Beta features”**-t, ahol aktiválja a HomeAPI-t.\n\nMásolja le az API Key-t és illessze be lejjebb. Az API Key-t csak **egyszer** lehet kimásolni.\n\nAhogy elagyja a képernyőt, a Key-hez **nem lehet** még egyszer hozzáférni.\n\nHa elfelejtette a Key-t, újat kell létrehozni az app-ban.",
+        "description": "Csatlakoztassa a berendezését a **SmartDevice app** használatával az otthoni WiFi hálózatra.\n\n**1. Töltse le az [applikációt]({url_download_app})**\n**2. Kövesse az [utasításokat]({url_connect_instructions}) a berendezés csatlakoztatásához**\n**3. Szerezze meg az API Key-t a SmartDevice app-ban**\n\nMenjen a *Beállítások*-ba a SmartDevice app-ban és válassza ki a **“Beta features”**-t, ahol aktiválja a HomeAPI-t.\n\nMásolja le az API Key-t és illessze be lejjebb. Az API Key-t csak **egyszer** lehet kimásolni.\n\nAhogy elagyja a képernyőt, az API Key-hez **nem lehet** még egyszer hozzáférni.\n\nHa elfelejtette az API Key-t, újat kell létrehozni.",
         "data": {
           "api_key": "API Key a SmartDevice App-ból"
         }
       }
     },
     "error": {
-      "auth_error": "API Key nincs engedélyezve vagy érvénytelen.",
-      "whitespace_api_key": "There is whitespace before or after the api key."
+      "auth_error": "Az API Key nincs engedélyezve vagy érvénytelen.",
+      "whitespace_api_key": "Szünet került az API key elé vagy mögé."
     },
     "abort": {
-      "already_configured": "API Key már konfigurálva.",
-      "invalid_source": "Egy érvénytelen folyamattípus lett megadva, ez soha nem fordulhat elő (lásd a naplókat).",
-      "reauth_successful": "Újraautentikáció sikeres."
+      "already_configured": "Már konfigurált API Key.",
+      "invalid_source": "Érvénytelen folyamat forrás: soha nem fordulhat elő (nekitse meg a naplót).",
+      "reauth_successful": "Sikeres újrahitelesítés."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Liebherr Beállítások",
+        "sections": {
+          "polling_options": {
+            "name": "Lekérdezési időköz",
+            "description": "A lekérdezési időköz meghatározza hogy milyen gyakran frissítse a berendezések állapotát.\n\nA megfigyelések szerint legkevesebb {min_int} másodperc javasolt. Ennél rövidebb időköz `HTTP 429 - Túl Sok Lekérdezés` hibát eredményez.\n\nEgy berendezés esetén 30 másodperc javasolt. További berendezések esetén azok számától függ (pl. 2 berendezésnél 15 másodperc). OK: a Liebherr korlátozza az API elérést.",
+            "data": {
+              "poll_interval": "Lekérdezési időköz"
+            },
+            "data_description": {
+              "poll_interval": "Javasolt időköz: {rec_int}s. Maximum időköz: {max_int}s."
+            }
+          },
+          "presentation_light_options": {
+            "name": "JelzőFény Beállítások",
+            "data": {
+              "presentation_light_as_number": "Használjon csúszkát sima kapcsoló helyett a JelzőFény vezérlésére (amennyiben alkalmazható)?"
+            }
+          }
+        }
+      }
     }
   },
   "entity": {
@@ -44,6 +69,11 @@
         }
       }
     },
+    "number": {
+      "presentationlight": {
+        "name": "JelzőFény"
+      }
+    },
     "switch": {
       "supercool": {
         "name": "SzuperHűtés{zone}"
@@ -60,7 +90,7 @@
     },
     "light": {
       "presentationlight": {
-        "name": "Presentation Light"
+        "name": "JelzőFény"
       }
     },
     "fan": {
@@ -75,7 +105,7 @@
     },
     "image": {
       "device_image": {
-        "name": "Berendzés Kép"
+        "name": "Berendzés Ábra"
       }
     },
     "climate": {
@@ -90,6 +120,11 @@
         "state": {
           "cool": "Fagyasztás"
         }
+      }
+    },
+    "sensor": {
+      "updated": {
+        "name": "Utolsó frissítés"
       }
     }
   }
