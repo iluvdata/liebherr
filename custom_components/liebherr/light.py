@@ -50,7 +50,7 @@ class LiebherrLight(LiebherrEntity, LightEntity):
             )
 
     def _handle_coordinator_update(self) -> None:
-        self._handle_coordinator_update(False)
+        super()._handle_coordinator_update(False)
         self._set_brightness()
         self.async_write_ha_state()
 
