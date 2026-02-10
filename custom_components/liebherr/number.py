@@ -45,7 +45,7 @@ class LiebherrNumber(LiebherrEntity, NumberEntity):
         self._attr_mode = NumberMode.SLIDER
 
     @property
-    async def native_value(self) -> float:
+    def native_value(self) -> float:
         """Light brightness."""
         return (
             self._control.target
