@@ -17,9 +17,9 @@
     "pyliebherr"
   ],
   "requirements": [
-    "pyliebherr==2026.2.1",
+    "pyliebherr==2026.2.2",
     "Pillow>=11.0.0"
   ],
   "single_config_entry": true,
-  "version": "2026.2.6-beta"
+  "version": "2026.2.6-beta.1"
 }

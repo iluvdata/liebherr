@@ -37,7 +37,7 @@ class LiebherrLight(LiebherrEntity, LightEntity):
         super().__init__(coordinator, device, control)
         self._attr_icon = "mdi:lightbulb"
         self._attr_supported_color_modes = {ColorMode.BRIGHTNESS}
-        self.brightness_scale: tuple[int, int] = (0, control.max if control.max else 4)
+        self.brightness_scale: tuple[int, int] = (1, control.max if control.max else 4)
         self._set_brightness()
 
     def _set_brightness(self) -> None:
