@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from pyliebherr import LiebherrControl
+from pyliebherr import LiebherrControl, LiebherrDevice
 from pyliebherr.const import ControlType
 from pyliebherr.models import HydroBreezeControlRequest
 
@@ -47,10 +47,11 @@ class LiebherrFan(LiebherrEntity, FanEntity):
     def __init__(
         self,
         coordinator: LiebherrCoordinator,
+        device: LiebherrDevice,
         control: LiebherrControl,
     ) -> None:
         """Initialize the switch entity."""
-        super().__init__(coordinator, control)
+        super().__init__(coordinator, device, control)
         self._attr_icon = "mdi:fan-off"
         self._attr_speed_count = len(HydroBreezeControlRequest.HydroBreezeMode)
         self._attr_supported_features = (
