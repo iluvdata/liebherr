@@ -26,7 +26,7 @@ async def async_setup_entry(
     hass: HomeAssistant, config_entry: LiebherrConfigEntry, async_add_entities
 ):
     """Set up Liebherr switches from a config entry."""
-        
+
     async_add_entities(
         [LiebherrImage(hass, device) for device in config_entry.runtime_data.data]
     )
