@@ -21,9 +21,5 @@
     "Pillow>=11.0.0"
   ],
   "single_config_entry": true,
-<<<<<<< HEAD
-  "version": "2026.2.4-beta"
-=======
-  "version": "2026.2.5"
->>>>>>> main
+  "version": "2026.2.6-beta"
 }
