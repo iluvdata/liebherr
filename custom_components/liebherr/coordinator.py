@@ -1,5 +1,7 @@
 """Liebherr Data Update Coordinator."""
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 from datetime import timedelta
 import logging
@@ -27,7 +29,7 @@ _LOGGER = logging.getLogger(__name__)
 class LiebherrRuntimeData:
     """Holds the integration runtime data."""
 
-    coordinators: list["LiebherrCoordinator"]
+    coordinators: list[LiebherrCoordinator]
     translations: dict[str, str]
 
 
@@ -36,8 +38,6 @@ type LiebherrConfigEntry = ConfigEntry[LiebherrRuntimeData]
 
 class LiebherrCoordinator(DataUpdateCoordinator[LiebherrControls]):
     """Liebherr Data Update Coordinator."""
-
-    zone_translations: dict[str, str] = {}
 
     def __init__(
         self,
