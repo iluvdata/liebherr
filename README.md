@@ -82,7 +82,7 @@ Given rate limits imposed by Liebherr in the beta [SmartDevice Home API](https:/
 > #### Last Updated Sensor
 > A diagnostic sensor will be created for each device showing the last timestamp of the most recent poll but is disabled by default (as it will quickly fill up your database with state changes).
 
-### Version ≥ 2025.12.0
+### Version ≤ 2026.2.5.2
 
 These versions will calculate the polling interval based on the number of devices/appliances associated with your Liebherr account.  Essentially the goal is to poll each device's controls every 30 seconds and is calculated thusly:
 
@@ -94,7 +94,7 @@ These versions will calculate the polling interval based on the number of device
 
 With a minimun poll interval (floor) of 5 seconds for ≥ 6 devices.
 
-### Beta Versions ≥ 2026.2.3-beta
+### Versions > 2026.2.5.2
 
 In these versions the devices will update independently and the goal is to make sure that **on average** the API is not polled more often than 5 seconds (which is the minimun based on testing). These versions calculate the poll interval for each devices' controls like this:
 
