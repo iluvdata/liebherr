@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from pyliebherr import LiebherrControl, LiebherrDevice
+from pyliebherr import LiebherrControl
 from pyliebherr.const import ControlType
 from pyliebherr.models import HydroBreezeControlRequest
 
