@@ -152,7 +152,7 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
                 api: LiebherrAPI = LiebherrAPI(user_input[CONF_API_KEY])
                 devices: list[LiebherrDevice] = []
                 try:
-                    devices = await api.async_get_appliances()
+                    devices = await api.async_get_devices()
                 except LiebherrAuthException:
                     errors["base"] = "auth_error"
                 await api.async_close()
