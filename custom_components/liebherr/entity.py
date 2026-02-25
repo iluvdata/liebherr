@@ -1,9 +1,11 @@
 """Base Entityfor Liebherr appliances."""
 
 import logging
+from typing import Any
 
 from pyliebherr import LiebherrControl, LiebherrDevice
 from pyliebherr.const import CONTROL_NAMES, ControlType
+from pyliebherr.models import LiebherrControlRequest
 
 from homeassistant.core import callback
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -20,18 +22,16 @@ def async_get_unique_id(
     device_id: str, control_name: str, zone_id: int | None = None
 ) -> str:
     """Helper to form unique_id."""
-    return f"{DOMAIN}_{device_id}_{control_name}_{zone_id if zone_id else 0}"
+    return f"{DOMAIN}_{device_id}_{control_name}_{zone_id or 0}"
 
 
 def async_get_device_info(device: LiebherrDevice) -> DeviceInfo:
     """Device Info Helper."""
     return {
         "identifiers": {(DOMAIN, device.device_id)},
-        "name": device.name
-        if device.name
-        else f"Liebherr HomeAPI Appliance {device.device_id}",
+        "name": device.name or f"Liebherr HomeAPI Appliance {device.device_id}",
         "manufacturer": "Liebherr",
-        "model": device.model if device.model else "Unknown Model",
+        "model": device.model or "Unknown Model",
     }
 
 
@@ -39,47 +39,49 @@ class LiebherrEntity(CoordinatorEntity[LiebherrCoordinator]):
     """Representation of a Liebherr climate entity."""
 
     def __init__(
-        self,
-        coordinator: LiebherrCoordinator,
-        device: LiebherrDevice,
-        control: LiebherrControl,
+        self, coordinator: LiebherrCoordinator, control: LiebherrControl
     ) -> None:
         """Initialize the climate entity."""
         self._attr_has_entity_name = True
         super().__init__(coordinator)
         self.coordinator: LiebherrCoordinator = coordinator
-        self._device: LiebherrDevice = device
-        self._control: LiebherrControl = control
+        self.control = control
         self._attr_unique_id = async_get_unique_id(
-            device.device_id, control.control_name, control.zone_id
+            coordinator.device.device_id, control.control_name, control.zone_id
         )
-        self._attr_device_info = async_get_device_info(device)
+        self._attr_device_info = async_get_device_info(coordinator.device)
         self._attr_translation_key = control.control_name
         if control.zone_position:
             self._attr_translation_placeholders = {
-                "zone": f" {coordinator.zone_translations[f'component.{DOMAIN}.common.{control.zone_position}']}",
+                "zone": f" {coordinator.config_entry.runtime_data.translations[f'component.{DOMAIN}.common.{control.zone_position}']}",
             }
 
     @callback
     def _handle_coordinator_update(self, write: bool = True) -> None:
         """Get the current control from the device."""
-        if controls := self._device.controls.get(self._control.control_name):
+        if controls := self.coordinator.data.get(self.control.control_name):
             if isinstance(controls, LiebherrControl):
-                self._control = controls
+                self.control = controls
                 if write:
                     self.async_write_ha_state()
                 return
-            if control := controls.get(self._control.zone_id):
-                self._control = control
+            if control := controls.get(self.control.zone_id):
+                self.control = control
                 if write:
                     self.async_write_ha_state()
                 return
             _LOGGER.warning(
                 "Unable to find control %s for device %s with zone id %s",
-                self._control.control_name,
-                self._device.device_id,
-                self._control.zone_id,
+                self.control.control_name,
+                self.coordinator.device.device_id,
+                self.control.zone_id,
             )
+
+    async def async_set_value(
+        self, control: LiebherrControlRequest
+    ) -> list[dict[str, Any]]:
+        """Call api method for device via coordinator."""
+        return await self.coordinator.async_set_value(control)
 
 
 async def base_async_setup_entry(
@@ -90,22 +92,22 @@ async def base_async_setup_entry(
 ) -> None:
     """Set up Liebherr appliances as devices and entities from a config entry."""
 
-    devices: list[LiebherrDevice] = config_entry.runtime_data.data
     entities: list[LiebherrEntity] = []
-    for device in devices:
-        if not device.controls:
-            _LOGGER.warning("No controls found for appliance %s", device.device_id)
+    for coordinator in config_entry.runtime_data.coordinators:
+        if not coordinator.data:
+            _LOGGER.warning(
+                "No controls found for appliance %s", coordinator.device.device_id
+            )
             continue
-        if device.deviceType in LiebherrDevice.DeviceType:
+        if coordinator.device.device_type in LiebherrDevice.DeviceType:
             for control_name in CONTROL_NAMES[control_type]:
-                if controls := device.controls.get(control_name):
+                if controls := coordinator.data.get(control_name):
                     if isinstance(controls, LiebherrControl):
                         controls = {None: controls}
                     entities.extend(
                         [
                             liebherr_entity_class(
-                                coordinator=config_entry.runtime_data,
-                                device=device,
+                                coordinator=coordinator,
                                 control=control,
                             )
                             for control in controls.values()

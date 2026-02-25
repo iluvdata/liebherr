@@ -48,20 +48,19 @@ class LiebherrNumber(LiebherrEntity, NumberEntity):
     def native_value(self) -> float:
         """Light brightness."""
         return (
-            self._control.target
-            if self._control.target is not None and self._control.target > 0
+            self.control.target
+            if self.control.target is not None and self.control.target > 0
             else 0
         )
 
     async def async_set_native_value(self, value: float) -> None:
         """Set new value."""
         try:
-            await self.coordinator.api.async_set_value(
-                device_id=self._device.device_id,
+            await self.async_set_value(
                 control=PresentationLightControlRequest(int(value)),
             )
         except LiebherrException as ex:
             raise HomeAssistantError(f"Error setting value: {value}") from ex
 
-        self._control.target = round(value)
+        self.control.target = round(value)
         self.async_write_ha_state()

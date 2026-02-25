@@ -31,7 +31,7 @@
         "sections": {
           "polling_options": {
             "name": "Poll Interval",
-            "description": "The polling interval will determine the interval between requests to refresh a devices's controls.\n\nBased on testing the minimun is approximately {min_int} seconds. Shorter intervals will result in `HTTP 429 - Too Many Requests` errors.\n\nIf you have one device 30 seconds is recommended.  If you have multiple devices 30 seconds between each device poll is recommended (e.g. 2 devices = 15 seconds).",
+            "description": "The polling interval will determine the interval between requests to refresh a devices's controls. Based on the number of devices connected the current minimun allowed is {min_int}s and {rec_int}s is recommended. Shorter intervals will result in `HTTP 429 - Too Many Requests` errors.",
             "data": {
               "poll_interval": "Polling Interval"
             },

@@ -28,7 +28,10 @@ async def async_setup_entry(
     """Set up Liebherr switches from a config entry."""
 
     async_add_entities(
-        [LiebherrImage(hass, device) for device in config_entry.runtime_data.data]
+        [
+            LiebherrImage(hass, coordinator.device)
+            for coordinator in config_entry.runtime_data.coordinators
+        ]
     )
 
 
