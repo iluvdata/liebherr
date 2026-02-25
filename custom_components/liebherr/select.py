@@ -95,7 +95,7 @@ class LiebherrBioFreshPlus(LiebherrSelect):
             return
 
         data: LiebherrControlRequest = BioFreshPlusControlRequest(
-            zone_id=self.control.zone_id if self.control.zone_id else 0,
+            zone_id=self.control.zone_id or 0,
             bio_fresh_plus_mode=BioFreshPlusControlRequest.BioFreshPlusMode(
                 option.upper()
             ),
@@ -135,7 +135,7 @@ class LiebherrIceMaker(LiebherrSelect):
             return
 
         data: LiebherrControlRequest = IceMakerControlRequest(
-            zone_id=self.control.zone_id if self.control.zone_id else 0,
+            zone_id=self.control.zone_id or 0,
             ice_maker_mode=IceMakerControlRequest.IceMakerMode(option.upper()),
         )
 

@@ -1,6 +1,6 @@
 """Number entity definitions for Liebherr integration."""
 
-from pyliebherr import LiebherrControl, LiebherrDevice
+from pyliebherr import LiebherrControl
 from pyliebherr.const import ControlType
 from pyliebherr.exception import LiebherrException
 from pyliebherr.models import PresentationLightControlRequest
@@ -32,13 +32,12 @@ class LiebherrNumber(LiebherrEntity, NumberEntity):
     def __init__(
         self,
         coordinator: LiebherrCoordinator,
-        device: LiebherrDevice,
         control: LiebherrControl,
     ) -> None:
         """Initialize the number entity."""
-        super().__init__(coordinator, device, control)
+        super().__init__(coordinator, control)
         self._attr_icon = "mdi:lightbulb"
-        self.brightness_scale: tuple[int, int] = (0, control.max if control.max else 4)
+        self.brightness_scale: tuple[int, int] = (0, control.max or 4)
         self._attr_native_min_value = 0
         self._attr_native_max_value = self.brightness_scale[1]
         self._attr_native_step = 1
