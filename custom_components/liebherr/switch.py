@@ -40,6 +40,7 @@ async def async_setup_entry(
         config_entry, async_add_entities, LiebherrSwitch, ControlType.TOGGLE
     )
 
+
 class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportIncompatibleVariableOverride]
     """Representation of a Liebherr switch entity."""
 
@@ -78,7 +79,7 @@ class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportInc
             if "zone" not in config
             else ZoneToggleControlRequest(
                 value=turn_on,
-                zone_id=self.control.zone_id if self.control.zone_id is not None else 0,
+                zone_id=self.control.zone_id or 0,
             )
         )
         controlrequest.control_name = self.control.control_name
