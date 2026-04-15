@@ -6,12 +6,12 @@
 
 This is an *unofficial* **custom** integration for Home Assistant that allows you to connect and control Liebherr smart devices via the Liebherr SmartHomeAPI using the simple [pyliebherr](https://github.com/iluvdata/pyliebherr) library.
 
+> [!IMPORTANT] ANNOUNCEMENT
+> There is now a [Liebherr core integration](https://www.home-assistant.io/integrations/liebherr/) in Home Assistant as of 2026.3 authored by [@mettolon](https://github.com/mettolen).  I'll continue to respond to bug requests but won't likely make any additional improvements if and when Liebherr expands the functionality of the SmartHomeApi.
+
 ## Features
 - Monitor current and target temperatures of your Liebherr refridgeratorss and freezers.
 - Control device features such as BioFreshPlus, Hydrobreeze, AutoDoor, Presentation Lights, and Ice Makers.
-
-> [!NOTE]
-> [@mettolen](https://github.com/mettolen) has contributed a Liebherr core integration that will be included in an upcoming release of Home Assistant.  While it lacks a number of features provided by this integration the quality of code is very promising!
 
 ## Installation
 
