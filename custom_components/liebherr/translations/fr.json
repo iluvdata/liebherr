@@ -32,7 +32,7 @@
         "sections": {
           "polling_options": {
             "name": "Intervalle de sondage",
-            "description": "L'intervalle de sondage détermine la fréquence des requêtes pour actualiser les commandes d'un appareil.\n\nD'après les tests, le minimum est d'environ {min_int} secondes. Des intervalles plus courts entraîneront des erreurs `HTTP 429 - Too Many Requests`.\n\nPour un seul appareil, 30 secondes sont recommandées. Si vous avez plusieurs appareils, il est recommandé d'avoir 30 secondes entre chaque sondage d'appareil (ex. 2 appareils = 15 secondes).",
+            "description": "L'intervalle d'interrogation détermine le délai entre les requêtes visant à actualiser les commandes d'un appareil. En fonction du nombre d'appareils connectés, le minimum autorisé est actuellement de {min_int}s, et un intervalle de {rec_int}s est recommandé. Des intervalles plus courts entraîneront des erreurs de type `HTTP 429 - Too Many Requests`.",
             "data": {
               "poll_interval": "Intervalle de sondage"
             },
