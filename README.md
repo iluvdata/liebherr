@@ -10,19 +10,21 @@ This is an *unofficial* **custom** integration for Home Assistant that allows yo
 > There is now a [Liebherr core integration](https://www.home-assistant.io/integrations/liebherr/) in Home Assistant as of 2026.3 authored by [@mettolon](https://github.com/mettolen).  I'll continue to respond to bug requests but won't likely make any additional improvements if and when Liebherr expands the functionality of the SmartHomeApi.
 
 ## Features
-- Monitor current and target temperatures of your Liebherr refridgeratorss and freezers.
+
+- Uses Server-Sent Events to receive updates, so now cloud-push
+- Monitor current and target temperatures of your Liebherr refridgerators and freezers.
 - Control device features such as BioFreshPlus, Hydrobreeze, AutoDoor, Presentation Lights, and Ice Makers.
 
 ## Installation
 
 ### HACS (Recommended)
 
-
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?category=integration&owner=iluvdata&repository=liebherr)
 
 or search for the Liebherr integration in HACS
 
 ### Manual Installation
+
 1. Download the latest release from the [GitHub Releases page](https://github.com/iluvdata/liebherr/releases).
 2. Extract the downloaded archive.
 3. Copy the `custom_components/liebherr` folder to your Home Assistant `custom_components` directory.
@@ -34,29 +36,33 @@ or search for the Liebherr integration in HACS
 [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=liebherr)
 
 ### Or
+
 1. In Home Assistant, navigate to **Settings** > **Devices & Services**.
 2. Click **Add Integration**.
 3. Search for "Liebherr" and select it.
 
 ### Then
 
-1. Enter your Liebherr HomeAPI API key. (see [here](https://developer.liebherr.com/apis/smartdevice-homeapi/), how to get the key)
+1. Enter your Liebherr HomeAPI API key. (see [Smart Device Home API](https://developer.liebherr.com/apis/smartdevice-homeapi/) to get a key)
 2. Complete the setup process.
 3. (Optional):  Configure the polling interval and the entity type for Presentation Light (see below).
 
 ## Usage
+
 Once the integration is configured, your Liebherr devices will appear as entities in Home Assistant. You can:
+
 - Monitor temperatures and other metrics.
 - Control switches and settings via the Home Assistant UI or automations.
 - Change the poll interval on the configuration
 
 Controls will map to the following domains:
+
 | Liebherr Control | Homeassistant Domain |
-| -----------------| ---------------------|
+| ----------------- | --------------------- |
 | Auto Door | Cover |
-|Ice Maker, BioFreshPlus | Select |
-| Presentation Light | Light or Number*|
-| SuperCool, SuperFreeze, PartyMode, NightMode | Switch|
+| Ice Maker, BioFreshPlus | Select |
+| Presentation Light | Light or Number* |
+| SuperCool, SuperFreeze, PartyMode, NightMode | Switch |
 | HydroBreeze | Fan |
 | Temperature | Climate |
 | `image_url` (Device) | Image |
@@ -74,37 +80,20 @@ and click on "Reload" on the configuration menu:
 
 ![Menu Image](https://raw.githubusercontent.com/iluvdata/liebherr/refs/heads/main/assets/menu.png)
 
-## Update Interval
+## Update Interval (Versions prior to < 2025.5.0)
 
 Given rate limits imposed by Liebherr in the beta [SmartDevice Home API](https://developer.liebherr.com/apis/smartdevice-homeapi/#advice-for-implementation) the integration can only make a request to the device control API more often than every 30s.
 
-> [!Tip]
-> #### Last Updated Sensor
-> A diagnostic sensor will be created for each device showing the last timestamp of the most recent poll but is disabled by default (as it will quickly fill up your database with state changes).
+In these versions the devices will update independently and the goal is to make sure that **on average** the API is not polled more often than 5 seconds (which is the minimum based on testing). These versions calculate the poll interval for each devices' controls like this:
 
-### Version ≤ 2026.2.5.2
+- device control poll interval = 30 seconds,  if number of devices ≤ 6
+- device control poll interval = 5 seconds * number of devices,   if number of devices > 6.
 
-These versions will calculate the polling interval based on the number of devices/appliances associated with your Liebherr account.  Essentially the goal is to poll each device's controls every 30 seconds and is calculated thusly:
-
-```
-                      30 seconds  
-   poll interval = -----------------
-                   number of devices
-```
-
-With a minimun poll interval (floor) of 5 seconds for ≥ 6 devices.
-
-### Versions > 2026.2.5.2
-
-In these versions the devices will update independently and the goal is to make sure that **on average** the API is not polled more often than 5 seconds (which is the minimun based on testing). These versions calculate the poll interval for each devices' controls like this:
-
-* device control poll interval = 30 seconds,  if number of devices ≤ 6
-* device control poll interval = 5 seconds * number of devices,   if number of devices > 6.
-
-> [!tip] 
-> For either implementation, the polling interval can be adjusted manually (within some preset limits) by changing the integration options.
+> [!tip]
+> The polling interval can be adjusted manually (within some preset limits) by changing the integration options.
 
 ## Troubleshooting
+
 - Ensure your Liebherr api key is correct.
 - Check the Home Assistant logs for any errors related to the integration.
 - Enable debug on the integration.
@@ -113,7 +102,7 @@ In these versions the devices will update independently and the goal is to make 
 
 > [!Warning]
 > This was tested on a Liebherr Device lacking:
-> 
+>
 > AutoDoor (reported to be working)  
 > Presentation Light (reported to be working both as number and light entity)  
 > BioFreshPlus (reported to be working)  
@@ -122,13 +111,17 @@ In these versions the devices will update independently and the goal is to make 
 > If you encounter an issue with these features please submit an issue.
 
 ## Acknowledgements
+
 This is a complete rewrite of the [custom intergration](https://github.com/bhuebschen/liebherr) orginally maintained by [@bhuebschen](https://github.com/bhuebschen) from a fork created by [@skatsavos](https://github.com/skatsavos).  The original intergration stopped working in Oct 2025 and the orginal maintainer did not appear to be maintaining the project.
 
 ## Support
+
 If you encounter any issues or have feature requests, please open an issue on the [GitHub Issues page](https://github.com/iluvdata/liebherr/issues).
 
 ## Contributions
+
 Contributions are welcome! Feel free to submit pull requests to improve this integration.
 
 ## License
+
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/iluvdata/liebherr/blob/main/LICENSE) file for details.
