@@ -29,16 +29,6 @@
       "init": {
         "title": "Liebherr Optionen",
         "sections": {
-          "polling_options": {
-            "name": "Abfrageintervall",
-            "description": "Das Abfrageintervall bestimmt den Abstand zwischen den Anfragen zur Aktualisierung der Geräteinformationen. Basierend auf der Zahl der aktuell verbundenen Geräte beträgt das zulässige Mindestintervall {min_int} Sekunden, empfohlen werden {rec_int} Sekunden. Kürzere Intervalle führen zu Fehlern `HTTP 429 - Too Many Requests`.",
-            "data": {
-              "poll_interval": "Abfrageinterval"
-            },
-            "data_description": {
-              "poll_interval": "Das empfohlene Interval beträgt {rec_int} Sekunden und maximal {max_int} Sekunden."
-            }
-          },
           "presentation_light_options": {
             "name": "Präsentationslicht Optionen",
             "data": {
@@ -47,6 +37,14 @@
           }
         }
       }
+    }
+  },
+  "exceptions": {
+    "config_entry": {
+      "message": "Fehler beim Einrichten von Liebherr: {msg}"
+    },
+    "first_sse_timeout": {
+      "message": "Keine rechtzeitige Antwort von der Liebherr-API erhalten"
     }
   },
   "entity": {
@@ -113,12 +111,26 @@
         "name": "Kühlteil{zone}",
         "state": {
           "cool": "Kühlen"
+        },
+        "state_attributes": {
+          "hvac_action": {
+            "state": {
+              "cooling": "Kühlung"
+            }
+          }
         }
       },
       "freezer": {
         "name": "Gefrierteil{zone}",
         "state": {
           "cool": "Gefrieren"
+        },
+        "state_attributes": {
+          "hvac_action": {
+            "state": {
+              "cooling": "Gefrieren"
+            }
+          }
         }
       }
     },

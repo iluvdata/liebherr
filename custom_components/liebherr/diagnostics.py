@@ -4,8 +4,6 @@ import json
 import re
 from typing import Any
 
-from pyliebherr import LiebherrControl, LiebherrDevice
-
 from homeassistant.components.diagnostics import REDACTED, async_redact_data
 from homeassistant.const import (
     ATTR_ENTITY_PICTURE,
@@ -19,7 +17,7 @@ from homeassistant.core import HomeAssistant
 import homeassistant.helpers.device_registry as dr
 import homeassistant.helpers.entity_registry as er
 
-from .coordinator import LiebherrConfigEntry
+from . import LiebherrConfigEntry
 
 TO_REDACT_CONFIG_ENTRY: list[str] = [CONF_API_KEY, CONF_DEVICE_ID]
 
@@ -35,21 +33,9 @@ async def async_get_config_entry_diagnostics(
 ) -> dict[str, Any]:
     """Return diagnostics for a config entry."""
 
-    devices: list[dict[str, Any]] = []
-    for coordinator in entry.runtime_data.coordinators:
-        device: LiebherrDevice = coordinator.device.to_dict()
-        device["controls"] = {}
-        for key, control in coordinator.data.items():
-            if isinstance(control, dict):  # zoned controls
-                device["controls"][key] = {
-                    zone_id: zonedcontrol.to_dict()
-                    for zone_id, zonedcontrol in control.items()
-                }
-            elif isinstance(control, LiebherrControl):
-                device["controls"][key] = control.to_dict()
-            else:
-                device["controls"][key] = control
-        devices.append(device)
+    devices: list[str] = [
+        device.model_dump(exclude_none=True) for device in entry.runtime_data.devices
+    ]
 
     return {
         "entry_config": {

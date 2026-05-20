@@ -1,9 +1,6 @@
 {
   "domain": "liebherr",
   "name": "Liebherr",
-  "after_dependencies": [
-    "hassio"
-  ],
   "codeowners": [
     "@iluvdata"
   ],
@@ -11,15 +8,14 @@
   "dependencies": [],
   "documentation": "https://github.com/iluvdata/liebherr",
   "integration_type": "service",
-  "iot_class": "cloud_polling",
+  "iot_class": "cloud_push",
   "issue_tracker": "https://github.com/iluvdata/liebherr/issues",
   "loggers": [
     "pyliebherr"
   ],
   "requirements": [
-    "pyliebherr==2026.2.2",
-    "Pillow>=11.0.0"
+    "pyliebherr==2026.5.0"
   ],
   "single_config_entry": true,
-  "version": "2026.4.0"
+  "version": "2026.5.0"
 }

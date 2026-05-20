@@ -29,16 +29,6 @@
       "init": {
         "title": "Opzioni Liebherr",
         "sections": {
-          "polling_options": {
-            "name": "Intervallo di polling",
-            "description": "L'intervallo di polling determina la frequenza delle richieste per aggiornare i comandi di un dispositivo.\n\nDai test, il minimo è di circa {min_int} secondi. Intervalli più brevi causeranno errori `HTTP 429 - Too Many Requests`.\n\nPer un singolo dispositivo, si raccomandano 30 secondi. Se hai più dispositivi, si consiglia di avere 30 secondi tra ogni polling del dispositivo (es. 2 dispositivi = 15 secondi).",
-            "data": {
-              "poll_interval": "Intervallo di polling"
-            },
-            "data_description": {
-              "poll_interval": "Intervallo consigliato: {rec_int}s. Massimo: {max_int}s"
-            }
-          },
           "presentation_light_options": {
             "name": "Opzioni illuminazione di presentazione",
             "data": {
@@ -47,6 +37,14 @@
           }
         }
       }
+    }
+  },
+  "exceptions": {
+    "config_entry": {
+      "message": "Errore durante la configurazione di Liebherr: {msg}"
+    },
+    "first_sse_timeout": {
+      "message": "Non è stata ricevuta alcuna risposta dall'API di Liebherr nel tempo previsto"
     }
   },
   "entity": {
@@ -113,12 +111,26 @@
         "name": "Frigorifero{zone}",
         "state": {
           "cool": "Raffreddamento"
+        },
+        "state_attributes": {
+          "hvac_action": {
+            "state": {
+              "cooling": "Raffreddamento"
+            }
+          }
         }
       },
       "freezer": {
         "name": "Congelatore{zone}",
         "state": {
           "cool": "Congelamento"
+        },
+        "state_attributes": {
+          "hvac_action": {
+            "state": {
+              "cooling": "Congelamento"
+            }
+          }
         }
       }
     }

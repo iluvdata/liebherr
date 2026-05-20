@@ -1,6 +1,6 @@
 """Number entity definitions for Liebherr integration."""
 
-from pyliebherr import LiebherrControl
+from pyliebherr import LiebherrControlKey, LiebherrDevice
 from pyliebherr.const import ControlType
 from pyliebherr.exception import LiebherrException
 from pyliebherr.models import PresentationLightControlRequest
@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
+from . import LiebherrConfigEntry
 from .entity import LiebherrEntity, base_async_setup_entry
 
 
@@ -31,13 +31,14 @@ class LiebherrNumber(LiebherrEntity, NumberEntity):
 
     def __init__(
         self,
-        coordinator: LiebherrCoordinator,
-        control: LiebherrControl,
+        config_entry: LiebherrConfigEntry,
+        device: LiebherrDevice,
+        control_key: LiebherrControlKey,
     ) -> None:
         """Initialize the number entity."""
-        super().__init__(coordinator, control)
+        super().__init__(config_entry, device, control_key)
         self._attr_icon = "mdi:lightbulb"
-        self.brightness_scale: tuple[int, int] = (0, control.max or 4)
+        self.brightness_scale: tuple[int, int] = (0, self.control.max or 4)
         self._attr_native_min_value = 0
         self._attr_native_max_value = self.brightness_scale[1]
         self._attr_native_step = 1

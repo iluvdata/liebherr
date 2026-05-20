@@ -5,7 +5,7 @@ import logging
 import re
 from typing import Any
 
-from pyliebherr import LiebherrAPI, LiebherrDevice
+from pyliebherr import LiebherrAPI
 from pyliebherr.exception import LiebherrAuthException
 import voluptuous as vol
 
@@ -19,42 +19,19 @@ from homeassistant.config_entries import (
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import section
-from homeassistant.helpers.selector import (
-    BooleanSelector,
-    NumberSelector,
-    NumberSelectorConfig,
-    NumberSelectorMode,
-    TextSelector,
-)
+from homeassistant.helpers.selector import BooleanSelector, TextSelector
 
+from . import LiebherrConfigEntry
 from .const import (
-    CONF_POLL_INTERVAL,
     CONF_PRESENTATION_LIGHT_AS_NUMBER,
-    DEFAULT_UPDATE_INTERVAL,
     DOMAIN,
-    MAX_UPDATE_INTERVAL,
-    MIN_UPDATE_INTERVAL,
     URL_CONNECT_INSTRUCTIONS,
     URL_DOWNLOAD_APP,
 )
-from .coordinator import LiebherrConfigEntry
 
 _LOGGER: logging.Logger = logging.getLogger(__name__)
 
-POLLING_SECTION: str = "polling_options"
 LIGHT_SECTION: str = "presentation_light_options"
-
-
-def async_calculate_poll_interval(number_of_devices: int) -> int:
-    """Calculate poll interval based on number of devices."""
-    if number_of_devices == 1:
-        return DEFAULT_UPDATE_INTERVAL
-    return max(
-        # this ensures that the controls for eac device aren't polled more frequently than
-        # the recommended default interval.
-        round(DEFAULT_UPDATE_INTERVAL / number_of_devices),
-        MIN_UPDATE_INTERVAL * number_of_devices,
-    )
 
 
 class OptionsFlowHandler(OptionsFlowWithReload):
@@ -68,21 +45,12 @@ class OptionsFlowHandler(OptionsFlowWithReload):
         if user_input is not None:
             return self.async_create_entry(
                 data={
-                    CONF_POLL_INTERVAL: user_input[POLLING_SECTION][CONF_POLL_INTERVAL],
                     CONF_PRESENTATION_LIGHT_AS_NUMBER: user_input[LIGHT_SECTION][
                         CONF_PRESENTATION_LIGHT_AS_NUMBER
                     ],
                 }
             )
-        num_devices: int = len(self.config_entry.runtime_data.coordinators)
-        min_interval: int = MIN_UPDATE_INTERVAL * num_devices
         suggested_values = {
-            POLLING_SECTION: {
-                CONF_POLL_INTERVAL: self.config_entry.options.get(
-                    CONF_POLL_INTERVAL,
-                    async_calculate_poll_interval(num_devices),
-                )
-            },
             LIGHT_SECTION: {
                 CONF_PRESENTATION_LIGHT_AS_NUMBER: self.config_entry.options.get(
                     CONF_PRESENTATION_LIGHT_AS_NUMBER, False
@@ -91,21 +59,6 @@ class OptionsFlowHandler(OptionsFlowWithReload):
         }
         OPTIONS_SCHEMA: vol.Schema = vol.Schema(
             {
-                vol.Required(POLLING_SECTION): section(
-                    vol.Schema(
-                        {
-                            vol.Required(CONF_POLL_INTERVAL): NumberSelector(
-                                NumberSelectorConfig(
-                                    min=min_interval,
-                                    max=MAX_UPDATE_INTERVAL,  # 5 minutes
-                                    step=1,
-                                    unit_of_measurement="s",
-                                    mode=NumberSelectorMode.BOX,
-                                )
-                            )
-                        }
-                    )
-                ),
                 vol.Required(LIGHT_SECTION): section(
                     vol.Schema(
                         {
@@ -122,11 +75,6 @@ class OptionsFlowHandler(OptionsFlowWithReload):
             data_schema=self.add_suggested_values_to_schema(
                 OPTIONS_SCHEMA, suggested_values
             ),
-            description_placeholders={
-                "min_int": str(min_interval),
-                "max_int": str(MAX_UPDATE_INTERVAL),
-                "rec_int": str(async_calculate_poll_interval(num_devices)),
-            },
             errors=errors,
         )
 
@@ -136,7 +84,7 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
-    MINOR_VERSION = 3
+    MINOR_VERSION = 4
 
     async def async_step_user(
         self, user_input: dict[str, str] | None = None
@@ -149,13 +97,14 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
             if not re.fullmatch("^\\S.*\\S$", user_input[CONF_API_KEY]):
                 errors[CONF_API_KEY] = "whitespace_api_key"
             else:
-                api: LiebherrAPI = LiebherrAPI(user_input[CONF_API_KEY])
-                devices: list[LiebherrDevice] = []
                 try:
-                    devices = await api.async_get_devices()
+                    api: LiebherrAPI = LiebherrAPI(user_input[CONF_API_KEY])
+                    await api.async_test_key()
                 except LiebherrAuthException:
                     errors["base"] = "auth_error"
-                await api.async_close()
+                finally:
+                    if hasattr(self, "api"):
+                        await api.async_close()
             if not errors:
                 await self.async_set_unique_id(f"{DOMAIN}_{user_input[CONF_API_KEY]}")
                 self._abort_if_unique_id_configured()
@@ -164,11 +113,6 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
                         title="Liebherr SmartDevice",
                         data={
                             CONF_API_KEY: user_input[CONF_API_KEY],
-                        },
-                        options={
-                            CONF_POLL_INTERVAL: async_calculate_poll_interval(
-                                len(devices)
-                            ),
                         },
                     )
                 if self.source == SOURCE_REAUTH:

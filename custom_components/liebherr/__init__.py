@@ -1,26 +1,33 @@
 """Liebherr HomeAPI for HomeAssistant."""
 
-from asyncio import gather
+from dataclasses import dataclass
 import logging
 from typing import Any
 
 from pyliebherr import LiebherrAPI, LiebherrDevice
 from pyliebherr.exception import LiebherrAuthException, LiebherrException
 
-from homeassistant.components.hassio import async_get_clientsession
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryError
 from homeassistant.helpers.translation import async_get_translations
+from homeassistant.util.ssl import client_context
 
-from .config_flow import async_calculate_poll_interval
-from .const import (
-    CONF_POLL_INTERVAL,
-    CONF_PRESENTATION_LIGHT_AS_NUMBER,
-    DOMAIN,
-    MIN_UPDATE_INTERVAL,
-)
-from .coordinator import LiebherrConfigEntry, LiebherrCoordinator, LiebherrRuntimeData
+from .const import CONF_PRESENTATION_LIGHT_AS_NUMBER, DOMAIN
+
+
+@dataclass
+class LiebherrRuntimeData:
+    """Holds the integration runtime data."""
+
+    api: LiebherrAPI
+    devices: list[LiebherrDevice]
+    translations: dict[str, str]
+
+
+type LiebherrConfigEntry = ConfigEntry[LiebherrRuntimeData]
+
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,7 +36,6 @@ PLATFORMS = {
     Platform.COVER,
     Platform.FAN,
     Platform.IMAGE,
-    Platform.SENSOR,
     Platform.SELECT,
     Platform.SWITCH,
 }
@@ -40,46 +46,26 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEnt
 
     try:
         api: LiebherrAPI = LiebherrAPI(
-            config_entry.data[CONF_API_KEY], async_get_clientsession(hass)
+            config_entry.data[CONF_API_KEY], ssl_context=client_context()
         )
 
-        devices: list[LiebherrDevice] = await api.async_get_devices()
+        devices: list[LiebherrDevice] = await api.async_get_devices_wait_for_controls()
 
-        # If there isn't a base polling interval
-        if config_entry.options.get(CONF_POLL_INTERVAL) is None:
-            options: dict[str, Any] = {**config_entry.options}
-            options[CONF_POLL_INTERVAL] = async_calculate_poll_interval(len(devices))
-            hass.config_entries.async_update_entry(config_entry, options=options)
-
-        # Verify the poll_interval > minimun
-        if (
-            config_entry.options[CONF_POLL_INTERVAL] / len(devices)
-            < MIN_UPDATE_INTERVAL
-        ):
-            options: dict[str, Any] = {**config_entry.options}
-            options[CONF_POLL_INTERVAL] = len(devices) * MIN_UPDATE_INTERVAL
-            hass.config_entries.async_update_entry(config_entry, options=options)
-
-        coordinators: list[LiebherrCoordinator] = [
-            LiebherrCoordinator(hass, config_entry, api, device) for device in devices
-        ]
-
-        await gather(
-            *[
-                coordinator.async_config_entry_first_refresh()
-                for coordinator in coordinators
-            ]
-        )
-
+    except TimeoutError as ex:
+        raise ConfigEntryError(
+            translation_key="first_sse_timeout",
+        ) from ex
     except LiebherrAuthException as ex:
         _LOGGER.error("Invalid API key, need to reauth")
         raise ConfigEntryAuthFailed(ex.message) from ex
     except LiebherrException as ex:
-        _LOGGER.exception("Error on integration setup")
-        raise ConfigEntryError from ex
+        raise ConfigEntryError(
+            translation_key="config_entry", translation_placeholders={"msg": str(ex)}
+        ) from ex
 
     config_entry.runtime_data = LiebherrRuntimeData(
-        coordinators=coordinators,
+        api=api,
+        devices=devices,
         translations=await async_get_translations(
             hass, hass.config.language, "common", [DOMAIN]
         ),
@@ -112,12 +98,20 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: LiebherrConfigE
             hass.config_entries.async_update_entry(
                 config_entry, options=options, minor_version=3, version=1
             )
-
+        if config_entry.minor_version < 4:
+            # Remove poll interval option
+            options: dict[str, Any] = config_entry.options.copy()
+            options.pop("poll_interval", None)
+            hass.config_entries.async_update_entry(
+                config_entry, options=options, minor_version=4, version=1
+            )
+            
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, config_entry: LiebherrConfigEntry):
     """Unload a config entry."""
+    await config_entry.runtime_data.api.async_close()
     return await hass.config_entries.async_unload_platforms(config_entry, PLATFORMS)
 
 

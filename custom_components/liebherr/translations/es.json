@@ -24,16 +24,6 @@
       "init": {
         "title": "Opciones de Liebherr",
         "sections": {
-          "polling_options": {
-            "name": "Intervalo de sondeo",
-            "description": "El intervalo de sondeo determinará el intervalo entre las solicitudes para actualizar los controles de un dispositivo. Con el numero corriente de depositivos el minimo es {min_int}s y {rec_int}s se recomiende. Los intervalos más cortos resultarán en errores `HTTP 429 - Demasiadas solicitudes`.",
-            "data": {
-              "poll_interval": "Intervalo de sondeo"
-            },
-            "data_description": {
-              "poll_interval": "El intervalo recomendado es de {rec_int}s. El máximo es de {max_int}s."
-            }
-          },
           "presentation_light_options": {
             "name": "Opciones de Presentation Light",
             "data": {
@@ -42,6 +32,14 @@
           }
         }
       }
+    }
+  },
+  "exceptions": {
+    "config_entry": {
+      "message": "Error en configuración de Liebherr: {msg}"
+    },
+    "first_sse_timeout": {
+      "message": "No se recibió respuesta de la API de Liebherr a tiempo"
     }
   },
   "entity": {
@@ -113,12 +111,26 @@
         "name": "Nevera{zone}",
         "state": {
           "cool": "Enfriar"
+        },
+        "state_attributes": {
+          "hvac_action": {
+            "state": {
+              "cooling": "Enfriando"
+            }
+          }
         }
       },
       "freezer": {
         "name": "Congelador{zone}",
         "state": {
           "cool": "Congelar"
+        },
+                "state_attributes": {
+          "hvac_action": {
+            "state": {
+              "cooling": "Congelando"
+            }
+          }
         }
       }
     }

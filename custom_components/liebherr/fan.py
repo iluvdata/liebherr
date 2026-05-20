@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from pyliebherr import LiebherrControl
+from pyliebherr import LiebherrControlKey, LiebherrDevice
 from pyliebherr.const import ControlType
 from pyliebherr.models import HydroBreezeControlRequest
 
@@ -13,7 +13,7 @@ from homeassistant.util.percentage import (
     percentage_to_ordered_list_item,
 )
 
-from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
+from . import LiebherrConfigEntry
 from .entity import LiebherrEntity, base_async_setup_entry
 
 
@@ -46,11 +46,12 @@ class LiebherrFan(LiebherrEntity, FanEntity):
 
     def __init__(
         self,
-        coordinator: LiebherrCoordinator,
-        control: LiebherrControl,
+        config_entry: LiebherrConfigEntry,
+        device: LiebherrDevice,
+        control_key: LiebherrControlKey,
     ) -> None:
         """Initialize the switch entity."""
-        super().__init__(coordinator, control)
+        super().__init__(config_entry, device, control_key)
         self._attr_icon = "mdi:fan-off"
         self._attr_speed_count = len(HydroBreezeControlRequest.HydroBreezeMode)
         self._attr_supported_features = (

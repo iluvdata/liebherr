@@ -16,7 +16,7 @@ from homeassistant.components.image import (
 from homeassistant.core import HomeAssistant
 from homeassistant.util.dt import as_utc
 
-from .coordinator import LiebherrConfigEntry
+from . import LiebherrConfigEntry
 from .entity import async_get_device_info, async_get_unique_id
 
 _LOGGER = logging.getLogger(__name__)
@@ -28,10 +28,7 @@ async def async_setup_entry(
     """Set up Liebherr switches from a config entry."""
 
     async_add_entities(
-        [
-            LiebherrImage(hass, coordinator.device)
-            for coordinator in config_entry.runtime_data.coordinators
-        ]
+        [LiebherrImage(hass, device) for device in config_entry.runtime_data.devices]
     )
 
 

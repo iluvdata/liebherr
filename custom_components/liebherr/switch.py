@@ -3,7 +3,7 @@
 import logging
 from typing import Any, Final
 
-from pyliebherr import LiebherrControl
+from pyliebherr import LiebherrControlKey, LiebherrDevice
 from pyliebherr.const import ControlType
 from pyliebherr.models import BaseToggleControlRequest, ZoneToggleControlRequest
 
@@ -11,7 +11,7 @@ from homeassistant.components.switch import SwitchEntity
 from homeassistant.const import ATTR_ICON
 from homeassistant.core import HomeAssistant
 
-from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
+from . import LiebherrConfigEntry
 from .entity import LiebherrEntity, base_async_setup_entry
 
 _LOGGER = logging.getLogger(__name__)
@@ -46,11 +46,12 @@ class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportInc
 
     def __init__(
         self,
-        coordinator: LiebherrCoordinator,
-        control: LiebherrControl,
+        config_entry: LiebherrConfigEntry,
+        device: LiebherrDevice,
+        control_key: LiebherrControlKey,
     ) -> None:
         """Initialize the switch entity."""
-        super().__init__(coordinator, control)
+        super().__init__(config_entry, device, control_key)
         self._attr_icon = CONFIG.get(self.control.control_name.lower(), {}).get(
             ATTR_ICON, "mdi:toggle-switch-variant"
         )
@@ -75,14 +76,14 @@ class LiebherrSwitch(LiebherrEntity, SwitchEntity):  # pyright: ignore[reportInc
             return
 
         controlrequest: BaseToggleControlRequest | ZoneToggleControlRequest = (
-            BaseToggleControlRequest(value=turn_on)
+            BaseToggleControlRequest(controlName=control_name, value=turn_on)
             if "zone" not in config
             else ZoneToggleControlRequest(
+                controlName=control_name,
                 value=turn_on,
-                zone_id=self.control.zone_id or 0,
+                zoneId=self.control.zone_id or 0,
             )
         )
-        controlrequest.control_name = self.control.control_name
         await self.async_set_value(
             control=controlrequest,
         )

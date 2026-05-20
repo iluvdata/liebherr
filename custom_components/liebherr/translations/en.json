@@ -24,21 +24,19 @@
       "reauth_successful": "Reauthentication successful."
     }
   },
+  "exceptions": {
+    "config_entry": {
+      "message": "Error setting up Liebherr: {msg}"
+    },
+    "first_sse_timeout": {
+      "message": "Did not receive response from Liebherr API in time"
+    }
+  },
   "options": {
     "step": {
       "init": {
         "title": "Liebherr Options",
         "sections": {
-          "polling_options": {
-            "name": "Poll Interval",
-            "description": "The polling interval will determine the interval between requests to refresh a devices's controls. Based on the number of devices connected the current minimun allowed is {min_int}s and {rec_int}s is recommended. Shorter intervals will result in `HTTP 429 - Too Many Requests` errors.",
-            "data": {
-              "poll_interval": "Polling Interval"
-            },
-            "data_description": {
-              "poll_interval": "Recommended interval is {rec_int}s.  Maximum is {max_int}s."
-            }
-          },
           "presentation_light_options": {
             "name": "Presentation Light Options",
             "data": {
@@ -113,12 +111,26 @@
         "name": "Refridgerator{zone}",
         "state": {
           "cool": "Chill"
+        },
+        "state_attributes": {
+          "hvac_action": {
+            "state": {
+              "cooling": "Chilling"
+            }
+          }
         }
       },
       "freezer": {
         "name": "Freezer{zone}",
         "state": {
           "cool": "Freeze"
+        },
+        "state_attributes": {
+          "hvac_action": {
+            "state": {
+              "cooling": "Freezing"
+            }
+          }
         }
       }
     },

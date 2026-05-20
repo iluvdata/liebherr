@@ -1,19 +1,20 @@
 """Support for Liebherr appliances as climate devices."""
 
-from pyliebherr import LiebherrControl, LiebherrDevice
-from pyliebherr.const import ControlType, ZonePosition
+from pyliebherr import ControlType, LiebherrControlKey, LiebherrDevice
+from pyliebherr.const import ZonePosition
 from pyliebherr.models import TemperatureControlRequest
 
 from homeassistant.components.climate import (
     ClimateEntity,
     ClimateEntityFeature,
+    HVACAction,
     HVACMode,
 )
 from homeassistant.const import ATTR_TEMPERATURE
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
+from . import LiebherrConfigEntry
 from .entity import LiebherrEntity, base_async_setup_entry
 
 
@@ -34,37 +35,37 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
 
     def __init__(
         self,
-        coordinator: LiebherrCoordinator,
-        control: LiebherrControl,
+        config_entry: LiebherrConfigEntry,
+        device: LiebherrDevice,
+        control_key: LiebherrControlKey,
     ) -> None:
         """Initialize the climate entity."""
-        super().__init__(coordinator=coordinator, control=control)
+        super().__init__(config_entry, device, control_key)
         self._attr_target_temperature_step = 1
-        self._attr_temperature_unit = (
-            control.unit_of_measurement
-            if control.unit_of_measurement is not None
-            else "°C"
-        )
+        self._attr_temperature_unit = self.control.unit_of_measurement or "°C"
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
         self._attr_hvac_modes = [HVACMode.COOL]
         self._attr_hvac_mode = HVACMode.COOL
-        if self.coordinator.device.device_type != LiebherrDevice.DeviceType.COMBI:
+        if device.device_type != LiebherrDevice.DeviceType.COMBI:
             self._attr_icon = "mdi:fridge-industrial-outline"
-        elif control.zone_position == ZonePosition.TOP:
+        elif self.control.zone_position == ZonePosition.TOP:
             self._attr_icon = "mdi:fridge-top"
-        elif control.zone_position == ZonePosition.BOTTOM:
+        elif self.control.zone_position == ZonePosition.BOTTOM:
             self._attr_icon = "mdi:fridge-bottom"
         else:
             self._attr_icon = "mdi:fridge"
         if (
-            control.min
-            and control.max
-            and control.unit_of_measurement
+            self.control.min
+            and self.control.max
+            and self.control.unit_of_measurement
             and (
-                (control.unit_of_measurement == "°F" and control.min < 0 < control.max)
+                (
+                    self.control.unit_of_measurement == "°F"
+                    and self.control.min < 0 < self.control.max
+                )
                 or (
-                    control.unit_of_measurement == "°C"
-                    and control.min < -17 < control.max
+                    self.control.unit_of_measurement == "°C"
+                    and self.control.min < -17 < self.control.max
                 )
             )
         ):
@@ -79,7 +80,7 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
             temperature: int = kwargs[ATTR_TEMPERATURE]
 
             data = TemperatureControlRequest(
-                zone_id=self.control.zone_id or 0,
+                zoneId=self.control.zone_id or 0,
                 target=temperature,
                 unit=self._attr_temperature_unit,
             )
@@ -112,3 +113,10 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
     def current_temperature(self) -> float | None:
         """Current Temp."""
         return self.control.value if isinstance(self.control.value, int) else None
+
+    @property
+    def hvac_action(self) -> HVACAction:
+        """Is the device cooling."""
+        if self.current_temperature > self.target_temperature:
+            return HVACAction.COOLING
+        return HVACAction.IDLE

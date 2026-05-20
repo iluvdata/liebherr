@@ -3,15 +3,15 @@
 import math
 from typing import Any
 
-from pyliebherr import LiebherrControl
+from pyliebherr import LiebherrControlKey, LiebherrDevice
 from pyliebherr.const import ControlType
 from pyliebherr.models import PresentationLightControlRequest
 
 from homeassistant.components.light import ATTR_BRIGHTNESS, ColorMode, LightEntity
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.util.color import brightness_to_value, value_to_brightness
 
-from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
+from . import LiebherrConfigEntry
 from .entity import LiebherrEntity, base_async_setup_entry
 
 
@@ -29,14 +29,15 @@ class LiebherrLight(LiebherrEntity, LightEntity):
 
     def __init__(
         self,
-        coordinator: LiebherrCoordinator,
-        control: LiebherrControl,
+        config_entry: LiebherrConfigEntry,
+        device: LiebherrDevice,
+        control_key: LiebherrControlKey,
     ) -> None:
         """Initialize the switch entity."""
-        super().__init__(coordinator, control)
+        super().__init__(config_entry, device, control_key)
         self._attr_icon = "mdi:lightbulb"
         self._attr_supported_color_modes = {ColorMode.BRIGHTNESS}
-        self.brightness_scale: tuple[int, int] = (1, control.max or 4)
+        self.brightness_scale: tuple[int, int] = (1, self.control.max or 4)
         self._set_brightness()
 
     def _set_brightness(self) -> None:
@@ -45,10 +46,10 @@ class LiebherrLight(LiebherrEntity, LightEntity):
                 self.brightness_scale, self.control.target
             )
 
-    def _handle_coordinator_update(self) -> None:
-        super()._handle_coordinator_update(False)
+    @callback
+    def _async_write_ha_state(self):
         self._set_brightness()
-        self.async_write_ha_state()
+        return super()._async_write_ha_state()
 
     @property
     def is_on(self) -> bool:

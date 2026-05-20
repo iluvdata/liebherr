@@ -29,16 +29,6 @@
       "init": {
         "title": "Liebherr Beállítások",
         "sections": {
-          "polling_options": {
-            "name": "Lekérdezési időköz",
-            "description": "A lekérdezési időköz meghatározza hogy milyen gyakran frissítse a berendezések állapotát.\n\nA megfigyelések szerint legkevesebb {min_int} másodperc javasolt. Ennél rövidebb időköz `HTTP 429 - Túl Sok Lekérdezés` hibát eredményez.\n\nEgy berendezés esetén 30 másodperc javasolt. További berendezések esetén azok számától függ (pl. 2 berendezésnél 15 másodperc). OK: a Liebherr korlátozza az API elérést.",
-            "data": {
-              "poll_interval": "Lekérdezési időköz"
-            },
-            "data_description": {
-              "poll_interval": "Javasolt időköz: {rec_int}s. Maximum időköz: {max_int}s."
-            }
-          },
           "presentation_light_options": {
             "name": "JelzőFény Beállítások",
             "data": {
@@ -47,6 +37,14 @@
           }
         }
       }
+    }
+  },
+  "exceptions": {
+    "config_entry": {
+      "message": "Hiba történt a Liebherr beállítása során: {msg}"
+    },
+    "first_sse_timeout": {
+      "message": "Nem érkezett válasz a Liebherr API-tól időben"
     }
   },
   "entity": {
@@ -113,12 +111,26 @@
         "name": "Hűtő{zone}",
         "state": {
           "cool": "Hűtés"
+        },
+        "state_attributes": {
+          "hvac_action": {
+            "state": {
+              "cooling": "Hűtés"
+            }
+          }
         }
       },
       "freezer": {
         "name": "Fagyasztó{zone}",
         "state": {
           "cool": "Fagyasztás"
+        },
+        "state_attributes": {
+          "hvac_action": {
+            "state": {
+              "cooling": "Fagyasztás"
+            }
+          }
         }
       }
     },

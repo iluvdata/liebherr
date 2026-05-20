@@ -30,16 +30,6 @@
       "init": {
         "title": "Options Liebherr",
         "sections": {
-          "polling_options": {
-            "name": "Intervalle de sondage",
-            "description": "L'intervalle d'interrogation détermine le délai entre les requêtes visant à actualiser les commandes d'un appareil. En fonction du nombre d'appareils connectés, le minimum autorisé est actuellement de {min_int}s, et un intervalle de {rec_int}s est recommandé. Des intervalles plus courts entraîneront des erreurs de type `HTTP 429 - Too Many Requests`.",
-            "data": {
-              "poll_interval": "Intervalle de sondage"
-            },
-            "data_description": {
-              "poll_interval": "Intervalle recommandé: {rec_int}s. Maximum: {max_int}s"
-            }
-          },
           "presentation_light_options": {
             "name": "Options d'éclairage de présentation",
             "data": {
@@ -48,6 +38,14 @@
           }
         }
       }
+    }
+  },
+  "exceptions": {
+    "config_entry": {
+      "message": "Erreur lors de la configuration de Liebherr: {msg}"
+    },
+    "first_sse_timeout": {
+      "message": "Aucune réponse reçue de l'API Liebherr dans les délais"
     }
   },
   "entity": {
@@ -113,13 +111,27 @@
       "fridge": {
         "name": "Réfrigérateur{zone}",
         "state": {
-          "cool": "Frais"
+          "cool": "Refroidissement"
+        },
+        "state_attributes": {
+          "hvac_action": {
+            "state": {
+              "cooling": "Refroidissement"
+            }
+          }
         }
       },
       "freezer": {
         "name": "Congélateur{zone}",
         "state": {
           "cool": "Congélation"
+        },
+        "state_attributes": {
+          "hvac_action": {
+            "state": {
+              "cooling": "Congélation"
+            }
+          }
         }
       }
     },

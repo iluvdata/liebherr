@@ -2,7 +2,7 @@
 
 import logging
 
-from pyliebherr import LiebherrControl
+from pyliebherr import LiebherrControlKey, LiebherrDevice
 from pyliebherr.const import ControlType
 from pyliebherr.exception import LiebherrException
 from pyliebherr.models import (
@@ -14,7 +14,7 @@ from pyliebherr.models import (
 from homeassistant.components.select import SelectEntity
 from homeassistant.core import HomeAssistant
 
-from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
+from . import LiebherrConfigEntry
 from .entity import LiebherrEntity, base_async_setup_entry
 
 _LOGGER = logging.getLogger(__name__)
@@ -39,14 +39,6 @@ async def async_setup_entry(
 
 class LiebherrSelect(LiebherrEntity, SelectEntity):
     """Representation of a Liebherr select entity."""
-
-    def __init__(
-        self,
-        coordinator: LiebherrCoordinator,
-        control: LiebherrControl,
-    ) -> None:
-        """Initialize the select entity."""
-        super().__init__(coordinator=coordinator, control=control)
 
     @property
     def current_option(self) -> str | None:
@@ -73,19 +65,20 @@ class LiebherrBioFreshPlus(LiebherrSelect):
 
     def __init__(
         self,
-        coordinator: LiebherrCoordinator,
-        control: LiebherrControl,
+        config_entry: LiebherrConfigEntry,
+        device: LiebherrDevice,
+        control_key: LiebherrControlKey,
     ) -> None:
         """Initialize the select entity."""
-        super().__init__(coordinator=coordinator, control=control)
+        super().__init__(config_entry, device, control_key)
         self._attr_icon = "mdi: leaf"
-        if control.supported_modes is not None:
-            self._attr_options = [mode.lower() for mode in control.supported_modes]
+        if self.control.supported_modes is not None:
+            self._attr_options = [mode.lower() for mode in self.control.supported_modes]
         else:
             _LOGGER.error(
                 "Cannot setup %s for device %s",
-                control.type,
-                coordinator.device.device_id,
+                self.control.type,
+                self.device.device_id,
             )
 
     async def async_select_option(self, option: str) -> None:
@@ -111,14 +104,15 @@ class LiebherrIceMaker(LiebherrSelect):
 
     def __init__(
         self,
-        coordinator: LiebherrCoordinator,
-        control: LiebherrControl,
+        config_entry: LiebherrConfigEntry,
+        device: LiebherrDevice,
+        control_key: LiebherrControlKey,
     ) -> None:
         """Initialize the Ice Maker entity."""
-        super().__init__(coordinator=coordinator, control=control)
+        super().__init__(config_entry, device, control_key)
         self._attr_icon = "mdi:cube-outline"
         self._attr_options = (
-            ["on", "off", "max_ice"] if control.has_max_ice else ["on", "off"]
+            ["on", "off", "max_ice"] if self.control.has_max_ice else ["on", "off"]
         )
 
     @property

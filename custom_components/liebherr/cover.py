@@ -3,9 +3,9 @@
 from enum import StrEnum
 import logging
 
-from pyliebherr import LiebherrControl
+from pyliebherr import LiebherrControlKey, LiebherrDevice
 from pyliebherr.const import ControlType
-from pyliebherr.models import AutoDoorControl
+from pyliebherr.models import AutoDoorControlRequest
 
 from homeassistant.components.cover import (
     CoverDeviceClass,
@@ -19,9 +19,9 @@ from homeassistant.const import (
     STATE_OPENING,
     STATE_UNKNOWN,
 )
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 
-from .coordinator import LiebherrConfigEntry, LiebherrCoordinator
+from . import LiebherrConfigEntry
 from .entity import LiebherrEntity, base_async_setup_entry
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,11 +53,12 @@ class LiebherrCover(LiebherrEntity, CoverEntity):
 
     def __init__(
         self,
-        coordinator: LiebherrCoordinator,
-        control: LiebherrControl,
+        config_entry: LiebherrConfigEntry,
+        device: LiebherrDevice,
+        control_key: LiebherrControlKey,
     ) -> None:
         """Initialize the cover entity."""
-        super().__init__(coordinator, control)
+        super().__init__(config_entry, device, control_key)
 
         self._attr_device_class = CoverDeviceClass.DOOR
         self._attr_supported_features = (
@@ -88,8 +89,8 @@ class LiebherrCover(LiebherrEntity, CoverEntity):
             STATE_OPENING,
         ]
 
-    def _handle_coordinator_update(self) -> None:
-        super()._handle_coordinator_update(False)
+    @callback
+    def _async_write_ha_state(self):
         if self.control.value == DOOR_STATE.CLOSED:
             self._last_state = STATE_CLOSED
         elif self.control.value == DOOR_STATE.OPEN:
@@ -99,12 +100,12 @@ class LiebherrCover(LiebherrEntity, CoverEntity):
                 self._last_state = STATE_OPENING
             elif self._last_state in [STATE_OPEN, STATE_CLOSING]:
                 self._last_state = STATE_CLOSING
-        self.async_write_ha_state()
+        super()._async_write_ha_state()
 
     async def async_open_cover(self, **kwargs):
         """Send command to open the cover."""
         await self.async_set_value(
-            AutoDoorControl(self.control.zone_id or 0, True),
+            AutoDoorControlRequest(self.control.zone_id or 0, True),
         )
         self._attr_is_opening = True
         self._attr_is_closing = False
@@ -114,7 +115,7 @@ class LiebherrCover(LiebherrEntity, CoverEntity):
     async def async_close_cover(self, **kwargs):
         """Send command to close the cover."""
         await self.async_set_value(
-            AutoDoorControl(self.control.zone_id or 0, False),
+            AutoDoorControlRequest(self.control.zone_id or 0, False),
         )
         self._attr_is_opening = False
         self._attr_is_closing = True
