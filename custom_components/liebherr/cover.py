@@ -105,7 +105,7 @@ class LiebherrCover(LiebherrEntity, CoverEntity):
     async def async_open_cover(self, **kwargs):
         """Send command to open the cover."""
         await self.async_set_value(
-            AutoDoorControlRequest(self.control.zone_id or 0, True),
+            AutoDoorControlRequest(zoneId=self.control.zone_id or 0, value=True),
         )
         self._attr_is_opening = True
         self._attr_is_closing = False
