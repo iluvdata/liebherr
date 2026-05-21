@@ -70,7 +70,7 @@ class LiebherrLight(LiebherrEntity, LightEntity):
             brightness_to_value(self.brightness_scale, brightness)
         )
         await self.async_set_value(
-            control=PresentationLightControlRequest(self.control.target),
+            control=PresentationLightControlRequest(target=self.control.target),
         )
 
         self._attr_brightness = brightness
@@ -80,6 +80,6 @@ class LiebherrLight(LiebherrEntity, LightEntity):
         """Turn the light off."""
         self.control.target = 0
         await self.async_set_value(
-            control=PresentationLightControlRequest(0),
+            control=PresentationLightControlRequest(target=0),
         )
         self.async_write_ha_state()

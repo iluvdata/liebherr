@@ -57,7 +57,7 @@ class LiebherrNumber(LiebherrEntity, NumberEntity):
         """Set new value."""
         try:
             await self.async_set_value(
-                control=PresentationLightControlRequest(int(value)),
+                control=PresentationLightControlRequest(target=int(value)),
             )
         except LiebherrException as ex:
             raise HomeAssistantError(f"Error setting value: {value}") from ex

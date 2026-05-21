@@ -88,8 +88,8 @@ class LiebherrBioFreshPlus(LiebherrSelect):
             return
 
         data: LiebherrControlRequest = BioFreshPlusControlRequest(
-            zone_id=self.control.zone_id or 0,
-            bio_fresh_plus_mode=BioFreshPlusControlRequest.BioFreshPlusMode(
+            zoneId=self.control.zone_id or 0,
+            bioFreshPlusMode=BioFreshPlusControlRequest.BioFreshPlusMode(
                 option.upper()
             ),
         )
@@ -129,8 +129,8 @@ class LiebherrIceMaker(LiebherrSelect):
             return
 
         data: LiebherrControlRequest = IceMakerControlRequest(
-            zone_id=self.control.zone_id or 0,
-            ice_maker_mode=IceMakerControlRequest.IceMakerMode(option.upper()),
+            zoneId=self.control.zone_id or 0,
+            iceMakerMode=IceMakerControlRequest.IceMakerMode(option.upper()),
         )
 
         await self._async_select_option(data)

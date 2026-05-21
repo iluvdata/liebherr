@@ -88,7 +88,9 @@ class LiebherrFan(LiebherrEntity, FanEntity):
         self, mode: HydroBreezeControlRequest.HydroBreezeMode
     ) -> None:
         await self.async_set_value(
-            control=HydroBreezeControlRequest(mode, self.control.zone_id or 0),
+            control=HydroBreezeControlRequest(
+                hydroBreezeMode=mode, zoneId=self.control.zone_id or 0
+            ),
         )
         self.control.current_mode = mode
         self._set_percentage()

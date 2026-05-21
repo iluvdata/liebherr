@@ -12,7 +12,7 @@ This is an *unofficial* **custom** integration for Home Assistant that allows yo
 ## Features
 
 - Uses Server-Sent Events to receive updates, so now cloud-push
-- Monitor current and target temperatures of your Liebherr refridgerators and freezers.
+- Monitor current and target temperatures of your Liebherr refrigerators and freezers.
 - Control device features such as BioFreshPlus, Hydrobreeze, AutoDoor, Presentation Lights, and Ice Makers.
 
 ## Installation
@@ -52,7 +52,7 @@ or search for the Liebherr integration in HACS
 Once the integration is configured, your Liebherr devices will appear as entities in Home Assistant. You can:
 
 - Monitor temperatures and other metrics.
-- Control switches and settings via the Home Assistant UI or automations.
+- Control switches and settings via the Home Assistant UI or automatons.
 - Change the poll interval on the configuration
 
 Controls will map to the following domains:
@@ -97,7 +97,7 @@ In these versions the devices will update independently and the goal is to make 
 - Ensure your Liebherr api key is correct.
 - Check the Home Assistant logs for any errors related to the integration.
 - Enable debug on the integration.
-- Download and inspect the integration diagnotics.
+- Download and inspect the integration diagnostics.
 - If there are many `HTTP 429 - Too many requests` in the logs try increasing the polling interval.
 
 > [!Warning]
@@ -112,7 +112,7 @@ In these versions the devices will update independently and the goal is to make 
 
 ## Acknowledgements
 
-This is a complete rewrite of the [custom intergration](https://github.com/bhuebschen/liebherr) orginally maintained by [@bhuebschen](https://github.com/bhuebschen) from a fork created by [@skatsavos](https://github.com/skatsavos).  The original intergration stopped working in Oct 2025 and the orginal maintainer did not appear to be maintaining the project.
+This is a complete rewrite of the [custom integration](https://github.com/bhuebschen/liebherr) originally maintained by [@bhuebschen](https://github.com/bhuebschen) from a fork created by [@skatsavos](https://github.com/skatsavos).  The original integration stopped working in Oct 2025 and the original maintainer did not appear to be maintaining the project.
 
 ## Support
 
