@@ -12,13 +12,6 @@ from homeassistant.components.cover import (
     CoverEntity,
     CoverEntityFeature,
 )
-from homeassistant.const import (
-    STATE_CLOSED,
-    STATE_CLOSING,
-    STATE_OPEN,
-    STATE_OPENING,
-    STATE_UNKNOWN,
-)
 from homeassistant.core import HomeAssistant, callback
 
 from . import LiebherrConfigEntry
@@ -27,7 +20,7 @@ from .entity import LiebherrEntity, base_async_setup_entry
 _LOGGER = logging.getLogger(__name__)
 
 
-class DOOR_STATE(StrEnum):
+class DoorState(StrEnum):
     """Liebherr door state."""
 
     CLOSED = "CLOSED"
@@ -65,59 +58,66 @@ class LiebherrCover(LiebherrEntity, CoverEntity):
             CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE
         )
         self._attr_icon = "mdi:door"
-        # For debounce:
-        self._last_state: str = STATE_UNKNOWN
+        # Ensure the cover toggle starts in correct state (defaults to True)
+        if self.control.value == DoorState.CLOSED:
+            self._cover_is_last_toggle_direction_open = False
+
+    @callback
+    def _async_write_ha_state(self) -> None:
+        """Override for debugging logging only."""
+        _LOGGER.debug(
+            "Updating state for device %s zone %s\nclosed: %s, opening: %s, closing: %s",
+            self.device.device_id,
+            self.control.zone_id,
+            self.is_closed,
+            self.is_opening,
+            self.is_closing,
+        )
+        super()._async_write_ha_state()
 
     @property
     def is_closed(self) -> bool:
         """Is closed."""
-        return self.control.value == DOOR_STATE.CLOSED
+        return self.control.value == DoorState.CLOSED
 
     @property
     def is_opening(self) -> bool:
         """Is opening."""
-        return self.control.value == DOOR_STATE.MOVING and self._last_state in [
-            STATE_CLOSED,
-            STATE_OPENING,
-        ]
+        return (
+            self.control.value == DoorState.MOVING
+            and not self._cover_is_last_toggle_direction_open
+        )
 
     @property
     def is_closing(self) -> bool:
         """Is Closing."""
-        return self.control.value == DOOR_STATE.MOVING and self._last_state in [
-            STATE_OPEN,
-            STATE_OPENING,
-        ]
-
-    @callback
-    def _async_write_ha_state(self):
-        if self.control.value == DOOR_STATE.CLOSED:
-            self._last_state = STATE_CLOSED
-        elif self.control.value == DOOR_STATE.OPEN:
-            self._last_state = STATE_OPEN
-        elif self.control.value == DOOR_STATE.MOVING:
-            if self._last_state in [STATE_CLOSED, STATE_OPENING]:
-                self._last_state = STATE_OPENING
-            elif self._last_state in [STATE_OPEN, STATE_CLOSING]:
-                self._last_state = STATE_CLOSING
-        super()._async_write_ha_state()
+        return (
+            self.control.value == DoorState.MOVING
+            and self._cover_is_last_toggle_direction_open
+        )
 
     async def async_open_cover(self, **kwargs):
         """Send command to open the cover."""
-        await self.async_set_value(
-            AutoDoorControlRequest(zoneId=self.control.zone_id or 0, value=True),
+        _LOGGER.debug(
+            "Request open cover for device %s zone %s",
+            self.device.device_id,
+            self.control.zone_id,
         )
-        self._attr_is_opening = True
-        self._attr_is_closing = False
-        self._attr_is_closed = False
+        await self.async_set_value(
+            AutoDoorControlRequest(zoneId=self.control.zone_id, value=True),
+        )
+        self.control.value = DoorState.MOVING
         self.async_write_ha_state()
 
     async def async_close_cover(self, **kwargs):
         """Send command to close the cover."""
-        await self.async_set_value(
-            AutoDoorControlRequest(zoneId=self.control.zone_id or 0, value=False),
+        _LOGGER.debug(
+            "Request close cover for device %s zone %s",
+            self.device.device_id,
+            self.control.zone_id,
         )
-        self._attr_is_opening = False
-        self._attr_is_closing = True
-        self._attr_is_closed = False
+        await self.async_set_value(
+            AutoDoorControlRequest(zoneId=self.control.zone_id, value=False),
+        )
+        self.control.value = DoorState.MOVING
         self.async_write_ha_state()
