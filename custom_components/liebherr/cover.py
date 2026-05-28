@@ -80,7 +80,7 @@ class LiebherrCover(LiebherrEntity, CoverEntity):
     @property
     def is_closed(self) -> bool:
         """Is closed."""
-        if self.conrol.value in (DoorState.OPEN, DoorState.CLOSED):
+        if self.control.value in (DoorState.OPEN, DoorState.CLOSED):
             # Change only if the door isn't moving
             self._last_state_closed = self.control.value == DoorState.CLOSED
         return self.control.value == DoorState.CLOSED
