@@ -31,12 +31,13 @@ def async_get_unique_id(
 
 def async_get_device_info(device: LiebherrDevice) -> DeviceInfo:
     """Device Info Helper."""
-    return {
-        "identifiers": {(DOMAIN, device.device_id)},
-        "name": device.name or f"Liebherr HomeAPI Appliance {device.device_id}",
-        "manufacturer": "Liebherr",
-        "model": device.model or "Unknown Model",
-    }
+    return DeviceInfo(
+        identifiers={(DOMAIN, device.device_id)},
+        name=device.name or f"Liebherr SmartDevice Appliance {device.device_id}",
+        manufacturer="Liebherr",
+        model=device.model or "Unknown Model",
+        serial_number=device.device_id,
+    )
 
 
 class LiebherrEntity(Entity):
