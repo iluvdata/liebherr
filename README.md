@@ -7,11 +7,11 @@
 This is an *unofficial* **custom** integration for Home Assistant that allows you to connect and control Liebherr smart devices via the Liebherr SmartHomeAPI using the simple [pyliebherr](https://github.com/iluvdata/pyliebherr) library.
 
 > [!IMPORTANT]
-> There is now a [Liebherr core integration](https://www.home-assistant.io/integrations/liebherr/) in Home Assistant as of 2026.3 authored by [@mettolon](https://github.com/mettolen).  I'll continue to respond to bug requests but won't likely make any additional improvements if and when Liebherr expands the functionality of the SmartHomeApi.
+> This is a [Liebherr core integration](https://www.home-assistant.io/integrations/liebherr/) in Home Assistant as of 2026.3 authored by [@mettolon](https://github.com/mettolen).  If you want a very stable and fully tested integration I suggest using the core integration!
 
 ## Features
 
-- Uses Server-Sent Events to receive updates, so now cloud-push
+- Uses Server-Sent Events to receive updates (Cloud Push)
 - Monitor current and target temperatures of your Liebherr refrigerators and freezers.
 - Control device features such as BioFreshPlus, Hydrobreeze, AutoDoor, Presentation Lights, and Ice Makers.
 
@@ -53,11 +53,10 @@ Once the integration is configured, your Liebherr devices will appear as entitie
 
 - Monitor temperatures and other metrics.
 - Control switches and settings via the Home Assistant UI or automatons.
-- Change the poll interval on the configuration
 
-Controls will map to the following domains:
+Controls and features will map to the following domains:
 
-| Liebherr Control | Homeassistant Domain |
+| Liebherr Feature | Homeassistant Domain |
 | ----------------- | --------------------- |
 | Auto Door | Cover |
 | Ice Maker, BioFreshPlus | Select |
@@ -66,9 +65,15 @@ Controls will map to the following domains:
 | HydroBreeze | Fan |
 | Temperature | Climate |
 | `image_url` (Device) | Image |
-| Bottle Timer | Not available |
+| Bottle Timer | **Not available** |
+| Energy Monitors | **Not available** |
+| Holiday Mode | **Not available** |
+| Door Alarm | **Not available** |
 
 *\* In version ≥ 2025.12.5 the domain/type of control/entity created can be selected in the integration options.*
+
+> [!Note]
+> All features available in the Liebherr SmartDevice API have been implemented as of 28 May 2026. Just because the feature exists in the Liebherr SmartDevice App does *not* mean it's available in the API.  Feature requests to implement app features not available in the API will be ignored.
 
 ### Discover New Appliances
 

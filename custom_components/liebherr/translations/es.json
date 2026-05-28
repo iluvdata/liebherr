@@ -111,26 +111,12 @@
         "name": "Nevera{zone}",
         "state": {
           "cool": "Enfriar"
-        },
-        "state_attributes": {
-          "hvac_action": {
-            "state": {
-              "cooling": "Enfriando"
-            }
-          }
         }
       },
       "freezer": {
         "name": "Congelador{zone}",
         "state": {
           "cool": "Congelar"
-        },
-                "state_attributes": {
-          "hvac_action": {
-            "state": {
-              "cooling": "Congelando"
-            }
-          }
         }
       }
     }

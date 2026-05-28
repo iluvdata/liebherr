@@ -111,26 +111,12 @@
         "name": "Hűtő{zone}",
         "state": {
           "cool": "Hűtés"
-        },
-        "state_attributes": {
-          "hvac_action": {
-            "state": {
-              "cooling": "Hűtés"
-            }
-          }
         }
       },
       "freezer": {
         "name": "Fagyasztó{zone}",
         "state": {
           "cool": "Fagyasztás"
-        },
-        "state_attributes": {
-          "hvac_action": {
-            "state": {
-              "cooling": "Fagyasztás"
-            }
-          }
         }
       }
     },

@@ -112,26 +112,12 @@
         "name": "Réfrigérateur{zone}",
         "state": {
           "cool": "Refroidissement"
-        },
-        "state_attributes": {
-          "hvac_action": {
-            "state": {
-              "cooling": "Refroidissement"
-            }
-          }
         }
       },
       "freezer": {
         "name": "Congélateur{zone}",
         "state": {
           "cool": "Congélation"
-        },
-        "state_attributes": {
-          "hvac_action": {
-            "state": {
-              "cooling": "Congélation"
-            }
-          }
         }
       }
     },

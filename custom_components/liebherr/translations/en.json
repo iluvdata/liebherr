@@ -111,26 +111,12 @@
         "name": "Refridgerator{zone}",
         "state": {
           "cool": "Chill"
-        },
-        "state_attributes": {
-          "hvac_action": {
-            "state": {
-              "cooling": "Chilling"
-            }
-          }
         }
       },
       "freezer": {
         "name": "Freezer{zone}",
         "state": {
           "cool": "Freeze"
-        },
-        "state_attributes": {
-          "hvac_action": {
-            "state": {
-              "cooling": "Freezing"
-            }
-          }
         }
       }
     },

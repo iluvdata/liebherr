@@ -58,9 +58,11 @@ class LiebherrCover(LiebherrEntity, CoverEntity):
             CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE
         )
         self._attr_icon = "mdi:door"
-        # Ensure the cover toggle starts in correct state (defaults to True)
-        if self.control.value == DoorState.CLOSED:
-            self._cover_is_last_toggle_direction_open = False
+        self._last_state_closed: bool = self.control.value == DoorState.CLOSED
+        # Defaults to true!?
+        self._cover_is_last_toggle_direction_open = (
+            self.control.value != DoorState.CLOSED
+        )
 
     @callback
     def _async_write_ha_state(self) -> None:
@@ -78,23 +80,20 @@ class LiebherrCover(LiebherrEntity, CoverEntity):
     @property
     def is_closed(self) -> bool:
         """Is closed."""
+        if self.conrol.value in (DoorState.OPEN, DoorState.CLOSED):
+            # Change only if the door isn't moving
+            self._last_state_closed = self.control.value == DoorState.CLOSED
         return self.control.value == DoorState.CLOSED
 
     @property
     def is_opening(self) -> bool:
         """Is opening."""
-        return (
-            self.control.value == DoorState.MOVING
-            and not self._cover_is_last_toggle_direction_open
-        )
+        return self.control.value == DoorState.MOVING and self._last_state_closed
 
     @property
     def is_closing(self) -> bool:
         """Is Closing."""
-        return (
-            self.control.value == DoorState.MOVING
-            and self._cover_is_last_toggle_direction_open
-        )
+        return self.control.value == DoorState.MOVING and (not self._last_state_closed)
 
     async def async_open_cover(self, **kwargs):
         """Send command to open the cover."""

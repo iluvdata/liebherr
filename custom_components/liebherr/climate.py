@@ -7,7 +7,6 @@ from pyliebherr.models import TemperatureControlRequest
 from homeassistant.components.climate import (
     ClimateEntity,
     ClimateEntityFeature,
-    HVACAction,
     HVACMode,
 )
 from homeassistant.const import ATTR_TEMPERATURE
@@ -113,10 +112,3 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
     def current_temperature(self) -> float | None:
         """Current Temp."""
         return self.control.value if isinstance(self.control.value, int) else None
-
-    @property
-    def hvac_action(self) -> HVACAction:
-        """Is the device cooling."""
-        if self.current_temperature > self.target_temperature:
-            return HVACAction.COOLING
-        return HVACAction.IDLE
