@@ -46,6 +46,9 @@
     },
     "first_sse_timeout": {
       "message": "Aucune réponse reçue de l'API Liebherr dans les délais"
+    },
+    "sse_error": {
+      "message": "API connection error, failed after reattempts"
     }
   },
   "entity": {

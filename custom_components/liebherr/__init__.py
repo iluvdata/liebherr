@@ -1,11 +1,16 @@
 """Liebherr HomeAPI for HomeAssistant."""
 
+from collections.abc import Callable
 from dataclasses import dataclass
 import logging
 from typing import Any
 
 from pyliebherr import LiebherrAPI, LiebherrDevice
-from pyliebherr.exception import LiebherrAuthException, LiebherrException
+from pyliebherr.exception import (
+    LiebherrAuthException,
+    LiebherrException,
+    LiebherrSSEException,
+)
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY, Platform
@@ -50,6 +55,37 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEnt
         )
 
         devices: list[LiebherrDevice] = await api.async_get_devices_wait_for_controls()
+
+        def _get_device_error_callback(
+            device: LiebherrDevice,
+        ) -> Callable[[LiebherrSSEException], None]:
+
+            attempt: int = 0
+            sub_current_sse: Callable[[None], None] | None = None
+
+            def _device_error_callback(exc: LiebherrSSEException) -> None:
+                nonlocal attempt, sub_current_sse
+                attempt += 1
+                if attempt < 10:
+                    _LOGGER.info(
+                        "Retrying SSE connection to %s, attempt %i",
+                        device.device_id,
+                        attempt,
+                    )
+                    if sub_current_sse:
+                        sub_current_sse()
+                    sub_current_sse = api.start_sse(device, delay=30)
+                else:
+                    raise ConfigEntryError(
+                        exc_info=exc,
+                        translation_domain=DOMAIN,
+                        translation_key="sse_error",
+                    )
+
+            return _device_error_callback
+
+        for device in devices:
+            device.add_error_callback(_get_device_error_callback(device))
 
     except TimeoutError as ex:
         raise ConfigEntryError(
@@ -105,7 +141,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: LiebherrConfigE
             hass.config_entries.async_update_entry(
                 config_entry, options=options, minor_version=4, version=1
             )
-            
+
     return True
 
 

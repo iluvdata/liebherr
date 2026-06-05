@@ -11,6 +11,7 @@ from pyliebherr import (
     LiebherrControlRequest,
     LiebherrDevice,
 )
+from pyliebherr.exception import LiebherrSSEException
 
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import Entity
@@ -65,6 +66,16 @@ class LiebherrEntity(Entity):
             self._attr_translation_placeholders = {
                 "zone": f" {config_entry.runtime_data.translations[f'component.{DOMAIN}.common.{control.zone_position}']}",
             }
+
+        def _error_callback(exc: LiebherrSSEException) -> None:
+            """Wrapper function used to update the state to unavailable."""
+            self.async_write_ha_state()
+
+        device.add_error_callback(_error_callback)
+
+    def available(self):
+        """Available (SSE connected?)."""
+        return self.device.available
 
     @property
     def control(self) -> LiebherrControl:
