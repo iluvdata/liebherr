@@ -77,7 +77,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEnt
                     sub_current_sse = api.start_sse(device, delay=30)
                 else:
                     raise ConfigEntryError(
-                        exc_info=exc,
                         translation_domain=DOMAIN,
                         translation_key="sse_error",
                     )
