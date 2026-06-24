@@ -1,4 +1,4 @@
-# Liebherr Integration for Home Assistant
+# Custom Liebherr Integration for Home Assistant
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=flat-square&logo=homeassistantcommunitystore)](https://hacs.xyz/)
 ![GitHub Release](https://img.shields.io/github/v/release/iluvdata/liebherr)
@@ -7,7 +7,7 @@
 This is an *unofficial* **custom** integration for Home Assistant that allows you to connect and control Liebherr smart devices via the Liebherr SmartHomeAPI using the simple [pyliebherr](https://github.com/iluvdata/pyliebherr) library.
 
 > [!IMPORTANT]
-> This is a [Liebherr core integration](https://www.home-assistant.io/integrations/liebherr/) in Home Assistant as of 2026.3 authored by [@mettolon](https://github.com/mettolen).  If you want a very stable and fully tested integration I suggest using the core integration!
+> There is a [Liebherr core integration](https://www.home-assistant.io/integrations/liebherr/) in Home Assistant as of 2026.3 authored by [@mettolon](https://github.com/mettolen).  If you want a very stable and fully tested integration I suggest using the core integration!
 
 ## Features
 
