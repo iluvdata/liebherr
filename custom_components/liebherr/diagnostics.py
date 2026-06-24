@@ -34,7 +34,7 @@ async def async_get_config_entry_diagnostics(
     """Return diagnostics for a config entry."""
 
     devices: list[str] = [
-        device.model_dump(exclude_none=True) for device in entry.runtime_data.devices
+        device.model_dump(exclude_none=False) for device in entry.runtime_data.devices
     ]
 
     return {
