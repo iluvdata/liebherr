@@ -85,18 +85,6 @@ and click on "Reload" on the configuration menu:
 
 ![Menu Image](https://raw.githubusercontent.com/iluvdata/liebherr/refs/heads/main/assets/menu.png)
 
-## Update Interval (Versions prior to < 2025.5.0)
-
-Given rate limits imposed by Liebherr in the beta [SmartDevice Home API](https://developer.liebherr.com/apis/smartdevice-homeapi/#advice-for-implementation) the integration can only make a request to the device control API more often than every 30s.
-
-In these versions the devices will update independently and the goal is to make sure that **on average** the API is not polled more often than 5 seconds (which is the minimum based on testing). These versions calculate the poll interval for each devices' controls like this:
-
-- device control poll interval = 30 seconds,  if number of devices ≤ 6
-- device control poll interval = 5 seconds * number of devices,   if number of devices > 6.
-
-> [!tip]
-> The polling interval can be adjusted manually (within some preset limits) by changing the integration options.
-
 ## Troubleshooting
 
 - Ensure your Liebherr api key is correct.
