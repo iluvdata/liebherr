@@ -60,20 +60,21 @@ Controls and features will map to the following domains:
 | ----------------- | --------------------- |
 | Auto Door | Cover |
 | Ice Maker, BioFreshPlus | Select |
-| Presentation Light | Light or Number* |
+| Presentation Light | Light or Number<sup>1</sup> |
 | SuperCool, SuperFreeze, PartyMode, NightMode | Switch |
 | HydroBreeze | Fan |
-| Temperature | Climate |
+| Temperature<sup>2</sup> | Climate |
 | `image_url` (Device) | Image |
 | Bottle Timer | **Not available** |
 | Energy Monitors | **Not available** |
 | Holiday Mode | **Not available** |
 | Door Alarm | **Not available** |
 
-*\* In version ≥ 2025.12.5 the domain/type of control/entity created can be selected in the integration options.*
+1. In version ≥ 2025.12.5 the domain/type of control/entity created can be selected in the integration options.
+2. Some Liebherr models only allow temperature to be set to certain values (i.e. 1, 3, 5, or 7 ℃). The Liebherr API now sends an json attributes `setTemperatureSteps` and `setTemperatureStepsEnabled` but the format of `setTemperatureSteps` is not documented by Liebherr. Awaiting a response in [iluvdata/liebherr#42](https://github.com/iluvdata/liebherr/issues/42) to improve integration functionality.
 
 > [!Note]
-> All features available in the Liebherr SmartDevice API have been implemented as of 28 May 2026. Just because the feature exists in the Liebherr SmartDevice App does *not* mean it's available in the API.  Feature requests to implement app features not available in the API will be ignored.
+> All features available in the Liebherr SmartDevice API have been implemented as of 29 Jun 2026. Just because the feature exists in the Liebherr SmartDevice App does *not* mean it's available in the API.  Feature requests to implement app features not available in the API will be ignored.
 
 ### Discover New Appliances
 
@@ -91,7 +92,6 @@ and click on "Reload" on the configuration menu:
 - Check the Home Assistant logs for any errors related to the integration.
 - Enable debug on the integration.
 - Download and inspect the integration diagnostics.
-- If there are many `HTTP 429 - Too many requests` in the logs try increasing the polling interval.
 
 > [!Warning]
 > This was tested on a Liebherr Device lacking:

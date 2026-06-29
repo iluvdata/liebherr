@@ -47,7 +47,7 @@
       "message": "Nem érkezett válasz a Liebherr API-tól időben"
     },
     "sse_error": {
-      "message": "API connection error, failed after reattempts"
+      "message": "API connection error, failed after {attempt} reattempts"
     }
   },
   "entity": {

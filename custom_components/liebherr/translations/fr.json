@@ -48,7 +48,7 @@
       "message": "Aucune réponse reçue de l'API Liebherr dans les délais"
     },
     "sse_error": {
-      "message": "API connection error, failed after reattempts"
+      "message": "API connection error, failed after {attempt} reattempts"
     }
   },
   "entity": {

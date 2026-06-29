@@ -65,20 +65,22 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEnt
 
             def _device_error_callback(exc: LiebherrSSEException) -> None:
                 nonlocal attempt, sub_current_sse
+                # TODO:  Move attempt as a device attribute.
                 attempt += 1
                 if attempt < 10:
                     _LOGGER.info(
-                        "Retrying SSE connection to %s, attempt %i",
+                        "Retrying SSE connection to %s, attempt %d",
                         device.device_id,
                         attempt,
                     )
-                    if sub_current_sse:
-                        sub_current_sse()
+                    if sub_current_sse and callable(sub_current_sse):
+                        sub_current_sse()  # Cancel the current task
                     sub_current_sse = api.start_sse(device, delay=30)
                 else:
                     raise ConfigEntryError(
                         translation_domain=DOMAIN,
                         translation_key="sse_error",
+                        translation_placeholders={"attempt": attempt},
                     )
 
             return _device_error_callback
