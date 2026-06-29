@@ -11,3 +11,5 @@ URL_CONNECT_INSTRUCTIONS: Final[str] = (
     "lhbu-hau/documents/smartdevicebox-network-imodels-en.pdf"
 )
 CONF_PRESENTATION_LIGHT_AS_NUMBER: Final[str] = "presentation_light_as_number"
+
+SSE_INITIAL_TIMEOUT: Final[int] = 60  # seconds

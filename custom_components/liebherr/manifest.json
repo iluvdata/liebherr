@@ -14,8 +14,8 @@
     "pyliebherr"
   ],
   "requirements": [
-    "pyliebherr==2026.6.6"
+    "pyliebherr==2026.6.6.1"
   ],
   "single_config_entry": true,
-  "version": "2026.6.3"
+  "version": "2026.6.3.1"
 }

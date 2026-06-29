@@ -19,7 +19,7 @@ from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryError
 from homeassistant.helpers.translation import async_get_translations
 from homeassistant.util.ssl import client_context
 
-from .const import CONF_PRESENTATION_LIGHT_AS_NUMBER, DOMAIN
+from .const import CONF_PRESENTATION_LIGHT_AS_NUMBER, DOMAIN, SSE_INITIAL_TIMEOUT
 
 
 @dataclass
@@ -54,33 +54,35 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEnt
             config_entry.data[CONF_API_KEY], ssl_context=client_context()
         )
 
-        devices: list[LiebherrDevice] = await api.async_get_devices_wait_for_controls()
+        devices: list[LiebherrDevice] = await api.async_get_devices_wait_for_controls(
+            timeout=SSE_INITIAL_TIMEOUT
+        )
 
         def _get_device_error_callback(
             device: LiebherrDevice,
         ) -> Callable[[LiebherrSSEException], None]:
 
-            attempt: int = 0
             sub_current_sse: Callable[[None], None] | None = None
 
             def _device_error_callback(exc: LiebherrSSEException) -> None:
-                nonlocal attempt, sub_current_sse
-                # TODO:  Move attempt as a device attribute.
-                attempt += 1
-                if attempt < 10:
+                nonlocal sub_current_sse
+
+                if device.reconnect_attempt < 10:
+                    delay: int = 30 * device.reconnect_attempt
                     _LOGGER.info(
-                        "Retrying SSE connection to %s, attempt %d",
+                        "Retrying SSE connection to %s after %ds delay, attempt %d",
                         device.device_id,
-                        attempt,
+                        delay,
+                        device.reconnect_attempt,
                     )
                     if sub_current_sse and callable(sub_current_sse):
                         sub_current_sse()  # Cancel the current task
-                    sub_current_sse = api.start_sse(device, delay=30)
+                    sub_current_sse = api.start_sse(device, delay=delay)
                 else:
                     raise ConfigEntryError(
                         translation_domain=DOMAIN,
                         translation_key="sse_error",
-                        translation_placeholders={"attempt": attempt},
+                        translation_placeholders={"attempt": device.reconnect_attempt},
                     )
 
             return _device_error_callback
