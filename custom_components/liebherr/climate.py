@@ -45,6 +45,20 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
         self._attr_hvac_modes = [HVACMode.COOL]
         self._attr_hvac_mode = HVACMode.COOL
+        if self.control.use_temp_steps:
+            temp_steps: list[int] = self.control.temp_steps
+            steps: list[int] = [
+                temp_steps[i + 1] - temp_steps[i] for i in range(len(temp_steps) - 1)
+            ]
+            if len(set(steps)) == 1:
+                # Uniform steps
+                self._attr_target_temperature_step = steps[0]
+            if min(steps) > 1:
+                # Not uniform so we should use the smallest step
+                self._attr_target_temperature_step = min(steps)
+            self._attr_extra_state_attributes = {
+                "enabled_temperature_steps": temp_steps
+            }
         if device.device_type != LiebherrDevice.DeviceType.COMBI:
             self._attr_icon = "mdi:fridge-industrial-outline"
         elif self.control.zone_position == ZonePosition.TOP:
@@ -77,7 +91,14 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
         """Set the target temperature."""
         if ATTR_TEMPERATURE in kwargs:
             temperature: int = kwargs[ATTR_TEMPERATURE]
-
+            if (
+                self.control.use_temp_steps
+                and temperature not in self.control.temp_steps
+            ):
+                # Not a valid value so get nearest valid value
+                temperature = min(
+                    self.control.temp_steps, key=lambda x: abs(x - temperature)
+                )
             data = TemperatureControlRequest(
                 zoneId=self.control.zone_id or 0,
                 target=temperature,

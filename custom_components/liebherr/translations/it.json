@@ -114,12 +114,22 @@
         "name": "Frigorifero{zone}",
         "state": {
           "cool": "Raffreddamento"
+        },
+        "state_attributes": {
+          "enabled_temperature_steps": {
+            "name": "Passaggi di temperatura abilitati"
+          }
         }
       },
       "freezer": {
         "name": "Congelatore{zone}",
         "state": {
           "cool": "Congelamento"
+        },
+        "state_attributes": {
+          "enabled_temperature_steps": {
+            "name": "Passaggi di temperatura abilitati"
+          }
         }
       }
     }

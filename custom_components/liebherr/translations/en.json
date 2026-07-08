@@ -114,12 +114,22 @@
         "name": "Refridgerator{zone}",
         "state": {
           "cool": "Chill"
+        },
+        "state_attributes": {
+          "enabled_temperature_steps": {
+            "name": "Enabled Temperature Steps"
+          }
         }
       },
       "freezer": {
         "name": "Freezer{zone}",
         "state": {
           "cool": "Freeze"
+        },
+        "state_attributes": {
+          "enabled_temperature_steps": {
+            "name": "Enabled Temperature Steps"
+          }
         }
       }
     },

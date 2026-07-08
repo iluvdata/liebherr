@@ -114,12 +114,22 @@
         "name": "Kühlteil{zone}",
         "state": {
           "cool": "Kühlen"
+        },
+        "state_attributes": {
+          "enabled_temperature_steps": {
+            "name": "Aktivierte Temperaturstufen"
+          }
         }
       },
       "freezer": {
         "name": "Gefrierteil{zone}",
         "state": {
           "cool": "Gefrieren"
+        },
+        "state_attributes": {
+          "enabled_temperature_steps": {
+            "name": "Aktivierte Temperaturstufen"
+          }
         }
       }
     },

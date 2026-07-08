@@ -115,12 +115,22 @@
         "name": "Réfrigérateur{zone}",
         "state": {
           "cool": "Refroidissement"
+        },
+        "state_attributes": {
+          "enabled_temperature_steps": {
+            "name": "Étapes de température activées"
+          }
         }
       },
       "freezer": {
         "name": "Congélateur{zone}",
         "state": {
           "cool": "Congélation"
+        },
+        "state_attributes": {
+          "enabled_temperature_steps": {
+            "name": "Étapes de température activées"
+          }
         }
       }
     },

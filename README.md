@@ -71,10 +71,10 @@ Controls and features will map to the following domains:
 | Door Alarm | **Not available** |
 
 1. In version ≥ 2025.12.5 the domain/type of control/entity created can be selected in the integration options.
-2. Some Liebherr models only allow temperature to be set to certain values (i.e. 1, 3, 5, or 7 ℃). The Liebherr API now sends an json attributes `setTemperatureSteps` and `setTemperatureStepsEnabled` but the format of `setTemperatureSteps` is not documented by Liebherr. Awaiting a response in [iluvdata/liebherr#42](https://github.com/iluvdata/liebherr/issues/42) to improve integration functionality.
+2. Some Liebherr models only allow temperature to be set to certain values (i.e. 3, 5, 7, 9 ℃). The integration will account for this and set the appropriate temperature steps as long as the steps are uniform (e.g. each temperature setting separated by 2°).  If steps are not uniform the integration will set the temperature to the nearest valid value.
 
 > [!Note]
-> All features available in the Liebherr SmartDevice API have been implemented as of 29 Jun 2026. Just because the feature exists in the Liebherr SmartDevice App does *not* mean it's available in the API.  Feature requests to implement app features not available in the API will be ignored.
+> All features available in the Liebherr SmartDevice API have been implemented as of 08 Jul 2026. Just because the feature exists in the Liebherr SmartDevice App does *not* mean it's available in the API.  Feature requests to implement app features not available in the API will be ignored.
 
 ### Discover New Appliances
 
@@ -93,15 +93,15 @@ and click on "Reload" on the configuration menu:
 - Enable debug on the integration.
 - Download and inspect the integration diagnostics.
 
-> [!Warning]
-> This was tested on a Liebherr Device lacking:
->
-> AutoDoor (reported to be working)  
-> Presentation Light (reported to be working both as number and light entity)  
-> BioFreshPlus (reported to be working)  
-> HydroBreeze (reported to be working)  
->
-> If you encounter an issue with these features please submit an issue.
+This was tested on a Liebherr Device lacking:
+
+- AutoDoor (reported to be working)
+- Presentation Light (reported to be working both as number and light entity)  
+- BioFreshPlus (reported to be working)  
+- HydroBreeze (reported to be working)  
+- Stepped temperature settings
+
+If you encounter an issue with these features please submit an issue.
 
 ## Acknowledgements
 

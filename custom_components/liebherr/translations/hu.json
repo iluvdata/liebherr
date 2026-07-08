@@ -114,12 +114,22 @@
         "name": "Hűtő{zone}",
         "state": {
           "cool": "Hűtés"
+        },
+        "state_attributes": {
+          "enabled_temperature_steps": {
+            "name": "Engedélyezett hőmérséklet lépések"
+          }
         }
       },
       "freezer": {
         "name": "Fagyasztó{zone}",
         "state": {
           "cool": "Fagyasztás"
+        },
+        "state_attributes": {
+          "enabled_temperature_steps": {
+            "name": "Engedélyezett hőmérséklet lépések"
+          }
         }
       }
     },

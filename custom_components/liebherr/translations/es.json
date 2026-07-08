@@ -114,12 +114,22 @@
         "name": "Nevera{zone}",
         "state": {
           "cool": "Enfriar"
+        },
+        "state_attributes": {
+          "enabled_temperature_steps": {
+            "name": "Temperaturas habilitadas"
+          }
         }
       },
       "freezer": {
         "name": "Congelador{zone}",
         "state": {
           "cool": "Congelar"
+        },
+        "state_attributes": {
+          "enabled_temperature_steps": {
+            "name": "Temperaturas habilitadas"
+          }
         }
       }
     }
