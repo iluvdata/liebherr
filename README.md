@@ -9,6 +9,9 @@ This is an *unofficial* **custom** integration for Home Assistant that allows yo
 > [!IMPORTANT]
 > There is a [Liebherr core integration](https://www.home-assistant.io/integrations/liebherr/) in Home Assistant as of 2026.3 authored by [@mettolon](https://github.com/mettolen).  If you want a very stable and fully tested integration I suggest using the core integration!
 
+> [!WARNING]
+> As of 2026.10.1 it has become necessary to migrate away from using the same `DOMAIN` as the core integration (`liebherr`).  This update will require a manual [migration]() process.
+
 ## Features
 
 - Uses Server-Sent Events to receive updates (Cloud Push)
@@ -30,6 +33,11 @@ or search for the Liebherr integration in HACS
 3. Copy the `custom_components/liebherr` folder to your Home Assistant `custom_components` directory.
    - Example: `/config/custom_components/liebherr`
 4. Restart Home Assistant.
+
+## Migration to 2026.10.1
+
+1. Remove the integration from Home Assistant: [![Open your Home Assistant instance and show an integration.](https://my.home-assistant.io/badges/integration.svg)](https://my.home-assistant.io/redirect/integration/?domain=liebherr)
+2. Redownload the repository in [HACS](#hacs-recommended).
 
 ## Configuration
 
