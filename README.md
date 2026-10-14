@@ -10,7 +10,7 @@ This is an *unofficial* **custom** integration for Home Assistant that allows yo
 > There is a [Liebherr core integration](https://www.home-assistant.io/integrations/liebherr/) in Home Assistant as of 2026.3 authored by [@mettolon](https://github.com/mettolen).  If you want a very stable and fully tested integration I suggest using the core integration!
 
 > [!WARNING]
-> As of 2026.10.1 it has become necessary to migrate away from using the same `DOMAIN` as the core integration (`liebherr`).  This update will require a manual [migration]() process.
+> As of 2026.10.1 it has become necessary to migrate away from using the same `DOMAIN` as the core integration (`liebherr`).  This update will require a manual [migration](#migration-to-2026101) process.
 
 ## Features
 
@@ -68,21 +68,20 @@ Controls and features will map to the following domains:
 | ----------------- | --------------------- |
 | Auto Door | Cover |
 | Ice Maker, BioFreshPlus | Select |
-| Presentation Light | Light or Number<sup>1</sup> |
+| Presentation Light | Light or Number |
 | SuperCool, SuperFreeze, PartyMode, NightMode | Switch |
 | HydroBreeze | Fan |
-| Temperature<sup>2</sup> | Climate |
+| Temperature<sup>1</sup> | Climate |
 | `image_url` (Device) | Image |
 | Bottle Timer | **Not available** |
 | Energy Monitors | **Not available** |
 | Holiday Mode | **Not available** |
 | Door Alarm | **Not available** |
 
-1. In version ≥ 2025.12.5 the domain/type of control/entity created can be selected in the integration options.
-2. Some Liebherr models only allow temperature to be set to certain values (i.e. 3, 5, 7, 9 ℃). The integration will account for this and set the appropriate temperature steps as long as the steps are uniform (e.g. each temperature setting separated by 2°).  If steps are not uniform the integration will set the temperature to the nearest valid value.
+1. Some Liebherr models only allow temperature to be set to certain values (i.e. 3, 5, 7, 9 ℃). The integration will account for this and set the appropriate temperature steps as long as the steps are uniform (e.g. each temperature setting separated by 2°).  If steps are not uniform the integration will set the temperature to the nearest valid value.
 
 > [!Note]
-> All features available in the Liebherr SmartDevice API have been implemented as of 08 Jul 2026. Just because the feature exists in the Liebherr SmartDevice App does *not* mean it's available in the API.  Feature requests to implement app features not available in the API will be ignored.
+> All features available in the Liebherr SmartDevice API have been implemented as of 14 Oct 2026. Just because the feature exists in the Liebherr SmartDevice App does *not* mean it's available in the API.  Feature requests to implement app features not available in the API will be ignored.
 
 ### Discover New Appliances
 
