@@ -2,7 +2,7 @@
 
 from typing import Final
 
-DOMAIN = "liebherr"
+DOMAIN = "liebherr_sse"
 
 
 URL_DOWNLOAD_APP: Final[str] = "https://smartdevice.onelink.me/OrY5/bciotarf"
@@ -12,4 +12,4 @@ URL_CONNECT_INSTRUCTIONS: Final[str] = (
 )
 CONF_PRESENTATION_LIGHT_AS_NUMBER: Final[str] = "presentation_light_as_number"
 
-SSE_INITIAL_TIMEOUT: Final[int] = 60  # seconds
+SSE_INITIAL_TIMEOUT: Final[int] = 15  # seconds

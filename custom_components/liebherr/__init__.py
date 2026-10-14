@@ -15,9 +15,13 @@ from pyliebherr.exception import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY, Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryError
+from homeassistant.exceptions import (
+    ConfigEntryAuthFailed,
+    ConfigEntryNotReady,
+    HomeAssistantError,
+)
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.translation import async_get_translations
-from homeassistant.util.ssl import client_context
 
 from .const import CONF_PRESENTATION_LIGHT_AS_NUMBER, DOMAIN, SSE_INITIAL_TIMEOUT
 
@@ -51,9 +55,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEnt
 
     try:
         api: LiebherrAPI = LiebherrAPI(
-            config_entry.data[CONF_API_KEY], ssl_context=client_context()
+            config_entry.data[CONF_API_KEY], async_get_clientsession(hass)
         )
-
         devices: list[LiebherrDevice] = await api.async_get_devices_wait_for_controls(
             timeout=SSE_INITIAL_TIMEOUT
         )
@@ -79,7 +82,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEnt
                         sub_current_sse()  # Cancel the current task
                     sub_current_sse = api.start_sse(device, delay=delay)
                 else:
-                    raise ConfigEntryError(
+                    raise HomeAssistantError(
                         translation_domain=DOMAIN,
                         translation_key="sse_error",
                         translation_placeholders={"attempt": device.reconnect_attempt},
@@ -91,14 +94,14 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEnt
             device.add_error_callback(_get_device_error_callback(device))
 
     except TimeoutError as ex:
-        raise ConfigEntryError(
+        raise ConfigEntryNotReady(
             translation_key="first_sse_timeout",
         ) from ex
     except LiebherrAuthException as ex:
         _LOGGER.error("Invalid API key, need to reauth")
         raise ConfigEntryAuthFailed(ex.message) from ex
     except LiebherrException as ex:
-        raise ConfigEntryError(
+        raise ConfigEntryNotReady(
             translation_key="config_entry", translation_placeholders={"msg": str(ex)}
         ) from ex
 

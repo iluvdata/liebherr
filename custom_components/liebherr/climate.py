@@ -41,7 +41,7 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
         """Initialize the climate entity."""
         super().__init__(config_entry, device, control_key)
         self._attr_target_temperature_step = 1
-        self._attr_temperature_unit = self.control.unit_of_measurement or "°C"
+        self._attr_native_temperature_unit = self.control.unit_of_measurement or "°C"
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
         self._attr_hvac_modes = [HVACMode.COOL]
         self._attr_hvac_mode = HVACMode.COOL
@@ -115,7 +115,7 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
             self._attr_hvac_mode = hvac_mode
 
     @property
-    def target_temperature(self) -> float | None:
+    def native_target_temperature(self) -> float | None:
         """Target Temperature."""
         return self.control.target
 
@@ -130,6 +130,6 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
         return self.control.max
 
     @property
-    def current_temperature(self) -> float | None:
+    def native_current_temperature(self) -> float | None:
         """Current Temp."""
         return self.control.value if isinstance(self.control.value, int) else None

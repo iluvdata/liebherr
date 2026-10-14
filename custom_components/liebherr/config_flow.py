@@ -7,7 +7,7 @@ from typing import Any
 
 from pyliebherr import LiebherrAPI
 from pyliebherr.exception import LiebherrAuthException
-import voluptuous as vol
+import probatio
 
 from homeassistant.config_entries import (
     SOURCE_REAUTH,
@@ -20,6 +20,7 @@ from homeassistant.const import CONF_API_KEY
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import section
 from homeassistant.helpers.selector import BooleanSelector, TextSelector
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from . import LiebherrConfigEntry
 from .const import (
@@ -57,12 +58,12 @@ class OptionsFlowHandler(OptionsFlowWithReload):
                 ),
             },
         }
-        OPTIONS_SCHEMA: vol.Schema = vol.Schema(
+        OPTIONS_SCHEMA: probatio.Schema = probatio.Schema(
             {
-                vol.Required(LIGHT_SECTION): section(
-                    vol.Schema(
+                probatio.Required(LIGHT_SECTION): section(
+                    probatio.Schema(
                         {
-                            vol.Required(
+                            probatio.Required(
                                 CONF_PRESENTATION_LIGHT_AS_NUMBER
                             ): BooleanSelector(),
                         }
@@ -98,7 +99,9 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors[CONF_API_KEY] = "whitespace_api_key"
             else:
                 try:
-                    api: LiebherrAPI = LiebherrAPI(user_input[CONF_API_KEY])
+                    api: LiebherrAPI = LiebherrAPI(
+                        user_input[CONF_API_KEY], async_get_clientsession(self.hass)
+                    )
                     await api.async_test_key()
                 except LiebherrAuthException:
                     errors["base"] = "auth_error"
@@ -128,8 +131,8 @@ class LiebherrConfigFlow(ConfigFlow, domain=DOMAIN):
                 )
                 return self.async_abort(reason="invalid_source")
 
-        data_schema: vol.Schema = vol.Schema(
-            {vol.Required(CONF_API_KEY): vol.All(TextSelector())}
+        data_schema: probatio.Schema = probatio.Schema(
+            {probatio.Required(CONF_API_KEY): probatio.All(TextSelector())}
         )
         return self.async_show_form(
             step_id="user",
