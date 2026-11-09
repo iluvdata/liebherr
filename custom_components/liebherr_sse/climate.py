@@ -102,7 +102,7 @@ class LiebherrClimate(LiebherrEntity, ClimateEntity):
             data = TemperatureControlRequest(
                 zoneId=self.control.zone_id or 0,
                 target=temperature,
-                unit=self._attr_native_temperature_unit,
+                unit=self._attr_temperature_unit,
             )
 
             await self.async_set_value(data)
