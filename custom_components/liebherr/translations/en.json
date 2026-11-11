@@ -138,5 +138,12 @@
         "name": "Last Updated"
       }
     }
+  },
+  "issues": {
+    "deprecated_integration": {
+      "title": "iluvdata/liebherr is deprecated, use iluvdata/liebherr_sse instead",
+      "short_title": "iluvdata/liebherr has migrated",
+      "description": "The Liebherr custom integration has been migrated to a new repository and is now called **Liebherr Smart Device**.  Migration instructions can be found below."
+    }
   }
 }

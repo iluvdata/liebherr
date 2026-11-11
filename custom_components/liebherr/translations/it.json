@@ -47,7 +47,7 @@
       "message": "Non è stata ricevuta alcuna risposta dall'API di Liebherr nel tempo previsto"
     },
     "sse_error": {
-      "message": "API connection error, failed after {attempt} reattempts"
+      "message": "Errore di connessione API, fallito dopo {attempt} tentativi"
     }
   },
   "entity": {
@@ -132,6 +132,13 @@
           }
         }
       }
+    }
+  },
+  "issues": {
+    "deprecated_integration": {
+      "title": "iluvdata/liebherr è deprecato; usa iluvdata/liebherr_sse",
+      "short_title": "iluvdata/liebherr è stato migrato",
+      "description": "L'integrazione personalizzata Liebherr è stata migrata in un nuovo repository e ora si chiama **Liebherr Smart Device**. Le istruzioni per la migrazione sono riportate di seguito."
     }
   }
 }

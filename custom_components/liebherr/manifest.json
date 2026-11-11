@@ -1,6 +1,6 @@
 {
-  "domain": "liebherr_sse",
-  "name": "Liebherr Smart Device",
+  "domain": "liebherr",
+  "name": "Liebherr",
   "codeowners": [
     "@iluvdata"
   ],
@@ -17,5 +17,5 @@
     "pyliebherr==2026.10.1"
   ],
   "single_config_entry": true,
-  "version": "2026.10.1"
+  "version": "2026.11.1"
 }

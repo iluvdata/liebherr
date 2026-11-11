@@ -21,9 +21,15 @@ from homeassistant.exceptions import (
     HomeAssistantError,
 )
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+import homeassistant.helpers.issue_registry as ir
 from homeassistant.helpers.translation import async_get_translations
 
-from .const import CONF_PRESENTATION_LIGHT_AS_NUMBER, DOMAIN, SSE_INITIAL_TIMEOUT
+from .const import (
+    CONF_PRESENTATION_LIGHT_AS_NUMBER,
+    DOMAIN,
+    SSE_INITIAL_TIMEOUT,
+    URL_MIGRATION,
+)
 
 
 @dataclass
@@ -52,6 +58,18 @@ PLATFORMS = {
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEntry):
     """Set up Liebherr devices from a config entry."""
+
+    ir.async_create_issue(
+        hass,
+        DOMAIN,
+        "deprecated_integration",
+        config_entry_id=config_entry.entry_id,
+        is_fixable=False,
+        is_persistent=True,
+        translation_key="deprecated_integration",
+        learn_more_url=URL_MIGRATION,
+        severity=ir.IssueSeverity.WARNING,
+    )
 
     try:
         api: LiebherrAPI = LiebherrAPI(

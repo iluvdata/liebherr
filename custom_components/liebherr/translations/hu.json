@@ -138,5 +138,12 @@
         "name": "Utolsó frissítés"
       }
     }
+  },
+  "issues": {
+    "deprecated_integration": {
+      "title": "iluvdata/liebherr elavult, használja a iluvdata/liebherr_sse-t",
+      "short_title": "iluvdata/liebherr át lett migrálva",
+      "description": "A Liebherr egyéni integráció át lett migrálva egy új tárolóba és most **Liebherr Smart Device** néven hívják. A migrációs utasítások alább találhatók."
+    }
   }
 }
