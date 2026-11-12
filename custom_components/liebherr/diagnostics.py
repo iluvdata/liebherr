@@ -7,7 +7,6 @@ from typing import Any
 from homeassistant.components.diagnostics import REDACTED, async_redact_data
 from homeassistant.const import (
     ATTR_ENTITY_PICTURE,
-    ATTR_IDENTIFIERS,
     CONF_ACCESS_TOKEN,
     CONF_API_KEY,
     CONF_DEVICE_ID,
@@ -21,7 +20,7 @@ from . import LiebherrConfigEntry
 
 TO_REDACT_CONFIG_ENTRY: list[str] = [CONF_API_KEY, CONF_DEVICE_ID]
 
-TO_REDACT_DEVICE: list[str] = [ATTR_IDENTIFIERS]
+TO_REDACT_DEVICE: list[str] = ["identifiers"]
 
 TO_REDACT_STATE_ATTR: list[str] = [ATTR_ENTITY_PICTURE, CONF_ACCESS_TOKEN]
 
