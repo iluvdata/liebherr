@@ -142,9 +142,9 @@
   },
   "issues": {
     "deprecated_integration": {
-      "title": "iluvdata/liebherr est déprécié, utilisez iluvdata/liebherr_sse à la place",
-      "short_title": "iluvdata/liebherr a été migré",
-      "description": "L'intégration personnalisée de Liebherr a été migrée vers un nouveau dépôt et s'appelle maintenant **Liebherr Smart Device**. Les instructions de migration peuvent être trouvées ci-dessous."
+      "title": "iluvdata/liebherr est obsolète, utilisez l'intégration intégrée à la place",
+      "short_title": "iluvdata/liebherr est obsolète",
+      "description": "L'intégration personnalisée Liebherr est obsolète, car l'intégration intégrée prend désormais en charge la même fonctionnalité. Veuillez supprimer l'intégration personnalisée et utiliser l'intégration intégrée à la place."
     }
   }
 }

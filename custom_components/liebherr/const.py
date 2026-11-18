@@ -9,9 +9,6 @@ URL_CONNECT_INSTRUCTIONS: Final[str] = (
     "https://www-assets.liebherr.com/media/bu-media/"
     "lhbu-hau/documents/smartdevicebox-network-imodels-en.pdf"
 )
-URL_MIGRATION: Final[str] = (
-    "https://github.com/iluvdata/liebherr_sse/blob/main/MIGRATION.md"
-)
 CONF_PRESENTATION_LIGHT_AS_NUMBER: Final[str] = "presentation_light_as_number"
 
 SSE_INITIAL_TIMEOUT: Final[int] = 15  # seconds

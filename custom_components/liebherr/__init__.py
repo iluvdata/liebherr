@@ -24,12 +24,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.issue_registry as ir
 from homeassistant.helpers.translation import async_get_translations
 
-from .const import (
-    CONF_PRESENTATION_LIGHT_AS_NUMBER,
-    DOMAIN,
-    SSE_INITIAL_TIMEOUT,
-    URL_MIGRATION,
-)
+from .const import CONF_PRESENTATION_LIGHT_AS_NUMBER, DOMAIN, SSE_INITIAL_TIMEOUT
 
 
 @dataclass
@@ -67,7 +62,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: LiebherrConfigEnt
         is_fixable=False,
         is_persistent=True,
         translation_key="deprecated_integration",
-        learn_more_url=URL_MIGRATION,
         severity=ir.IssueSeverity.WARNING,
     )
 

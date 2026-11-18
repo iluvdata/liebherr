@@ -141,9 +141,9 @@
   },
   "issues": {
     "deprecated_integration": {
-      "title": "iluvdata/liebherr elavult, használja a iluvdata/liebherr_sse-t",
-      "short_title": "iluvdata/liebherr át lett migrálva",
-      "description": "A Liebherr egyéni integráció át lett migrálva egy új tárolóba és most **Liebherr Smart Device** néven hívják. A migrációs utasítások alább találhatók."
+      "title": "az iluvdata/liebherr elavult, használja helyette a core integrációt",
+      "short_title": "az iluvdata/liebherr elavult",
+      "description": "A Liebherr egyéni integrációja elavult, mert a core integráció már támogatja ugyanazt a funkcionalitást. Kérjük, távolítsa el az egyéni integrációt, és használja helyette a core integrációt."
     }
   }
 }

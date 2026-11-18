@@ -141,9 +141,9 @@
   },
   "issues": {
     "deprecated_integration": {
-      "title": "iluvdata/liebherr ist veraltet; verwenden Sie stattdessen iluvdata/liebherr_sse",
-      "short_title": "iluvdata/liebherr wurde migriert",
-      "description": "Die Liebherr-Custom-Integration wurde in ein neues Repository verschoben und heißt jetzt **Liebherr Smart Device**. Die Migrationsanweisungen finden Sie weiter unten."
+      "title": "iluvdata/liebherr ist veraltet, verwende stattdessen die Core-Integration",
+      "short_title": "iluvdata/liebherr ist veraltet",
+      "description": "Die Liebherr-Custom-Integration ist veraltet, da die Core-Integration jetzt dieselbe Funktionalität unterstützt. Bitte entferne die Custom-Integration und verwende stattdessen die Core-Integration."
     }
   }
 }
